@@ -1,0 +1,836 @@
+<!DOCTYPE html>
+<html lang="vi" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}VietVoice - Biến văn bản thành giọng nói tự nhiên{% endblock %}</title>
+
+    <!-- Anti-flash: apply saved theme ASAP before paint -->
+    <script>
+        (function(){
+            var t = localStorage.getItem('tts-theme') || 'dark';
+            document.documentElement.setAttribute('data-theme', t);
+        })();
+    </script>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+
+    <!-- Design System CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/variables.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/components.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
+    {% if not session.user_id %}
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/public-landing-nav.css') }}">
+    {% endif %}
+
+    {% block extra_css %}{% endblock %}
+
+    <style>
+        html, body { margin: 0 !important; padding: 0 !important; overflow-x: hidden; max-width: 100%; }
+        html { scroll-behavior: smooth; }
+
+        /* ── Language toggle button ── */
+        .vv-lang-toggle {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 10px;
+            border: 1px solid rgba(167,139,250,0.35);
+            border-radius: 9999px;
+            background: rgba(124,58,237,0.08);
+            color: #94a3b8;
+            font-size: 0.72rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            letter-spacing: 0.06em;
+            height: 30px;
+            text-transform: uppercase;
+        }
+        .vv-lang-toggle:hover {
+            background: rgba(124,58,237,0.18);
+            border-color: #a78bfa;
+        }
+        .lang-active { color: #c4b5fd; font-weight: 800; }
+        .lang-inactive { color: #475569; font-weight: 600; }
+        .lang-sep { color: rgba(148,163,184,0.3); font-weight: 300; font-size: 0.65rem; }
+
+        body {
+            background-color: #051424;
+            color: #d4e4fa;
+            min-height: 100vh;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body.logged-in-nav-page {
+            background-color: #051424;
+        }
+
+        body.logged-in-nav-page .bg-orbs {
+            display: none;
+        }
+
+        body.logged-in-nav-page .site-footer {
+            background: #051424;
+            border-top-color: rgba(255, 255, 255, 0.06);
+        }
+
+        /* ── Background orbs ── */
+        .bg-orbs {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+        .bg-orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.1;
+        }
+        .bg-orb-1 {
+            width: 600px; height: 600px;
+            background: radial-gradient(circle, #7c3aed, transparent);
+            top: -200px; left: -200px;
+            animation: orb-float-1 18s ease-in-out infinite;
+        }
+        .bg-orb-2 {
+            width: 500px; height: 500px;
+            background: radial-gradient(circle, #3b82f6, transparent);
+            bottom: -100px; right: -100px;
+            animation: orb-float-2 22s ease-in-out infinite;
+        }
+        .bg-orb-3 {
+            width: 350px; height: 350px;
+            background: radial-gradient(circle, #a78bfa, transparent);
+            top: 40%; left: 55%;
+            animation: orb-float-1 15s ease-in-out infinite reverse;
+        }
+
+        main.main-content, footer.site-footer {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* ── NAVBAR ── */
+        .navbar {
+            position: fixed !important;
+            top: 0 !important; left: 0 !important; right: 0 !important;
+            height: 64px;
+            pointer-events: auto !important;
+            background: rgba(7, 11, 31, 0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            z-index: 9999;
+            transition: all 0.3s ease;
+        }
+
+        .navbar.scrolled {
+            background: rgba(7, 11, 31, 0.94);
+            border-bottom-color: rgba(255,255,255,0.1);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+        }
+        .navbar *, .navbar a, .navbar button {
+            pointer-events: auto !important;
+            position: relative;
+            z-index: 10000;
+        }
+
+        .navbar .container {
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+        }
+
+        .nav-brand { display: flex; align-items: center; }
+
+        .nav-brand-link {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none !important;
+            transition: opacity 0.15s ease;
+            color: inherit;
+        }
+
+        .nav-brand-link:hover {
+            opacity: 0.85;
+            text-decoration: none !important;
+        }
+
+        .navbar .nav-brand-link .nav-brand-icon {
+            font-family: 'Material Symbols Outlined';
+            font-size: 24px;
+            line-height: 1;
+            color: #d0bcff !important;
+            -webkit-text-fill-color: #d0bcff !important;
+            font-variation-settings: 'FILL' 1, 'wght' 500, 'GRAD' 0, 'opsz' 24;
+        }
+
+        .nav-brand-text {
+            margin: 0;
+            font-size: 1.25rem;
+            font-weight: 900;
+            letter-spacing: -0.05em;
+            text-transform: uppercase;
+            color: #ffffff;
+            white-space: nowrap;
+        }
+
+        .nav-brand-text-gradient {
+            background: linear-gradient(90deg, #8b5cf6 0%, #22d3ee 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .nav-menu {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            list-style: none;
+            padding: 0; margin: 0;
+            flex-wrap: nowrap;
+        }
+
+        .nav-menu li a {
+            display: block;
+            padding: 6px 12px;
+            color: #94a3b8;
+            font-weight: 500;
+            font-size: 0.8125rem;
+            border-radius: 8px;
+            transition: all 0.15s ease;
+            text-decoration: none;
+            white-space: nowrap;
+        }
+
+        .nav-menu li a:hover,
+        .nav-menu li a.active {
+            color: #f1f5f9;
+            background: rgba(255,255,255,0.07);
+            text-decoration: none;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 5px 14px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 9999px;
+            font-size: 0.8125rem;
+            white-space: nowrap;
+        }
+
+        .user-info span { color: #94a3b8; }
+
+        .btn-logout {
+            padding: 4px 12px;
+            background: rgba(239,68,68,0.12);
+            color: #fca5a5;
+            border: 1px solid rgba(239,68,68,0.18);
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            transition: all 0.15s ease;
+            text-decoration: none;
+            white-space: nowrap;
+        }
+
+        .btn-logout:hover {
+            background: #ef4444;
+            color: white;
+            border-color: #ef4444;
+            text-decoration: none;
+        }
+
+        .nav-cta {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 7px 18px;
+            background: linear-gradient(135deg, #7c3aed, #3b82f6);
+            color: white !important;
+            border-radius: 9999px;
+            font-weight: 600;
+            font-size: 0.8125rem;
+            text-decoration: none;
+            box-shadow: 0 2px 14px rgba(124,58,237,0.4);
+            transition: all 0.2s ease;
+            margin-left: 6px;
+        }
+
+        .nav-cta:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 20px rgba(124,58,237,0.6);
+            color: white !important;
+            text-decoration: none;
+        }
+
+        .nav-menu a.nav-active {
+            color: #c4b5fd !important;
+        }
+
+        .theme-toggle {
+            width: 40px; height: 24px;
+            background: rgba(255,255,255,0.08);
+            border: 1px solid rgba(255,255,255,0.14);
+            border-radius: 9999px;
+            position: relative;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            flex-shrink: 0;
+        }
+
+        .theme-toggle::before {
+            content: '';
+            position: absolute;
+            width: 18px; height: 18px;
+            background: rgba(255,255,255,0.9);
+            border-radius: 50%;
+            top: 2px; left: 2px;
+            transition: all 0.2s ease;
+        }
+
+        [data-theme="dark"] .theme-toggle::before { left: 18px; background: #334155; }
+        [data-theme="light"] .theme-toggle::before { left: 2px; }
+
+        .theme-toggle:hover { border-color: #7c3aed; background: rgba(124,58,237,0.12); }
+        .theme-icon { display: none; }
+
+        /* ── NAV ACTIONS (lang + hamburger — matches public landing nav) ── */
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            flex-shrink: 0;
+        }
+
+        .nav-actions .theme-toggle { display: block; }
+
+        .mobile-nav-theme {
+            display: none;
+            margin-top: 0.5rem;
+            align-self: flex-start;
+        }
+
+        /* ── HAMBURGER BUTTON (mobile) ── */
+        .nav-hamburger {
+            display: none;
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #d4e4fa;
+            padding: 0.25rem;
+            border-radius: 8px;
+            transition: all 0.15s;
+        }
+        .nav-hamburger:hover { background: rgba(255,255,255,0.07); color: #f1f5f9; }
+        .nav-hamburger svg { width: 28px; height: 28px; display: block; }
+
+        /* ── MOBILE NAV DRAWER ── */
+        .mobile-nav-overlay {
+            display: none;
+            position: fixed; inset: 0;
+            background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(4px);
+            z-index: 9998;
+        }
+        .mobile-nav-overlay.open { display: block; }
+        .mobile-nav-drawer {
+            display: none;
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: 18rem;
+            max-width: 88vw;
+            height: 100%;
+            background: rgba(18, 33, 49, 0.95);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-left: 1px solid rgba(255,255,255,0.1);
+            z-index: 9999;
+            padding: 6rem 1.5rem 2rem;
+            overflow-y: auto;
+            box-shadow: -8px 0 32px rgba(0,0,0,0.45);
+            box-sizing: border-box;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+        .mobile-nav-drawer.open {
+            display: flex;
+        }
+        .mobile-nav-drawer a {
+            display: flex; align-items: center; gap: 10px;
+            padding: 0.5rem 0; border-radius: 10px;
+            color: #d4e4fa; font-size: 1.0625rem; font-weight: 500;
+            text-decoration: none; transition: all 0.15s;
+        }
+        .mobile-nav-drawer a:hover, .mobile-nav-drawer a.active {
+            color: #f1f5f9; background: rgba(255,255,255,0.06);
+        }
+        .mobile-nav-drawer .mobile-nav-divider {
+            border: none; border-top: 1px solid rgba(255,255,255,0.07);
+            margin: 6px 0;
+        }
+        .mobile-nav-drawer .mobile-logout {
+            color: #fca5a5;
+        }
+        .mobile-nav-drawer .mobile-logout:hover { background: rgba(239,68,68,0.1); }
+
+        /* ── RESPONSIVE NAVBAR ── */
+        @media (max-width: 768px) {
+            .nav-menu { display: none !important; }
+            .nav-hamburger { display: flex; align-items: center; justify-content: center; }
+            .navbar .container {
+                padding: 0 1rem;
+                flex-direction: row !important;
+                flex-wrap: nowrap !important;
+                align-items: center !important;
+                justify-content: space-between !important;
+            }
+            .nav-brand-link { flex-shrink: 0; }
+            .nav-actions { flex-shrink: 0; }
+            .nav-actions .theme-toggle { display: none; }
+            .mobile-nav-theme { display: block; }
+        }
+
+        /* ── MAIN ── */
+        .main-content {
+            min-height: calc(100vh - 64px - 280px);
+            padding-top: calc(64px + 2rem);
+            padding-bottom: 2rem;
+        }
+        .main-content.auth-page-main {
+            min-height: calc(100vh - 64px);
+            height: auto;
+            padding: 64px 0 0;
+            margin: 0;
+            overflow: visible;
+            box-sizing: border-box;
+        }
+        @media (max-width: 540px) {
+            .main-content { padding-top: calc(64px + 1rem); padding-left: 0.5rem; padding-right: 0.5rem; }
+        }
+
+        /* ══════════════════════════════════════
+           FOOTER — Zephyr Style
+        ══════════════════════════════════════ */
+        .site-footer {
+            background: #07070f;
+            border-top: 1px solid rgba(255,255,255,0.05);
+            padding: 56px 0 0;
+            margin-top: 0;
+        }
+
+        .footer-inner {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+        }
+
+        /* Top row */
+        .footer-top {
+            display: grid;
+            grid-template-columns: 1.4fr 1fr 1fr 1fr 1fr;
+            gap: 36px;
+            padding-bottom: 40px;
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+        }
+
+        @media (max-width: 1100px) {
+            .footer-top { grid-template-columns: 1.4fr 1fr 1fr; gap: 28px; }
+        }
+
+        @media (max-width: 700px) {
+            .footer-top { grid-template-columns: 1fr 1fr; gap: 24px; }
+        }
+
+        @media (max-width: 540px) {
+            .footer-top { grid-template-columns: 1fr; }
+        }
+
+        .footer-brand-col {}
+
+        .footer-logo {
+            font-size: 1.1rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #a78bfa, #60a5fa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 12px;
+            letter-spacing: -0.01em;
+        }
+
+        .footer-tagline {
+            font-size: 0.8125rem;
+            color: #475569;
+            line-height: 1.65;
+            margin-bottom: 20px;
+            max-width: 240px;
+        }
+
+        .footer-beta {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 12px;
+            background: rgba(124,58,237,0.1);
+            border: 1px solid rgba(124,58,237,0.2);
+            border-radius: 9999px;
+            font-size: 0.68rem;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: #c4b5fd;
+        }
+
+        .footer-col-title {
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: #f1f5f9;
+            margin-bottom: 16px;
+        }
+
+        .footer-links {
+            list-style: none;
+            padding: 0; margin: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .footer-links li a {
+            font-size: 0.8125rem;
+            color: #64748b;
+            text-decoration: none;
+            transition: color 0.15s ease;
+            line-height: 1.5;
+        }
+
+        .footer-links li a:hover {
+            color: #c4b5fd;
+            text-decoration: none;
+        }
+
+        /* Bottom row */
+        .footer-bottom {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            padding: 20px 0;
+            flex-wrap: wrap;
+        }
+
+        .footer-copy {
+            font-size: 0.775rem;
+            color: #334155;
+        }
+
+        .footer-copy a {
+            color: #475569;
+            text-decoration: none;
+        }
+
+        .footer-copy a:hover { color: #94a3b8; }
+
+        .footer-disclaimer {
+            font-size: 0.72rem;
+            color: #1e293b;
+            text-align: center;
+            flex: 1;
+        }
+
+        .footer-bottom-cta {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 20px;
+            background: linear-gradient(135deg, #7c3aed, #3b82f6);
+            color: white;
+            border-radius: 9999px;
+            font-size: 0.8125rem;
+            font-weight: 600;
+            text-decoration: none;
+            box-shadow: 0 2px 14px rgba(124,58,237,0.4);
+            transition: all 0.2s ease;
+            white-space: nowrap;
+        }
+
+        .footer-bottom-cta:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 20px rgba(124,58,237,0.6);
+            color: white;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body class="{% if auth_page %}auth-v2-page {% endif %}{% if session.user_id %}logged-in-nav-page {% elif not session.user_id %}public-landing-nav-page {% endif %}dark">
+    <!-- Background orbs -->
+    <div class="bg-orbs" aria-hidden="true">
+        <div class="bg-orb bg-orb-1"></div>
+        <div class="bg-orb bg-orb-2"></div>
+        <div class="bg-orb bg-orb-3"></div>
+    </div>
+
+    <!-- ══ NAVBAR ══ -->
+    {% if session.user_id %}
+    <nav class="navbar" id="mainNavbar">
+        <div class="container">
+            <a href="{{ url_for('index') }}" class="nav-brand-link">
+                <span class="material-symbols-outlined nav-brand-icon" aria-hidden="true">graphic_eq</span>
+                <span class="nav-brand-text">VietVoice</span>
+            </a>
+            <ul class="nav-menu">
+                    <li><a href="{{ url_for('index') }}" data-i18n="nav.home">Trang chủ</a></li>
+                    <li><a href="{{ url_for('audio_library') }}" data-i18n="nav.library">Thư viện</a></li>
+                    <li><a href="{{ url_for('history') }}" data-i18n="nav.history">Lịch sử</a></li>
+                    <li><a href="{{ url_for('my_voices') }}" data-i18n="nav.voices">Giọng của tôi</a></li>
+                    <li><a href="{{ url_for('pricing') }}" data-i18n="nav.pricing">Thanh toán</a></li>
+                    <li><a href="{{ url_for('contact') }}" data-i18n="nav.contact">Liên hệ</a></li>
+                    {% if session.user_role == 'admin' %}
+                    <li><a href="{{ url_for('admin') }}" data-i18n="nav.admin">Quản trị</a></li>
+                    {% endif %}
+                    <li class="user-info">
+                        <span>{{ session.full_name or session.username }}</span>
+                        <a href="{{ url_for('logout') }}" class="btn-logout" data-i18n="nav.logout">Đăng xuất</a>
+                    </li>
+            </ul>
+            <div class="nav-actions">
+                <button id="themeToggle" class="theme-toggle" data-i18n-title="nav.theme" title="Chuyển sáng/tối" aria-label="Toggle theme">
+                    <span class="theme-icon"></span>
+                </button>
+                <button class="vv-lang-toggle" onclick="VVi18n.toggle()" aria-label="Switch language" title="Switch language">
+                    <span class="lang-vi lang-active">VI</span><span class="lang-sep">|</span><span class="lang-en lang-inactive">EN</span>
+                </button>
+                <button class="nav-hamburger" id="navHamburger" onclick="toggleBaseNav()" aria-label="Menu">
+                    <svg id="hamburgerIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ══ MOBILE NAV OVERLAY + DRAWER (logged-in) ══ -->
+    <div class="mobile-nav-overlay" id="mobileNavOverlay" onclick="closeBaseNav()"></div>
+    <div class="mobile-nav-drawer" id="mobileNavDrawer">
+        <a href="{{ url_for('index') }}" data-i18n="mob.home">Trang chủ</a>
+        <a href="{{ url_for('audio_library') }}" data-i18n="mob.library">Thư viện Audio</a>
+        <a href="{{ url_for('history') }}" data-i18n="mob.history">Lịch sử chuyển đổi</a>
+        <a href="{{ url_for('my_voices') }}" data-i18n="mob.voices">Giọng của tôi</a>
+        <a href="{{ url_for('pricing') }}" data-i18n="mob.pricing">Bảng giá</a>
+        <a href="{{ url_for('profile') }}" data-i18n="side.profile">Hồ sơ</a>
+        <a href="{{ url_for('contact') }}" data-i18n="mob.contact">Liên hệ</a>
+        {% if session.user_role == 'admin' %}
+        <a href="{{ url_for('admin') }}" data-i18n="mob.admin">Quản trị</a>
+        {% endif %}
+        <hr class="mobile-nav-divider">
+        <a href="{{ url_for('logout') }}" class="mobile-logout"><span data-i18n="nav.logout">Đăng xuất</span> ({{ session.full_name or session.username }})</a>
+        <button type="button" id="themeToggleMobile" class="theme-toggle mobile-nav-theme" data-i18n-title="nav.theme" title="Chuyển sáng/tối" aria-label="Toggle theme">
+            <span class="theme-icon"></span>
+        </button>
+    </div>
+    {% else %}
+    {% include 'partials/public_landing_nav.html' %}
+    <script src="{{ url_for('static', filename='js/public-landing-nav.js') }}"></script>
+    {% endif %}
+
+    <!-- ══ MAIN CONTENT ══ -->
+    <main class="main-content{% if auth_page %} auth-page-main{% endif %}">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- ══ FOOTER — Zephyr Style ══ -->
+    {% if not auth_page %}
+    <footer class="site-footer">
+        <div class="footer-inner">
+
+            <!-- Top grid -->
+            <div class="footer-top">
+
+                <!-- Brand col -->
+                <div class="footer-brand-col">
+                    <div class="footer-logo">🎤 VietVoice</div>
+                    <p class="footer-tagline" data-i18n="ft.tagline">
+                        Nền tảng chuyển văn bản thành giọng nói AI tiên phong — 
+                        chất lượng cao, cảm xúc phong phú, hỗ trợ clone giọng cá nhân.
+                    </p>
+                    <span class="footer-beta">● BETA</span>
+                </div>
+
+                <!-- Tính năng col -->
+                <div>
+                    <div class="footer-col-title" data-i18n="ft.col.features">Tính năng</div>
+                    <ul class="footer-links">
+                        <li><a href="{{ url_for('index') if session.user_id else url_for('landing') }}" data-i18n="ft.tts">Chuyển văn bản → Giọng nói</a></li>
+                        <li><a href="{{ url_for('my_voices') if session.user_id else url_for('register') }}" data-i18n="ft.clone">Clone giọng cá nhân</a></li>
+                        <li><a href="{{ url_for('index') if session.user_id else url_for('register') }}" data-i18n="ft.emotional">Emotional TTS</a></li>
+                        <li><a href="{{ url_for('audio_library') if session.user_id else url_for('register') }}" data-i18n="ft.audio-lib">Thư viện âm thanh</a></li>
+                        <li><a href="{{ url_for('pricing') if session.user_id else url_for('register') }}" data-i18n="ft.pricing">Bảng giá & Nâng cấp</a></li>
+                    </ul>
+                </div>
+
+                <!-- Hỗ trợ col -->
+                <div>
+                    <div class="footer-col-title" data-i18n="ft.col.support">Hỗ trợ</div>
+                    <ul class="footer-links">
+                        <li><a href="{{ url_for('support') }}" data-i18n="ft.support">Hỗ trợ & FAQ</a></li>
+                        <li><a href="{{ url_for('user_guide') }}" data-i18n="ft.user-guide">Hướng dẫn sử dụng</a></li>
+                        <li><a href="{{ url_for('installation_guide') }}" data-i18n="ft.install-guide">Hướng dẫn cài đặt</a></li>
+                        <li><a href="{{ url_for('contact') }}" data-i18n="ft.contact">Liên hệ hỗ trợ</a></li>
+                        <li><a href="{{ url_for('contact') }}" data-i18n="ft.bugreport">Báo lỗi</a></li>
+                    </ul>
+                </div>
+
+                <!-- Tài khoản col -->
+                <div>
+                    <div class="footer-col-title" data-i18n="ft.col.account">Tài khoản</div>
+                    <ul class="footer-links">
+                        {% if session.user_id %}
+                        <li><a href="{{ url_for('index') }}" data-i18n="ft.home">Trang chủ</a></li>
+                        <li><a href="{{ url_for('history') }}" data-i18n="ft.history">Lịch sử chuyển đổi</a></li>
+                        <li><a href="{{ url_for('my_voices') }}" data-i18n="ft.voices">Giọng của tôi</a></li>
+                        <li><a href="{{ url_for('logout') }}" data-i18n="ft.logout">Đăng xuất</a></li>
+                        {% else %}
+                        <li><a href="{{ url_for('login') }}" data-i18n="ft.login">Đăng nhập</a></li>
+                        <li><a href="{{ url_for('register') }}" data-i18n="ft.register">Đăng ký miễn phí</a></li>
+                        <li><a href="{{ url_for('pricing') if session.user_id else url_for('register') }}" data-i18n="ft.upgrade">Nâng cấp tài khoản</a></li>
+                        {% endif %}
+                    </ul>
+                </div>
+
+                <!-- Pháp lý col -->
+                <div>
+                    <div class="footer-col-title" data-i18n="ft.col.legal">Pháp lý</div>
+                    <ul class="footer-links">
+                        <li><a href="{{ url_for('privacy') }}" data-i18n="ft.privacy">Chính sách quyền riêng tư</a></li>
+                        <li><a href="{{ url_for('terms') }}" data-i18n="ft.terms">Điều khoản sử dụng</a></li>
+                        <li><a href="{{ url_for('data_deletion') }}" data-i18n="ft.deletion">Chính sách xóa dữ liệu</a></li>
+                        <li><a href="{{ url_for('payment_terms') }}" data-i18n="ft.payment">Điều khoản thanh toán</a></li>
+                        <li><a href="{{ url_for('support') }}" data-i18n="ft.support">Hỗ trợ & FAQ</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Bottom row -->
+            <div class="footer-bottom">
+                <span class="footer-copy">
+                    <span data-i18n="ft.copy">© 2026 VietVoice · Công nghệ AI ·</span>
+                    <a href="{{ url_for('terms') }}" data-i18n="ft.terms-link">Điều khoản dịch vụ</a> &amp;
+                    <a href="{{ url_for('privacy') }}" data-i18n="ft.privacy-link">Chính sách bảo mật</a> &amp;
+                    <a href="{{ url_for('support') }}" data-i18n="ft.support-link">Hỗ trợ</a>
+                </span>
+
+                <span class="footer-disclaimer" data-i18n="ft.disclaimer">
+                    Hệ thống đang trong giai đoạn thử nghiệm (beta). Mọi phản hồi đều giúp cải thiện trải nghiệm.
+                </span>
+
+                {% if session.user_id %}
+                <a href="{{ url_for('index') }}" class="footer-bottom-cta" data-i18n="ft.dashboard">✦ Bảng điều khiển</a>
+                {% else %}
+                <a href="{{ url_for('register') }}" class="footer-bottom-cta" data-i18n="ft.start-free">✦ Bắt đầu miễn phí</a>
+                {% endif %}
+            </div>
+
+        </div>
+    </footer>
+    {% endif %}
+
+    <script src="{{ url_for('static', filename='js/i18n.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/payment.js') }}"></script>
+
+    <script>
+        // Navbar scroll effect
+        const navbar = document.getElementById('mainNavbar');
+        if (navbar) {
+            window.addEventListener('scroll', () => {
+                navbar.classList.toggle('scrolled', window.scrollY > 20);
+            }, { passive: true });
+        }
+
+        // Scroll reveal
+        const revealObs = new IntersectionObserver((entries) => {
+            entries.forEach(e => {
+                if (e.isIntersecting) {
+                    e.target.classList.add('visible');
+                    revealObs.unobserve(e.target);
+                }
+            });
+        }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+        document.querySelectorAll('.reveal').forEach(el => revealObs.observe(el));
+
+        // Active nav link
+        const path = window.location.pathname;
+        document.querySelectorAll('.nav-menu li a').forEach(a => {
+            if (a.getAttribute('href') === path) a.classList.add('active');
+        });
+        document.querySelectorAll('.mobile-nav-drawer a').forEach(a => {
+            if (a.getAttribute('href') === path) a.classList.add('active');
+        });
+
+        // Mobile nav toggle
+        function toggleBaseNav() {
+            const drawer = document.getElementById('mobileNavDrawer');
+            const overlay = document.getElementById('mobileNavOverlay');
+            const icon = document.getElementById('hamburgerIcon');
+            const isOpen = drawer.classList.contains('open');
+            if (isOpen) {
+                drawer.classList.remove('open');
+                overlay.classList.remove('open');
+                icon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/>';
+            } else {
+                drawer.classList.add('open');
+                overlay.classList.add('open');
+                icon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>';
+            }
+        }
+        function closeBaseNav() {
+            document.getElementById('mobileNavDrawer').classList.remove('open');
+            document.getElementById('mobileNavOverlay').classList.remove('open');
+            document.getElementById('hamburgerIcon').innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/>';
+        }
+        window.addEventListener('resize', () => { if (window.innerWidth > 768) closeBaseNav(); });
+
+        function applyTheme(next) {
+            document.documentElement.setAttribute('data-theme', next);
+            localStorage.setItem('tts-theme', next);
+        }
+        function toggleTheme() {
+            const current = document.documentElement.getAttribute('data-theme') || 'dark';
+            applyTheme(current === 'dark' ? 'light' : 'dark');
+        }
+        const themeToggle = document.getElementById('themeToggle');
+        const themeToggleMobile = document.getElementById('themeToggleMobile');
+        if (themeToggle) themeToggle.addEventListener('click', toggleTheme);
+        if (themeToggleMobile) themeToggleMobile.addEventListener('click', toggleTheme);
+    </script>
+
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

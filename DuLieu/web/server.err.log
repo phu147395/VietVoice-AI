@@ -1,0 +1,21 @@
+INFO:rvc_wrapper:Added RVC path: C:\Users\phu14\VOICE_AI\LUANVAN\tool\Retrieval-based-Voice-Conversion-develop
+C:\Users\phu14\VOICE_AI\venv310\lib\site-packages\torch\jit\_script.py:1491: FutureWarning: `torch.jit.script` is deprecated. Please switch to `torch.compile` or `torch.export`.
+  warnings.warn(
+INFO:faiss.loader:Loading faiss with AVX2 support.
+INFO:faiss.loader:Could not load library with AVX2 support due to:
+ModuleNotFoundError("No module named 'faiss.swigfaiss_avx2'")
+INFO:faiss.loader:Loading faiss.
+INFO:faiss.loader:Successfully loaded faiss.
+ERROR:rvc_wrapper:Cannot import RVC: No module named 'torchcrepe'
+WARNING:rvc_wrapper:RVC features will be disabled. Using librosa fallback instead.
+INFO:background_worker:[WORKER] Worker loop started
+INFO:background_worker:[WORKER] ✅ Background training worker started
+INFO:werkzeug:[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.123.4:5000
+INFO:werkzeug:[33mPress CTRL+C to quit[0m
+INFO:werkzeug:127.0.0.1 - - [26/Sep/2026 23:13:38] "[32mGET / HTTP/1.1[0m" 302 -
+INFO:werkzeug:127.0.0.1 - - [26/Sep/2026 23:13:38] "GET /landing HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [26/Sep/2026 23:26:01] "GET /api/omnivoice/status HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [26/Sep/2026 23:26:10] "GET /api/omnivoice/status HTTP/1.1" 200 -

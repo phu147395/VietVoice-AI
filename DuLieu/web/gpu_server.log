@@ -1,0 +1,1064 @@
+[INFO] RVC voice conversion is available
+[WARNING] viXTTS Emotional TTS not available: No module named 'pydub'
+[WARNING] OmniVoice TTS not available (chạy scripts/setup_omnivoice_venv.bat)
+[INFO] Custom voice training is available
+============================================================
+[TTS] TTS Web Application dang khoi dong...
+[TTS] URL: http://localhost:5000
+[TTS] Port: 5000
+============================================================
+[MIGRATION] Kiểm tra và cập nhật cấu trúc database...
+[MIGRATION] ✓  Cột 'display_name' trong 'conversions' đã tồn tại
+[MIGRATION] ✓  Cột 'is_public' trong 'conversions' đã tồn tại
+[MIGRATION] ✓  Cột 'share_token' trong 'conversions' đã tồn tại
+[MIGRATION] ✓  Cột 'status' trong 'users' đã tồn tại
+[MIGRATION] ✓  Cột 'delete_requested' trong 'users' đã tồn tại
+[MIGRATION] ✓  Cột 'delete_requested_at' trong 'users' đã tồn tại
+[MIGRATION] ✓  Cột 'delete_reason' trong 'users' đã tồn tại
+[MIGRATION] ✓  Cột 'delete_status' trong 'users' đã tồn tại
+[MIGRATION] ✓  Cột 'deleted_at' trong 'users' đã tồn tại
+[MIGRATION] ✓  Cột 'admin_delete_note' trong 'users' đã tồn tại
+[MIGRATION] ✓  Cột 'deletion_effective_at' trong 'users' đã tồn tại
+[MIGRATION] ✓  Cột 'restore_requested' trong 'users' đã tồn tại
+[MIGRATION] ✓  Cột 'restore_requested_at' trong 'users' đã tồn tại
+[MIGRATION] ✓  Cột 'cover_url' trong 'users' đã tồn tại
+[MIGRATION] ✓  Đã kiểm tra grace period xóa tài khoản
+[WORKER] ✅ Background training worker started
+============================================================
+[TTS] 🎉 SERVER READY - SẴN SÀNG PHỤC VỤ!
+[TTS] URL: http://127.0.0.1:5000
+[TTS] Emotional TTS: ❌ Không khả dụng
+[TTS] OmniVoice TTS: ❌ Không khả dụng
+[EMAIL] SMTP: ❌ Chưa cấu hình (thêm SMTP_* vào .env.local để gửi email thật)
+[TTS] Nhấn Ctrl+C để dừng server
+============================================================
+
+ * Serving Flask app 'app'
+ * Debug mode: on
+[REQUEST] POST /api/convert
+[REQUEST] JSON data: {'text': '"Xin chào mọi người, tôi là Nguyễn Hoàng Nam, hiện tại tôi đang là một Chuyên viên Marketing với khoảng 3 năm kinh nghiệm làm việc trong lĩnh vực truyền thông số và xây dựng thương hiệu.\n\nTrong suốt hành trình công việc vừa qua, tôi luôn kiên định với mục tiêu phát triển chuyên môn sâu rộng và mang lại giá trị thực tiễn cho các tổ chức, dự án mà mình đồng hành. Thế mạnh lớn nhất của tôi nằm ở khả năng lập chiến lược nội dung và tối ưu chiến dịch quảng cáo đa kênh, cùng với tinh thần làm việc chủ động, ham học hỏi và khả năng thích ứng nhanh chóng trước những thay đổi của thị trường.\n\nTôi luôn tin rằng sự kết hợp giữa tư duy sáng tạo, số liệu phân tích sắc bén và thái độ tận tâm trong công việc là chìa khóa để vượt qua mọi thách thức và đạt được những cột mốc ý nghĩa.\n\nĐến với buổi trò chuyện ngày hôm nay, tôi rất mong có cơ hội được học hỏi, chia sẻ kinh nghiệm và hợp tác cùng mọi người để cùng nhau tạo ra những kết quả vượt trội. Rất mong sẽ nhận được sự đồng hành và hỗ trợ từ tất cả các anh chị và các bạn trong thời gian tới.\n\nXin chân thành cảm ơn!"', 'voice_id': 'Binh', 'enable_text_normalization': True}
+[INFO] Loaded 27 words from 01_greetings.json
+[INFO] Loaded 28 words from 02_family.json
+[INFO] Loaded 46 words from 03_technology.json
+[INFO] Loaded 29 words from 04_social_media.json
+[INFO] Loaded 35 words from 05_pronouns.json
+[INFO] Loaded 21 words from 06_communication.json
+[INFO] Loaded 22 words from 07_education.json
+[INFO] Loaded 30 words from 08_home.json
+[INFO] Loaded 35 words from 09_food.json
+[INFO] Loaded 48 words from 10_emotions.json
+[INFO] Loaded 45 words from 11_time.json
+[INFO] Loaded 25 words from 12_entertainment.json
+[INFO] Loaded 24 words from 13_shopping.json
+[INFO] Loaded 27 words from 14_transportation.json
+[INFO] Loaded 30 words from 15_business.json
+[INFO] Loaded 24 words from 16_medical.json
+[INFO] Loaded 32 words from 17_countries_asia.json
+[INFO] Loaded 33 words from 18_countries_europe.json
+[INFO] Loaded 17 words from 19_countries_americas.json
+[INFO] Loaded 13 words from 20_countries_oceania_africa.json
+[INFO] Loaded 31 words from 21_cities.json
+[INFO] Loaded 13 words from 22_vietnamese_brands.json
+[INFO] Loaded 17 words from 23_extra_common.json
+[INFO] Loaded 12 words from 24_food_asian.json
+[INFO] Loaded 9 words from 25_events.json
+[INFO] Loaded 20 words from 26_music_genres.json
+[INFO] Loaded 5 words from TEMPLATE_NEW_CATEGORY.json
+[INFO] Total phonetic dictionary: 692 words
+[CONVERT TN] Normalized (1068 -> 1063 chars)
+[CONVERT] Converting text: "Xin chào mọi người, tôi là Nguyễn Hoàng Nam, hiện... (length: 1068)
+[CONVERT] Voice ID: Binh
+[CONVERT] Saved conversion record: ID=40
+[CONVERT] Getting TTS instance...
+WARNING: eSpeak-NG is not installed. The system will use the built-in dictionary, but it is recommended to install eSpeak-NG for maximum performance and accuracy.
+[INFO] Loaded 27 words from 01_greetings.json
+[INFO] Loaded 28 words from 02_family.json
+[INFO] Loaded 46 words from 03_technology.json
+[INFO] Loaded 29 words from 04_social_media.json
+[INFO] Loaded 35 words from 05_pronouns.json
+[INFO] Loaded 21 words from 06_communication.json
+[INFO] Loaded 22 words from 07_education.json
+[INFO] Loaded 30 words from 08_home.json
+[INFO] Loaded 35 words from 09_food.json
+[INFO] Loaded 48 words from 10_emotions.json
+[INFO] Loaded 45 words from 11_time.json
+[INFO] Loaded 25 words from 12_entertainment.json
+[INFO] Loaded 24 words from 13_shopping.json
+[INFO] Loaded 27 words from 14_transportation.json
+[INFO] Loaded 30 words from 15_business.json
+[INFO] Loaded 24 words from 16_medical.json
+[INFO] Loaded 32 words from 17_countries_asia.json
+[INFO] Loaded 33 words from 18_countries_europe.json
+[INFO] Loaded 17 words from 19_countries_americas.json
+[INFO] Loaded 13 words from 20_countries_oceania_africa.json
+[INFO] Loaded 31 words from 21_cities.json
+[INFO] Loaded 13 words from 22_vietnamese_brands.json
+[INFO] Loaded 17 words from 23_extra_common.json
+[INFO] Loaded 12 words from 24_food_asian.json
+[INFO] Loaded 9 words from 25_events.json
+[INFO] Loaded 20 words from 26_music_genres.json
+[INFO] Loaded 5 words from TEMPLATE_NEW_CATEGORY.json
+[INFO] Total phonetic dictionary: 692 words
+[TTS] Initializing TTS engine (backbone_device=cuda, codec_device=cuda)...
+Loading backbone from: pnnbao-ump/VieNeu-TTS-0.3B-q4-gguf on cuda ...
+Loading codec from: neuphonic/distill-neucodec on cuda ...
+   [VOICE] Loaded 6 voices from voices.json
+[TTS] TTS engine initialized successfully
+[CONVERT] TTS instance obtained successfully
+[CONVERT] Voice data obtained: Binh
+[CONVERT] Converting text to speech (length: 1063 chars)...
+[CONVERT] Audio generated: samples=1494480, duration=62.27s
+[CONVERT] Saving audio to: C:\Users\phu14\VOICE_AI\LUANVAN\web\audio_outputs\ce30db6b-541f-4af8-a6b3-4b1fcb4568eb.wav
+[CONVERT] Audio saved successfully
+[CONVERT] Audio file created: ce30db6b-541f-4af8-a6b3-4b1fcb4568eb.wav
+[CONVERT] File size: 2989004 bytes (2.85 MB), duration: 62.27s (0.02 hours)
+[CONVERT] Updated conversion record: ID=40, duration=62.27s, size=2989004 bytes
+[REQUEST] GET /api/voices
+[REQUEST] GET /api/user/characters
+[REQUEST] GET /api/voices
+[REQUEST] GET /api/voice-conversion/check
+[REQUEST] GET /api/custom-voices/list
+[REQUEST] GET /api/user/settings
+[REQUEST] GET /api/statistics
+[REQUEST] GET /api/audio/formats
+[REQUEST] GET /api/emotional-tts/status
+[REQUEST] GET /api/omnivoice/status
+[REQUEST] GET /api/user/characters
+[REQUEST] GET /api/voices
+[REQUEST] GET /api/voice-conversion/check
+[REQUEST] GET /api/custom-voices/list
+[REQUEST] GET /api/user/settings
+[REQUEST] GET /api/statistics
+[REQUEST] GET /api/audio/formats
+[REQUEST] GET /api/emotional-tts/status
+[REQUEST] GET /api/omnivoice/status
+[REQUEST] GET /api/user/characters
+[REQUEST] GET /api/voices
+[REQUEST] GET /api/custom-voices/list
+[REQUEST] GET /api/voice-conversion/check
+[REQUEST] GET /api/user/settings
+[REQUEST] GET /api/statistics
+[REQUEST] GET /api/audio/formats
+[REQUEST] GET /api/omnivoice/status
+[REQUEST] GET /api/emotional-tts/status
+[REQUEST] GET /api/user/characters
+[REQUEST] GET /api/voice-conversion/check
+[REQUEST] GET /api/voices
+[REQUEST] GET /api/custom-voices/list
+[REQUEST] GET /api/user/settings
+[REQUEST] GET /api/statistics
+[REQUEST] GET /api/audio/formats
+[REQUEST] GET /api/emotional-tts/status
+[REQUEST] GET /api/omnivoice/status
+[REQUEST] POST /api/convert
+[REQUEST] JSON data: {'text': '"Xin chào mọi người, tôi là Nguyễn Hoàng Nam, hiện tại tôi đang là một Chuyên viên Marketing với khoảng 3 năm kinh nghiệm làm việc trong lĩnh vực truyền thông số và xây dựng thương hiệu.\n\nTrong suốt hành trình công việc vừa qua, tôi luôn kiên định với mục tiêu phát triển chuyên môn sâu rộng và mang lại giá trị thực tiễn cho các tổ chức, dự án mà mình đồng hành. Thế mạnh lớn nhất của tôi nằm ở khả năng lập chiến lược nội dung và tối ưu chiến dịch quảng cáo đa kênh, cùng với tinh thần làm việc chủ động, ham học hỏi và khả năng thích ứng nhanh chóng trước những thay đổi của thị trường.\n\nTôi luôn tin rằng sự kết hợp giữa tư duy sáng tạo, số liệu phân tích sắc bén và thái độ tận tâm trong công việc là chìa khóa để vượt qua mọi thách thức và đạt được những cột mốc ý nghĩa.\n\nĐến với buổi trò chuyện ngày hôm nay, tôi rất mong có cơ hội được học hỏi, chia sẻ kinh nghiệm và hợp tác cùng mọi người để cùng nhau tạo ra những kết quả vượt trội. Rất mong sẽ nhận được sự đồng hành và hỗ trợ từ tất cả các anh chị và các bạn trong thời gian tới.\n\nXin chân thành cảm ơn!"', 'voice_id': 'Binh', 'enable_text_normalization': True}
+[CONVERT TN] Normalized (1068 -> 1063 chars)
+[CONVERT] Converting text: "Xin chào mọi người, tôi là Nguyễn Hoàng Nam, hiện... (length: 1068)
+[CONVERT] Voice ID: Binh
+[CONVERT] Saved conversion record: ID=41
+[CONVERT] Getting TTS instance...
+[CONVERT] TTS instance obtained successfully
+[CONVERT] Voice data obtained: Binh
+[CONVERT] Converting text to speech (length: 1063 chars)...
+[CONVERT] Audio generated: samples=1512240, duration=63.01s
+[CONVERT] Saving audio to: C:\Users\phu14\VOICE_AI\LUANVAN\web\audio_outputs\dfa59d18-760c-4de4-b841-4dc1ad700315.wav
+[CONVERT] Audio saved successfully
+[CONVERT] Audio file created: dfa59d18-760c-4de4-b841-4dc1ad700315.wav
+[CONVERT] File size: 3024524 bytes (2.88 MB), duration: 63.01s (0.02 hours)
+[CONVERT] Updated conversion record: ID=41, duration=63.01s, size=3024524 bytes
+[REQUEST] GET /api/statistics
+[REQUEST] GET /api/audio/dfa59d18-760c-4de4-b841-4dc1ad700315.wav
+[REQUEST] GET /api/user/characters
+[REQUEST] GET /api/voices
+[REQUEST] GET /api/voice-conversion/check
+[REQUEST] GET /api/custom-voices/list
+[REQUEST] GET /api/user/settings
+[REQUEST] GET /api/statistics
+[REQUEST] GET /api/audio/formats
+[REQUEST] GET /api/emotional-tts/status
+[REQUEST] GET /api/omnivoice/status
+[REQUEST] POST /api/convert
+[REQUEST] JSON data: {'text': 'Xin chào mọi người, mình là Trần Minh Anh, hiện đang làm Chuyên viên Phân tích Dữ liệu với 4 năm kinh nghiệm thực chiến trong việc biến các con số phức tạp thành những insight chiến lược giúp tối ưu hóa kinh doanh.\n\nĐộng lực lớn nhất của mình trong công việc là tìm ra các điểm nghẽn và đưa ra giải pháp dựa trên dữ liệu. Thế mạnh của mình bao gồm khả năng sử dụng thành thạo các công cụ phân tích (như SQL, Power BI, Python), kết hợp cùng kỹ năng truyền đạt thông tin trực quan để các phòng ban khác dễ dàng nắm bắt và ra quyết định. Mình là một người cẩn trọng, tư duy logic và luôn chủ động trong mọi dự án được giao.\n\nMình thích làm việc trong những môi trường cởi mở, nơi mọi ý tưởng đóng góp đều được lắng nghe và thử nghiệm. Mục tiêu của mình trong thời gian tới là tiếp tục mài giũa chuyên môn sâu về khoa học dữ liệu, đồng thời mở rộng cơ hội hợp tác với những đồng nghiệp tài năng để cùng nhau tạo ra các sản phẩm có tác động tích cực lớn hơn.\n\nRất vui được làm quen và kết nối cùng mọi người trong buổi hôm nay. Cảm ơn các bạn đã lắng nghe!"', 'voice_id': 'Binh', 'enable_text_normalization': True}
+[CONVERT TN] Normalized (1052 -> 1049 chars)
+[CONVERT] Converting text: Xin chào mọi người, mình là Trần Minh Anh, hiện đa... (length: 1052)
+[CONVERT] Voice ID: Binh
+[CONVERT] Saved conversion record: ID=42
+[CONVERT] Getting TTS instance...
+[CONVERT] TTS instance obtained successfully
+[CONVERT] Voice data obtained: Binh
+[CONVERT] Converting text to speech (length: 1049 chars)...
+[CONVERT] Audio generated: samples=1538400, duration=64.10s
+[CONVERT] Saving audio to: C:\Users\phu14\VOICE_AI\LUANVAN\web\audio_outputs\27f4b267-c7ec-484e-9c1d-7804de864d0c.wav
+[CONVERT] Audio saved successfully
+[CONVERT] Audio file created: 27f4b267-c7ec-484e-9c1d-7804de864d0c.wav
+[CONVERT] File size: 3076844 bytes (2.93 MB), duration: 64.10s (0.02 hours)
+[CONVERT] Updated conversion record: ID=42, duration=64.10s, size=3076844 bytes
+[REQUEST] GET /api/statistics
+[REQUEST] GET /api/audio/27f4b267-c7ec-484e-9c1d-7804de864d0c.wav
+[REQUEST] GET /api/audio/27f4b267-c7ec-484e-9c1d-7804de864d0c.wav
+[REQUEST] GET /api/audio/27f4b267-c7ec-484e-9c1d-7804de864d0c.wav
+[REQUEST] GET /api/audio/27f4b267-c7ec-484e-9c1d-7804de864d0c.wav
+[REQUEST] GET /api/audio/27f4b267-c7ec-484e-9c1d-7804de864d0c.wav/export
+[REQUEST] POST /api/convert
+[REQUEST] JSON data: {'text': 'Xin chào mọi người, mình là Trần Minh Anh, hiện đang làm Chuyên viên Phân tích Dữ liệu với 4 năm kinh nghiệm thực chiến trong việc biến các con số phức tạp thành những insight chiến lược giúp tối ưu hóa kinh doanh.\n\nĐộng lực lớn nhất của mình trong công việc là tìm ra các điểm nghẽn và đưa ra giải pháp dựa trên dữ liệu. Thế mạnh của mình bao gồm khả năng sử dụng thành thạo các công cụ phân tích (như SQL, Power BI, Python), kết hợp cùng kỹ năng truyền đạt thông tin trực quan để các phòng ban khác dễ dàng nắm bắt và ra quyết định. Mình là một người cẩn trọng, tư duy logic và luôn chủ động trong mọi dự án được giao.\n\nMình thích làm việc trong những môi trường cởi mở, nơi mọi ý tưởng đóng góp đều được lắng nghe và thử nghiệm. Mục tiêu của mình trong thời gian tới là tiếp tục mài giũa chuyên môn sâu về khoa học dữ liệu, đồng thời mở rộng cơ hội hợp tác với những đồng nghiệp tài năng để cùng nhau tạo ra các sản phẩm có tác động tích cực lớn hơn.\n\nRất vui được làm quen và kết nối cùng mọi người trong buổi hôm nay. Cảm ơn các bạn đã lắng nghe!"', 'voice_id': 'Ly', 'enable_text_normalization': True}
+[CONVERT TN] Normalized (1052 -> 1049 chars)
+[CONVERT] Converting text: Xin chào mọi người, mình là Trần Minh Anh, hiện đa... (length: 1052)
+[CONVERT] Voice ID: Ly
+[CONVERT] Saved conversion record: ID=43
+[CONVERT] Getting TTS instance...
+[CONVERT] TTS instance obtained successfully
+[CONVERT] Voice data obtained: Ly
+[CONVERT] Converting text to speech (length: 1049 chars)...
+[CONVERT] Audio generated: samples=1783680, duration=74.32s
+[CONVERT] Saving audio to: C:\Users\phu14\VOICE_AI\LUANVAN\web\audio_outputs\8d9c402c-a624-43a6-84d4-034272d907a1.wav
+[CONVERT] Audio saved successfully
+[CONVERT] Audio file created: 8d9c402c-a624-43a6-84d4-034272d907a1.wav
+[CONVERT] File size: 3567404 bytes (3.40 MB), duration: 74.32s (0.02 hours)
+[CONVERT] Updated conversion record: ID=43, duration=74.32s, size=3567404 bytes
+[REQUEST] GET /api/statistics
+[REQUEST] GET /api/audio/8d9c402c-a624-43a6-84d4-034272d907a1.wav
+[REQUEST] GET /api/audio/8d9c402c-a624-43a6-84d4-034272d907a1.wav/export
+[REQUEST] GET /api/user/characters
+[REQUEST] GET /api/voices
+[REQUEST] GET /api/audio-library
+[REQUEST] GET /api/audio/27f4b267-c7ec-484e-9c1d-7804de864d0c.wav
+[REQUEST] GET /api/audio/dfa59d18-760c-4de4-b841-4dc1ad700315.wav
+[REQUEST] GET /api/audio/dfa59d18-760c-4de4-b841-4dc1ad700315.wav
+[REQUEST] GET /api/audio/ce30db6b-541f-4af8-a6b3-4b1fcb4568eb.wav
+[REQUEST] GET /api/audio/d847642d-3a10-4af8-a632-5c0a2dfb8778.wav
+[REQUEST] GET /api/user/characters
+[REQUEST] GET /api/user/characters
+[REQUEST] GET /api/user/characters
+[REQUEST] GET /api/history
+[REQUEST] GET /api/user/characters
+[REQUEST] GET /api/subscription/status
+[REQUEST] GET /api/packages
+[REQUEST] GET /api/user/payments
+[REQUEST] GET /api/user/characters
+[REQUEST] GET /api/packages
+[REQUEST] POST /api/payment/create
+[REQUEST] JSON data: {'package_id': 3, 'payment_method': 'bank_qr'}
+[DEBUG] Create payment - User ID: 1, Username: admin, Package ID: 3
+[DEBUG] User verified: admin (ID: 1)
+[DEBUG] Package: Standard Plan - 4,000,000 chars - 1,000,000đ
+[DEBUG] Payment created: ID 2, Transaction: TTSE707AECE8BCF4C3B
+[INFO] Creating SePay QR with URL: https://img.vietqr.io/image/970422--compact2.jpg?amount=1000000&addInfo=TTSE707AECE8BCF4C3B&accountName=TTS%20SYSTEM
+[WARNING] SePay QR generation failed, using fallback: VietQR API returned status 404
+[INFO] Creating SePay QR with URL: https://img.vietqr.io/image/970422--compact2.jpg?amount=1000000&addInfo=TTSE707AECE8BCF4C3B&accountName=TTS%20SYSTEM
+[WARNING] SePay QR generation failed, using fallback: VietQR API returned status 404
+[REQUEST] GET /api/payment/status/2
+[REQUEST] GET /api/payment/status/2
+[REQUEST] GET /api/user/characters
+[REQUEST] GET /api/subscription/status
+[REQUEST] GET /api/packages
+[REQUEST] GET /api/user/payments
+[REQUEST] GET /api/packages
+[REQUEST] GET /api/user/payments
+[REQUEST] GET /api/user/characters
+[REQUEST] GET /api/user/account-deletion-status
+[REQUEST] GET /api/user/settings
+[REQUEST] GET /api/user/subscription/status
+[REQUEST] GET /api/user/usage-chart
+[REQUEST] GET /api/user/characters
+[REQUEST] GET /api/admin/conversions/recent
+[REQUEST] GET /api/statistics/top-rankings
+[REQUEST] GET /api/admin/payments
+[REQUEST] GET /api/admin/account-deletions
+[REQUEST] GET /api/statistics/time-based
+[REQUEST] GET /api/admin/conversions/recent
+[REQUEST] GET /api/statistics
+[REQUEST] GET /api/statistics
+[REQUEST] GET /api/statistics/time-based
+[REQUEST] GET /api/admin/payments
+[REQUEST] GET /api/statistics/top-rankings
+[REQUEST] GET /api/admin/conversions/recent
+[REQUEST] GET /api/admin/account-deletions
+[REQUEST] GET /api/admin/conversions/recent
+[REQUEST] GET /api/user/characters
+[REQUEST] GET /api/voices
+[REQUEST] GET /api/voice-conversion/check
+[REQUEST] GET /api/custom-voices/list
+[REQUEST] GET /api/user/settings
+[REQUEST] GET /api/statistics
+[REQUEST] GET /api/audio/formats
+[REQUEST] GET /api/emotional-tts/status
+[REQUEST] GET /api/omnivoice/status
+[REQUEST] POST /api/convert
+[REQUEST] JSON data: {'text': 'Xin chào mọi người, mình là Trần Minh Anh, hiện đang làm Chuyên viên Phân tích Dữ liệu với 4 năm kinh nghiệm thực chiến trong việc biến các con số phức tạp thành những insight chiến lược giúp tối ưu hóa kinh doanh.\n\nĐộng lực lớn nhất của mình trong công việc là tìm ra các điểm nghẽn và đưa ra giải pháp dựa trên dữ liệu. Thế mạnh của mình bao gồm khả năng sử dụng thành thạo các công cụ phân tích (như SQL, Power BI, Python), kết hợp cùng kỹ năng truyền đạt thông tin trực quan để các phòng ban khác dễ dàng nắm bắt và ra quyết định. Mình là một người cẩn trọng, tư duy logic và luôn chủ động trong mọi dự án được giao.\n\nMình thích làm việc trong những môi trường cởi mở, nơi mọi ý tưởng đóng góp đều được lắng nghe và thử nghiệm. Mục tiêu của mình trong thời gian tới là tiếp tục mài giũa chuyên môn sâu về khoa học dữ liệu, đồng thời mở rộng cơ hội hợp tác với những đồng nghiệp tài năng để cùng nhau tạo ra các sản phẩm có tác động tích cực lớn hơn.\n\nRất vui được làm quen và kết nối cùng mọi người trong buổi hôm nay. Cảm ơn các bạn đã lắng nghe!"', 'voice_id': 'Doan', 'enable_text_normalization': True}
+[CONVERT TN] Normalized (1052 -> 1049 chars)
+[CONVERT] Converting text: Xin chào mọi người, mình là Trần Minh Anh, hiện đa... (length: 1052)
+[CONVERT] Voice ID: Doan
+[CONVERT] Saved conversion record: ID=44
+[CONVERT] Getting TTS instance...
+[CONVERT] TTS instance obtained successfully
+[CONVERT] Voice data obtained: Doan
+[CONVERT] Converting text to speech (length: 1049 chars)...
+[CONVERT] Audio generated: samples=1698240, duration=70.76s
+[CONVERT] Saving audio to: C:\Users\phu14\VOICE_AI\LUANVAN\web\audio_outputs\ae30b9ec-b0a9-47b8-a310-7aaf14294e75.wav
+[CONVERT] Audio saved successfully
+[CONVERT] Audio file created: ae30b9ec-b0a9-47b8-a310-7aaf14294e75.wav
+[CONVERT] File size: 3396524 bytes (3.24 MB), duration: 70.76s (0.02 hours)
+[CONVERT] Updated conversion record: ID=44, duration=70.76s, size=3396524 bytes
+[REQUEST] GET /api/audio/ae30b9ec-b0a9-47b8-a310-7aaf14294e75.wav
+[REQUEST] GET /api/statistics
+[REQUEST] GET /api/audio/ae30b9ec-b0a9-47b8-a310-7aaf14294e75.wav
+[REQUEST] GET /api/audio/ae30b9ec-b0a9-47b8-a310-7aaf14294e75.wav
+[REQUEST] GET /api/audio-library
+[REQUEST] GET /api/voices
+[REQUEST] GET /api/user/characters
+[REQUEST] DELETE /api/audio-library/38
+[DELETE] Deleted audio file: C:\Users\phu14\VOICE_AI\LUANVAN\web\audio_outputs\ab20e22b-0cc0-405f-b095-d61d2497fe08.wav
+[REQUEST] GET /api/audio-library
+[REQUEST] DELETE /api/audio-library/37
+[DELETE] Deleted audio file: C:\Users\phu14\VOICE_AI\LUANVAN\web\audio_outputs\7f293e7b-341c-4978-a931-2bda2d0c6e90.wav
+[REQUEST] GET /api/audio-library
+[REQUEST] GET /api/user/characters
+[REQUEST] GET /api/voices
+[REQUEST] GET /api/audio-library
+[REQUEST] DELETE /api/audio-library/36
+[DELETE] Deleted audio file: C:\Users\phu14\VOICE_AI\LUANVAN\web\audio_outputs\bd491f71-59e8-4ef8-ada6-828e5f70dffb.wav
+[REQUEST] GET /api/audio-library
+[REQUEST] GET /api/user/characters
+[REQUEST] GET /api/user/characters
+[REQUEST] GET /api/history
+[REQUEST] GET /api/user/characters
+[REQUEST] GET /api/history
+[REQUEST] GET /api/user/characters
+[REQUEST] GET /api/user/characters
+[REQUEST] GET /api/voice-conversion/check
+[REQUEST] GET /api/voices
+[REQUEST] GET /api/custom-voices/list
+[REQUEST] GET /api/user/settings
+[REQUEST] GET /api/statistics
+[REQUEST] GET /api/audio/formats
+[REQUEST] GET /api/emotional-tts/status
+[REQUEST] GET /api/omnivoice/status
+[REQUEST] GET /api/user/characters
+[REQUEST] GET /api/voices
+[REQUEST] GET /api/voice-conversion/check
+[REQUEST] GET /api/custom-voices/list
+[REQUEST] GET /api/user/settings
+[REQUEST] GET /api/statistics
+[REQUEST] GET /api/audio/formats
+[REQUEST] GET /api/emotional-tts/status
+[REQUEST] GET /api/omnivoice/status
+[REQUEST] GET /api/user/characters
+[REQUEST] GET /api/voice-conversion/check
+[REQUEST] GET /api/voices
+[REQUEST] GET /api/custom-voices/list
+[REQUEST] GET /api/user/settings
+[REQUEST] GET /api/statistics
+[REQUEST] GET /api/audio/formats
+[REQUEST] GET /api/emotional-tts/status
+[REQUEST] GET /api/omnivoice/status
+[REQUEST] GET /api/user/characters
+[REQUEST] GET /api/history
+[REQUEST] GET /api/user/characters
+[REQUEST] GET /api/voice-conversion/check
+[REQUEST] GET /api/voices
+[REQUEST] GET /api/custom-voices/list
+[REQUEST] GET /api/user/settings
+[REQUEST] GET /api/statistics
+[REQUEST] GET /api/audio/formats
+[REQUEST] GET /api/emotional-tts/status
+[REQUEST] GET /api/omnivoice/status
+[REQUEST] GET /api/packages
+[REQUEST] GET /api/user/characters
+[REQUEST] GET /api/voices
+[REQUEST] GET /api/voice-conversion/check
+[REQUEST] GET /api/custom-voices/list
+[REQUEST] GET /api/user/settings
+[REQUEST] GET /api/statistics
+[REQUEST] GET /api/audio/formats
+[REQUEST] GET /api/emotional-tts/status
+[REQUEST] GET /api/omnivoice/status
+[REQUEST] GET /api/user/characters
+[REQUEST] GET /api/voices
+[REQUEST] GET /api/voice-conversion/check
+[REQUEST] GET /api/custom-voices/list
+[REQUEST] GET /api/user/settings
+[REQUEST] GET /api/statistics
+[REQUEST] GET /api/packages
+[REQUEST] GET /api/user/characters
+[REQUEST] GET /api/voices
+[REQUEST] GET /api/voice-conversion/check
+[REQUEST] GET /api/custom-voices/list
+[REQUEST] GET /api/user/settings
+[REQUEST] GET /api/statistics
+[REQUEST] GET /api/audio/formats
+[REQUEST] GET /api/emotional-tts/status
+[REQUEST] GET /api/omnivoice/status
+[REQUEST] POST /api/convert
+[REQUEST] JSON data: {'text': 'Xin chào mọi người, mình là Trần Minh Anh, hiện đang làm Chuyên viên Phân tích Dữ liệu với 4 năm kinh nghiệm thực chiến trong việc biến các con số phức tạp thành những insight chiến lược giúp tối ưu hóa kinh doanh.\n\nĐộng lực lớn nhất của mình trong công việc là tìm ra các điểm nghẽn và đưa ra giải pháp dựa trên dữ liệu. Thế mạnh của mình bao gồm khả năng sử dụng thành thạo các công cụ phân tích (như SQL, Power BI, Python), kết hợp cùng kỹ năng truyền đạt thông tin trực quan để các phòng ban khác dễ dàng nắm bắt và ra quyết định. Mình là một người cẩn trọng, tư duy logic và luôn chủ động trong mọi dự án được giao.\n\nMình thích làm việc trong những môi trường cởi mở, nơi mọi ý tưởng đóng góp đều được lắng nghe và thử nghiệm. Mục tiêu của mình trong thời gian tới là tiếp tục mài giũa chuyên môn sâu về khoa học dữ liệu, đồng thời mở rộng cơ hội hợp tác với những đồng nghiệp tài năng để cùng nhau tạo ra các sản phẩm có tác động tích cực lớn hơn.\n\nRất vui được làm quen và kết nối cùng mọi người trong buổi hôm nay. Cảm ơn các bạn đã lắng nghe!"', 'voice_id': 'Doan', 'enable_text_normalization': True}
+[CONVERT TN] Normalized (1052 -> 1049 chars)
+[CONVERT] Converting text: Xin chào mọi người, mình là Trần Minh Anh, hiện đa... (length: 1052)
+[CONVERT] Voice ID: Doan
+[CONVERT] Saved conversion record: ID=45
+[CONVERT] Getting TTS instance...
+[CONVERT] TTS instance obtained successfully
+[CONVERT] Voice data obtained: Doan
+[CONVERT] Converting text to speech (length: 1049 chars)...
+[CONVERT] Audio generated: samples=1755840, duration=73.16s
+[CONVERT] Saving audio to: C:\Users\phu14\VOICE_AI\LUANVAN\web\audio_outputs\3410ad36-6387-4ccd-9052-0a9b3c7cc2df.wav
+[CONVERT] Audio saved successfully
+[CONVERT] Audio file created: 3410ad36-6387-4ccd-9052-0a9b3c7cc2df.wav
+[CONVERT] File size: 3511724 bytes (3.35 MB), duration: 73.16s (0.02 hours)
+[CONVERT] Updated conversion record: ID=45, duration=73.16s, size=3511724 bytes
+[REQUEST] GET /api/statistics
+[REQUEST] GET /api/audio/3410ad36-6387-4ccd-9052-0a9b3c7cc2df.wav
+[REQUEST] GET /api/audio/3410ad36-6387-4ccd-9052-0a9b3c7cc2df.wav
+[REQUEST] GET /api/audio/3410ad36-6387-4ccd-9052-0a9b3c7cc2df.wav
+[REQUEST] GET /api/audio/3410ad36-6387-4ccd-9052-0a9b3c7cc2df.wav
+[REQUEST] GET /api/user/settings
+[REQUEST] POST /api/user/settings
+[REQUEST] JSON data: {'default_emotional_voice_id': '', 'default_export_bitrate': 192, 'default_export_format': 'wav', 'default_language': 'vi', 'default_pitch': 0, 'default_speed': 1, 'default_voice_id': '', 'enable_text_normalization': False, 'notify_chars_low': True, 'notify_marketing': False, 'notify_payment': True, 'notify_plan_expiry': True}
+[REQUEST] POST /api/text/normalize-preview
+[REQUEST] JSON data: {'text': 'Xin chào mọi người, mình là Trần Minh Anh, hiện đang làm Chuyên viên Phân tích Dữ liệu với 4 năm kinh nghiệm thực chiến trong việc biến các con số phức tạp thành những insight chiến lược giúp tối ưu hóa kinh doanh.\n\nĐộng lực lớn nhất của mình trong công việc là tìm ra các điểm nghẽn và đưa ra giải pháp dựa trên dữ liệu. Thế mạnh của mình bao gồm khả năng sử dụng thành thạo các công cụ phân tích (như SQL, Power BI, Python), kết hợp cùng kỹ năng truyền đạt thông tin trực quan để các phòng ban khác dễ dàng nắm bắt và ra quyết định. Mình là một người cẩn trọng, tư duy logic và luôn chủ động trong mọi dự án được giao.\n\nMình thích làm việc trong những môi trường cởi mở, nơi mọi ý tưởng đóng góp đều được lắng nghe và thử nghiệm. Mục tiêu của mình trong thời gian tới là tiếp tục mài giũa chuyên môn sâu về khoa học dữ liệu, đồng thời mở rộng cơ hội hợp tác với những đồng nghiệp tài năng để cùng nhau tạo ra các sản phẩm có tác động tích cực lớn hơn.\n\nRất vui được làm quen và kết nối cùng mọi người trong buổi hôm nay. Cảm ơn các bạn đã lắng nghe!"', 'enable_text_normalization': False, 'preserve_emotion_tags': True}
+[REQUEST] GET /api/user/characters
+[REQUEST] GET /api/voices
+[REQUEST] GET /api/audio-library
+[REQUEST] GET /api/audio/3410ad36-6387-4ccd-9052-0a9b3c7cc2df.wav
+[REQUEST] GET /api/audio/ae30b9ec-b0a9-47b8-a310-7aaf14294e75.wav
+[REQUEST] GET /api/audio/8d9c402c-a624-43a6-84d4-034272d907a1.wav
+[REQUEST] GET /api/audio/8d9c402c-a624-43a6-84d4-034272d907a1.wav
+[REQUEST] GET /api/audio/27f4b267-c7ec-484e-9c1d-7804de864d0c.wav
+[REQUEST] GET /api/audio/27f4b267-c7ec-484e-9c1d-7804de864d0c.wav
+[REQUEST] GET /api/user/characters
+[REQUEST] GET /api/user/characters
+[REQUEST] POST /api/custom-voice/upload
+[REQUEST] GET /api/custom-voice/1/progress
+[REQUEST] GET /api/user/characters
+[REQUEST] POST /api/custom-voice/1/test
+[REQUEST] JSON data: {'test_text': 'Xin chào, đây là giọng custom của tôi. Tôi có thể đọc bất kỳ văn bản nào bạn muốn.'}
+[REQUEST] GET /api/audio/4df4759f-ddb6-4c69-86c1-ca3fa21c100b_test.wav
+[REQUEST] GET /api/audio/4df4759f-ddb6-4c69-86c1-ca3fa21c100b_test.wav
+[REQUEST] GET /api/user/characters
+[REQUEST] GET /api/history
+[REQUEST] GET /api/user/characters
+[REQUEST] GET /api/subscription/status
+[REQUEST] GET /api/user/payments
+[REQUEST] GET /api/packages
+[REQUEST] GET /api/packages
+[REQUEST] POST /api/payment/create
+[REQUEST] JSON data: {'package_id': 3, 'payment_method': 'bank_qr'}
+[DEBUG] Create payment - User ID: 1, Username: admin, Package ID: 3
+[DEBUG] User verified: admin (ID: 1)
+[DEBUG] Package: Standard Plan - 4,000,000 chars - 1,000,000đ
+[DEBUG] Payment created: ID 3, Transaction: TTSEAED2D0597A34D78
+[INFO] Creating SePay QR with URL: https://img.vietqr.io/image/970422--compact2.jpg?amount=1000000&addInfo=TTSEAED2D0597A34D78&accountName=TTS%20SYSTEM
+[WARNING] SePay QR generation failed, using fallback: VietQR API returned status 404
+[INFO] Creating SePay QR with URL: https://img.vietqr.io/image/970422--compact2.jpg?amount=1000000&addInfo=TTSEAED2D0597A34D78&accountName=TTS%20SYSTEM
+[WARNING] SePay QR generation failed, using fallback: VietQR API returned status 404
+[REQUEST] GET /api/payment/status/3
+[REQUEST] GET /api/user/characters
+[REQUEST] GET /api/packages
+[REQUEST] GET /api/subscription/status
+[REQUEST] GET /api/user/payments
+[REQUEST] GET /api/packages
+[REQUEST] GET /api/user/characters
+[REQUEST] GET /api/user/payments
+[REQUEST] GET /api/user/settings
+[REQUEST] GET /api/user/account-deletion-status
+[REQUEST] GET /api/user/usage-chart
+[REQUEST] GET /api/user/subscription/status
+[REQUEST] GET /api/user/characters
+[REQUEST] GET /api/admin/conversions/recent
+[REQUEST] GET /api/statistics
+[REQUEST] GET /api/statistics/time-based
+[REQUEST] GET /api/statistics/top-rankings
+[REQUEST] GET /api/admin/payments
+[REQUEST] GET /api/admin/account-deletions
+[REQUEST] GET /api/admin/conversions/recent
+[REQUEST] GET /api/user/characters
+[REQUEST] GET /api/voices
+[REQUEST] GET /api/voice-conversion/check
+[REQUEST] GET /api/custom-voices/list
+[REQUEST] GET /api/user/settings
+[REQUEST] GET /api/statistics
+[REQUEST] GET /api/audio/formats
+[REQUEST] GET /api/emotional-tts/status
+[REQUEST] GET /api/omnivoice/status
+[REQUEST] GET /api/user/characters
+[REQUEST] GET /api/voices
+[REQUEST] GET /api/voice-conversion/check
+[REQUEST] GET /api/custom-voices/list
+[REQUEST] GET /api/user/settings
+[REQUEST] GET /api/statistics
+[REQUEST] GET /api/audio/formats
+[REQUEST] GET /api/emotional-tts/status
+[REQUEST] GET /api/omnivoice/status
+[REQUEST] GET /api/user/characters
+[REQUEST] GET /api/voices
+[REQUEST] GET /api/voice-conversion/check
+[REQUEST] GET /api/custom-voices/list
+[REQUEST] GET /api/user/settings
+[REQUEST] GET /api/statistics
+[REQUEST] GET /api/audio/formats
+[REQUEST] GET /api/emotional-tts/status
+[REQUEST] GET /api/omnivoice/status
+[REQUEST] GET /api/user/characters
+[REQUEST] GET /api/audio-library
+[REQUEST] GET /api/voices
+[REQUEST] GET /api/user/characters
+[REQUEST] GET /api/user/characters
+[REQUEST] GET /api/voice-conversion/check
+[REQUEST] GET /api/voices
+[REQUEST] GET /api/custom-voices/list
+[REQUEST] GET /api/user/settings
+[REQUEST] GET /api/statistics
+[REQUEST] GET /api/audio/formats
+[REQUEST] GET /api/emotional-tts/status
+[REQUEST] GET /api/omnivoice/status
+[REQUEST] GET /api/user/characters
+[REQUEST] GET /api/voices
+[REQUEST] GET /api/user/characters
+[REQUEST] GET /api/audio-library
+[REQUEST] GET /api/packages
+[REQUEST] GET /api/user/characters
+[REQUEST] GET /api/voices
+[REQUEST] GET /api/voice-conversion/check
+[REQUEST] GET /api/custom-voices/list
+[REQUEST] GET /api/user/settings
+[REQUEST] GET /api/statistics
+[REQUEST] GET /api/audio/formats
+[REQUEST] GET /api/emotional-tts/status
+[REQUEST] GET /api/omnivoice/status
+[REQUEST] GET /api/user/characters
+[REQUEST] GET /api/voices
+[REQUEST] GET /api/audio-library
+[REQUEST] GET /api/user/characters
+[REQUEST] GET /api/user/characters
+[REQUEST] GET /api/voice-conversion/check
+[REQUEST] GET /api/voices
+[REQUEST] GET /api/custom-voices/list
+[REQUEST] GET /api/user/settings
+[REQUEST] GET /api/statistics
+[REQUEST] GET /api/audio/formats
+[REQUEST] GET /api/omnivoice/status
+[REQUEST] GET /api/emotional-tts/status
+[REQUEST] GET /api/user/characters
+[REQUEST] GET /api/voices
+[REQUEST] GET /api/voice-conversion/check
+[REQUEST] GET /api/custom-voices/list
+[REQUEST] GET /api/user/settings
+[REQUEST] GET /api/statistics
+[REQUEST] GET /api/audio/formats
+[REQUEST] GET /api/emotional-tts/status
+[REQUEST] GET /api/omnivoice/status
+[REQUEST] GET /api/user/characters
+[REQUEST] GET /api/voices
+[REQUEST] GET /api/audio-library
+[REQUEST] GET /api/user/characters
+[REQUEST] GET /api/user/characters
+[REQUEST] GET /api/history
+[REQUEST] GET /api/user/characters
+[REQUEST] GET /api/subscription/status
+[REQUEST] GET /api/packages
+[REQUEST] GET /api/user/payments
+[REQUEST] GET /api/packages
+[REQUEST] GET /api/user/characters
+[REQUEST] GET /api/user/payments
+[REQUEST] GET /api/user/account-deletion-status
+[REQUEST] GET /api/user/settings
+[REQUEST] GET /api/user/subscription/status
+[REQUEST] GET /api/user/usage-chart
+[REQUEST] GET /api/user/characters
+[REQUEST] GET /api/user/characters
+[REQUEST] GET /api/history
+[REQUEST] GET /api/voices
+[REQUEST] GET /api/audio-library
+[REQUEST] GET /api/user/characters
+[REQUEST] GET /api/user/characters
+[REQUEST] GET /api/user/characters
+[REQUEST] GET /api/voices
+[REQUEST] GET /api/voice-conversion/check
+[REQUEST] GET /api/custom-voices/list
+[REQUEST] GET /api/user/settings
+[REQUEST] GET /api/statistics
+[REQUEST] GET /api/audio/formats
+[REQUEST] GET /api/emotional-tts/status
+[REQUEST] GET /api/omnivoice/status
+[REQUEST] GET /api/user/characters
+[REQUEST] GET /api/user/characters
+[REQUEST] GET /api/user/characters
+[REQUEST] GET /api/voice-conversion/check
+[REQUEST] GET /api/voices
+[REQUEST] GET /api/custom-voices/list
+[REQUEST] GET /api/user/settings
+[REQUEST] GET /api/statistics
+[REQUEST] GET /api/audio/formats
+[REQUEST] GET /api/emotional-tts/status
+[REQUEST] GET /api/omnivoice/status
+[REQUEST] POST /api/convert
+[REQUEST] JSON data: {'text': 'chào', 'voice_id': 'custom_1', 'enable_text_normalization': False}
+[CONVERT V2] Using custom voice: Doam
+[CONVERT V2] Base voice from DB: Ly, Pitch: 0, Speed: 1.0
+[CONVERT V2] TTS voice ID: Ly
+[CONVERT] Converting text: chào... (length: 4)
+[CONVERT] Voice ID: Ly
+[CONVERT] Saved conversion record: ID=46
+[CONVERT] Getting TTS instance...
+[CONVERT] TTS instance obtained successfully
+[CONVERT] Voice data obtained: Ly
+[CONVERT] Converting text to speech (length: 4 chars)...
+[CONVERT] Audio generated: samples=12480, duration=0.52s
+[CONVERT] Saving audio to: C:\Users\phu14\VOICE_AI\LUANVAN\web\audio_outputs\06e2a9c8-1959-42d1-8a79-805f31a68361.wav
+[CONVERT] Audio saved successfully
+[CONVERT] Audio file created: 06e2a9c8-1959-42d1-8a79-805f31a68361.wav
+[CONVERT] File size: 25004 bytes (0.02 MB), duration: 0.52s (0.00 hours)
+[CONVERT] Updated conversion record: ID=46, duration=0.52s, size=25004 bytes
+[CONVERT V2] Logged custom voice usage: ID=1
+[REQUEST] GET /api/audio/06e2a9c8-1959-42d1-8a79-805f31a68361.wav
+[REQUEST] GET /api/statistics
+[REQUEST] GET /api/user/characters
+[REQUEST] GET /api/history
+[REQUEST] GET /api/user/characters
+[REQUEST] GET /api/voices
+[REQUEST] GET /api/voice-conversion/check
+[REQUEST] GET /api/custom-voices/list
+[REQUEST] GET /api/user/settings
+[REQUEST] GET /api/statistics
+[REQUEST] GET /api/audio/formats
+[REQUEST] GET /api/emotional-tts/status
+[REQUEST] GET /api/omnivoice/status
+[REQUEST] POST /api/convert
+[REQUEST] JSON data: {'text': 'Biến đổi khí hậu đang là một trong những thách thức lớn nhất và mang tính toàn sống còn đối với nhân loại trong thế kỷ XXI. Hiện tượng này không chỉ là những con số thống kê khô khan về nhiệt độ tăng cao hay mực nước biển dâng, mà nó đang hiện hữu rõ nét qua từng ngày, từng giờ trong cuộc sống của chúng ta. Những đợt nắng nóng lịch sử, những cơn bão với cường độ ngày càng mạnh, lũ lụt tàn khốc và hạn hán kéo dài triền miên là minh chứng đau xót cho thấy Trái Đất đang bị tổn thương nghiêm trọng.\n\nNguyên nhân cốt lõi dẫn đến cuộc khủng hoảng sinh thái này phần lớn bắt nguồn từ các hoạt động của con người. Việc khai thác quá mức nhiên liệu hóa thạch, nạn phá rừng đầu nguồn để phát triển kinh tế, cùng với lượng lớn khí thải công nghiệp và giao thông thải ra môi trường đã tạo nên hiệu ứng nhà kính ngày càng dày đặc. Lớp "khí quyển cách nhiệt" này giữ lại nhiệt lượng của Mặt Trời, làm cho hành tinh của chúng ta nóng lên không ngừng. Hậu quả là hệ sinh thái tự nhiên bị phá vỡ, hàng loạt loài động thực vật đứng trước nguy cơ tuyệt chủng, đồng thời an ninh lương thực và nguồn nước ngọt của hàng tỷ người bị đe dọa trực tiếp.\n\nTuy nhiên, hy vọng vẫn chưa tắt nếu mỗi chúng ta hành động ngay từ bây giờ. Biến đổi khí hậu đòi hỏi một sự đồng lòng ở quy mô toàn cầu, từ các quyết sách mạnh mẽ của chính phủ các nước trong việc chuyển đổi năng lượng sạch, phát triển kinh tế xanh, cho đến những thay đổi nhỏ trong ý thức tiêu dùng hàng ngày của từng cá nhân. Việc tiết kiệm điện nước, hạn chế sử dụng đồ nhựa một lần, tích cực trồng cây gây rừng và ưu tiên sử dụng phương tiện giao thông công cộng chính là những viên gạch đầu tiên xây dựng nên tương lai bền vững. Bảo vệ khí hậu không chỉ là cứu lấy môi trường tự nhiên, mà chính là bảo vệ sự sống còn của chính con cháu chúng ta mai sau.', 'voice_id': 'Doan', 'enable_text_normalization': False}
+[CONVERT] Converting text: Biến đổi khí hậu đang là một trong những thách thứ... (length: 1792)
+[CONVERT] Voice ID: Doan
+[CONVERT] Saved conversion record: ID=47
+[CONVERT] Getting TTS instance...
+[CONVERT] TTS instance obtained successfully
+[CONVERT] Voice data obtained: Doan
+[CONVERT] Converting text to speech (length: 1792 chars)...
+[CONVERT] Audio generated: samples=2902080, duration=120.92s
+[CONVERT] Saving audio to: C:\Users\phu14\VOICE_AI\LUANVAN\web\audio_outputs\77696177-83d6-4b96-895a-46b6d02a46c3.wav
+[CONVERT] Audio saved successfully
+[CONVERT] Audio file created: 77696177-83d6-4b96-895a-46b6d02a46c3.wav
+[CONVERT] File size: 5804204 bytes (5.54 MB), duration: 120.92s (0.03 hours)
+[CONVERT] Updated conversion record: ID=47, duration=120.92s, size=5804204 bytes
+[REQUEST] GET /api/audio/77696177-83d6-4b96-895a-46b6d02a46c3.wav
+[REQUEST] GET /api/statistics
+[REQUEST] GET /api/audio/77696177-83d6-4b96-895a-46b6d02a46c3.wav
+[REQUEST] GET /api/audio/77696177-83d6-4b96-895a-46b6d02a46c3.wav
+[REQUEST] GET /api/packages
+[REQUEST] GET /api/user/characters
+[REQUEST] GET /api/voices
+[REQUEST] GET /api/voice-conversion/check
+[REQUEST] GET /api/custom-voices/list
+[REQUEST] GET /api/user/settings
+[REQUEST] GET /api/statistics
+[REQUEST] GET /api/audio/formats
+[REQUEST] GET /api/omnivoice/status
+[REQUEST] GET /api/emotional-tts/status
+[REQUEST] GET /api/user/characters
+[REQUEST] GET /api/user/characters
+[REQUEST] POST /api/custom-voice/upload
+[REQUEST] GET /api/custom-voice/2/progress
+[REQUEST] GET /api/user/characters
+[REQUEST] GET /api/user/characters
+[REQUEST] GET /api/voices
+[REQUEST] GET /api/voice-conversion/check
+[REQUEST] GET /api/custom-voices/list
+[REQUEST] GET /api/user/settings
+[REQUEST] GET /api/statistics
+[REQUEST] GET /api/audio/formats
+[REQUEST] GET /api/emotional-tts/status
+[REQUEST] GET /api/omnivoice/status
+[REQUEST] POST /api/custom-voice/2/test
+[REQUEST] JSON data: {'test_text': 'Xin chào, đây là giọng custom của tôi. Tôi có thể đọc bất kỳ văn bản nào bạn muốn.'}
+[REQUEST] GET /api/audio/a9ab0b3f-9bbe-4265-8da1-7ca4e4b44fd9_test.wav
+[REQUEST] GET /api/audio/a9ab0b3f-9bbe-4265-8da1-7ca4e4b44fd9_test.wav
+[REQUEST] POST /api/custom-voice/2/test
+[REQUEST] JSON data: {'test_text': 'Xin chào, đây là giọng custom của tôi. Tôi có thể đọc bất kỳ văn bản nào bạn muốn.'}
+[REQUEST] GET /api/audio/61f5adfe-ba80-4dad-8059-0f2135e2eff7_test.wav
+[REQUEST] POST /api/custom-voice/2/test
+[REQUEST] JSON data: {'test_text': 'Xin chào, đây là giọng custom của tôi. Tôi có thể đọc bất kỳ văn bản nào bạn muốn.'}
+[REQUEST] GET /api/audio/b99086bc-4917-49f1-837a-13e120e4a7ac_test.wav
+[REQUEST] GET /api/user/characters
+[REQUEST] GET /api/voices
+[REQUEST] GET /api/voice-conversion/check
+[REQUEST] GET /api/custom-voices/list
+[REQUEST] GET /api/user/settings
+[REQUEST] GET /api/statistics
+[REQUEST] GET /api/audio/formats
+[REQUEST] GET /api/emotional-tts/status
+[REQUEST] GET /api/omnivoice/status
+[REQUEST] POST /api/convert
+[REQUEST] JSON data: {'text': 'Tôi là một người luôn tìm kiếm sự cân bằng giữa sáng tạo và kỷ luật. Với niềm đam mê học hỏi không ngừng, tôi không ngại bước ra khỏi vùng an toàn để khám phá những góc nhìn mới và nâng cao giá trị bản thân. Trong công việc, tôi coi trọng sự chỉn chu, tinh thần trách nhiệm và khả năng kết nối linh hoạt với mọi người. Khi rảnh rỗi, tôi thích đọc sách, trải nghiệm các không gian mới để tái tạo năng lượng. Mục tiêu lớn nhất của tôi là mang lại những giá trị tích cực cho cộng đồng thông qua từng dự án mình tham gia.', 'voice_id': 'custom_2', 'enable_text_normalization': False}
+[CONVERT V2] Using custom voice: vịt
+[CONVERT V2] Base voice from DB: Ly, Pitch: 0, Speed: 1.0
+[CONVERT V2] TTS voice ID: Ly
+[CONVERT] Converting text: Tôi là một người luôn tìm kiếm sự cân bằng giữa sá... (length: 517)
+[CONVERT] Voice ID: Ly
+[CONVERT] Saved conversion record: ID=48
+[CONVERT] Getting TTS instance...
+[CONVERT] TTS instance obtained successfully
+[CONVERT] Voice data obtained: Ly
+[CONVERT] Converting text to speech (length: 517 chars)...
+[CONVERT] Audio generated: samples=895680, duration=37.32s
+[CONVERT] Saving audio to: C:\Users\phu14\VOICE_AI\LUANVAN\web\audio_outputs\f73b6019-2011-4a88-b4f1-fab2d26f0c15.wav
+[CONVERT] Audio saved successfully
+[CONVERT] Audio file created: f73b6019-2011-4a88-b4f1-fab2d26f0c15.wav
+[CONVERT] File size: 1791404 bytes (1.71 MB), duration: 37.32s (0.01 hours)
+[CONVERT] Updated conversion record: ID=48, duration=37.32s, size=1791404 bytes
+[CONVERT V2] Logged custom voice usage: ID=2
+[REQUEST] GET /api/statistics
+[REQUEST] GET /api/audio/f73b6019-2011-4a88-b4f1-fab2d26f0c15.wav
+[REQUEST] GET /api/audio/f73b6019-2011-4a88-b4f1-fab2d26f0c15.wav
+[REQUEST] GET /api/audio/f73b6019-2011-4a88-b4f1-fab2d26f0c15.wav
+[REQUEST] GET /api/user/characters
+[REQUEST] GET /api/user/characters
+[REQUEST] GET /api/voices
+[REQUEST] GET /api/voice-conversion/check
+[REQUEST] GET /api/custom-voices/list
+[REQUEST] GET /api/user/settings
+[REQUEST] GET /api/statistics
+[REQUEST] GET /api/audio/formats
+[REQUEST] GET /api/omnivoice/status
+[REQUEST] GET /api/emotional-tts/status
+[REQUEST] GET /api/user/characters
+[REQUEST] POST /api/custom-voice/2/test
+[REQUEST] JSON data: {'test_text': 'Xin chào, đây là giọng custom của tôi. Tôi có thể đọc bất kỳ văn bản nào bạn muốn.'}
+[REQUEST] GET /api/audio/06a681ff-9c2d-4c6b-9c48-ac5d32db2dc6_test.wav
+[REQUEST] GET /api/user/characters
+[REQUEST] GET /api/voices
+[REQUEST] GET /api/custom-voices/list
+[REQUEST] GET /api/voice-conversion/check
+[REQUEST] GET /api/user/settings
+[REQUEST] GET /api/statistics
+[REQUEST] GET /api/audio/formats
+[REQUEST] GET /api/emotional-tts/status
+[REQUEST] GET /api/omnivoice/status
+[REQUEST] GET /api/user/characters
+[REQUEST] POST /api/custom-voice/1/test
+[REQUEST] JSON data: {'test_text': 'Xin chào, đây là giọng custom của tôi. Tôi có thể đọc bất kỳ văn bản nào bạn muốn.'}
+[REQUEST] GET /api/audio/1e37dbba-95a1-4d6a-851e-3074463cacbd_test.wav
+[REQUEST] GET /api/audio/1e37dbba-95a1-4d6a-851e-3074463cacbd_test.wav
+[REQUEST] GET /api/user/characters
+[REQUEST] GET /api/voices
+[REQUEST] GET /api/voice-conversion/check
+[REQUEST] GET /api/custom-voices/list
+[REQUEST] GET /api/user/settings
+[REQUEST] GET /api/statistics
+[REQUEST] GET /api/audio/formats
+[REQUEST] GET /api/emotional-tts/status
+[REQUEST] GET /api/omnivoice/status
+[REQUEST] GET /api/user/characters
+[REQUEST] GET /api/voices
+[REQUEST] GET /api/audio-library
+[REQUEST] GET /api/user/characters
+[REQUEST] DELETE /api/custom-voice/2/delete
+[REQUEST] GET /api/user/characters
+[REQUEST] DELETE /api/custom-voice/1/delete
+[REQUEST] GET /api/user/characters
+[REQUEST] GET /api/user/characters
+[REQUEST] GET /api/voice-conversion/check
+[REQUEST] GET /api/voices
+[REQUEST] GET /api/custom-voices/list
+[REQUEST] GET /api/user/settings
+[REQUEST] GET /api/statistics
+[REQUEST] GET /api/audio/formats
+[REQUEST] GET /api/emotional-tts/status
+[REQUEST] GET /api/omnivoice/status
+[REQUEST] GET /api/user/characters
+[REQUEST] GET /api/audio-library
+[REQUEST] GET /api/voices
+[REQUEST] GET /api/audio/f73b6019-2011-4a88-b4f1-fab2d26f0c15.wav
+[REQUEST] GET /api/audio/77696177-83d6-4b96-895a-46b6d02a46c3.wav
+[REQUEST] GET /api/audio/06e2a9c8-1959-42d1-8a79-805f31a68361.wav
+[REQUEST] GET /api/voices
+[REQUEST] GET /api/audio-library
+[REQUEST] GET /api/user/characters
+[REQUEST] GET /api/user/characters
+[REQUEST] GET /api/voices
+[REQUEST] GET /api/voice-conversion/check
+[REQUEST] GET /api/custom-voices/list
+[REQUEST] GET /api/user/settings
+[REQUEST] GET /api/statistics
+[REQUEST] GET /api/audio/formats
+[REQUEST] GET /api/emotional-tts/status
+[REQUEST] GET /api/omnivoice/status
+[REQUEST] POST /api/convert
+[REQUEST] JSON data: {'text': 'Tôi là một người luôn tìm kiếm sự cân bằng giữa sáng tạo và kỷ luật. Với niềm đam mê học hỏi không ngừng, tôi không ngại bước ra khỏi vùng an toàn để khám phá những góc nhìn mới và nâng cao giá trị bản thân. Trong công việc, tôi coi trọng sự chỉn chu, tinh thần trách nhiệm và khả năng kết nối linh hoạt với mọi người. Khi rảnh rỗi, tôi thích đọc sách, trải nghiệm các không gian mới để tái tạo năng lượng. Mục tiêu lớn nhất của tôi là mang lại những giá trị tích cực cho cộng đồng thông qua từng dự án mình tham gia.', 'voice_id': 'Binh', 'enable_text_normalization': False}
+[CONVERT] Converting text: Tôi là một người luôn tìm kiếm sự cân bằng giữa sá... (length: 517)
+[CONVERT] Voice ID: Binh
+[CONVERT] Saved conversion record: ID=49
+[CONVERT] Getting TTS instance...
+[CONVERT] TTS instance obtained successfully
+[CONVERT] Voice data obtained: Binh
+[CONVERT] Converting text to speech (length: 517 chars)...
+[CONVERT] Audio generated: samples=739680, duration=30.82s
+[CONVERT] Saving audio to: C:\Users\phu14\VOICE_AI\LUANVAN\web\audio_outputs\533a9607-f870-4ec1-b5fb-f69b16e94810.wav
+[CONVERT] Audio saved successfully
+[CONVERT] Audio file created: 533a9607-f870-4ec1-b5fb-f69b16e94810.wav
+[CONVERT] File size: 1479404 bytes (1.41 MB), duration: 30.82s (0.01 hours)
+[CONVERT] Updated conversion record: ID=49, duration=30.82s, size=1479404 bytes
+[REQUEST] GET /api/statistics
+[REQUEST] GET /api/audio/533a9607-f870-4ec1-b5fb-f69b16e94810.wav
+[REQUEST] GET /api/voices
+[REQUEST] GET /api/audio-library
+[REQUEST] GET /api/user/characters
+[REQUEST] GET /api/user/characters
+[REQUEST] GET /api/user/characters
+[REQUEST] GET /api/user/characters
+[REQUEST] GET /api/voice-conversion/check
+[REQUEST] GET /api/voices
+[REQUEST] GET /api/custom-voices/list
+[REQUEST] GET /api/user/settings
+[REQUEST] GET /api/statistics
+[REQUEST] GET /api/audio/formats
+[REQUEST] GET /api/emotional-tts/status
+[REQUEST] GET /api/omnivoice/status
+[REQUEST] GET /api/user/characters
+[REQUEST] GET /api/user/characters
+[REQUEST] GET /api/user/characters
+[REQUEST] GET /api/voices
+[REQUEST] GET /api/voice-conversion/check
+[REQUEST] GET /api/custom-voices/list
+[REQUEST] GET /api/user/settings
+[REQUEST] GET /api/statistics
+[REQUEST] GET /api/audio/formats
+[REQUEST] GET /api/emotional-tts/status
+[REQUEST] GET /api/omnivoice/status
+[REQUEST] POST /api/upload/extract
+[REQUEST] GET /api/user/settings
+[REQUEST] POST /api/user/settings
+[REQUEST] JSON data: {'default_emotional_voice_id': '', 'default_export_bitrate': 192, 'default_export_format': 'wav', 'default_language': 'vi', 'default_pitch': 0, 'default_speed': 1, 'default_voice_id': '', 'enable_text_normalization': True, 'notify_chars_low': True, 'notify_marketing': False, 'notify_payment': True, 'notify_plan_expiry': True}
+[REQUEST] GET /api/user/characters
+[REQUEST] GET /api/voices
+[REQUEST] GET /api/voice-conversion/check
+[REQUEST] GET /api/custom-voices/list
+[REQUEST] GET /api/user/settings
+[REQUEST] GET /api/statistics
+[REQUEST] GET /api/audio/formats
+[REQUEST] GET /api/emotional-tts/status
+[REQUEST] GET /api/omnivoice/status
+[REQUEST] GET /api/user/characters
+[REQUEST] GET /api/voices
+[REQUEST] GET /api/voice-conversion/check
+[REQUEST] GET /api/custom-voices/list
+[REQUEST] GET /api/user/settings
+[REQUEST] GET /api/statistics
+[REQUEST] GET /api/audio/formats
+[REQUEST] GET /api/emotional-tts/status
+[REQUEST] GET /api/omnivoice/status
+[REQUEST] GET /api/packages
+[REQUEST] GET /api/user/characters
+[REQUEST] GET /api/voices
+[REQUEST] GET /api/voice-conversion/check
+[REQUEST] GET /api/custom-voices/list
+[REQUEST] GET /api/user/settings
+[REQUEST] GET /api/statistics
+[REQUEST] GET /api/audio/formats
+[REQUEST] GET /api/emotional-tts/status
+[REQUEST] GET /api/omnivoice/status
+[REQUEST] POST /api/convert
+[REQUEST] JSON data: {'text': 'Tôi là một người luôn tìm kiếm sự cân bằng giữa sáng tạo và kỷ luật. Với niềm đam mê học hỏi không ngừng, tôi không ngại bước ra khỏi vùng an toàn để khám phá những góc nhìn mới và nâng cao giá trị bản thân. Trong công việc, tôi coi trọng sự chỉn chu, tinh thần trách nhiệm và khả năng kết nối linh hoạt với mọi người. Khi rảnh rỗi, tôi thích đọc sách, trải nghiệm các không gian mới để tái tạo năng lượng. Mục tiêu lớn nhất của tôi là mang lại những giá trị tích cực cho cộng đồng thông qua từng dự án mình tham gia.', 'voice_id': 'Ly', 'enable_text_normalization': True}
+[CONVERT TN] Normalized (517 -> 517 chars)
+[CONVERT] Converting text: Tôi là một người luôn tìm kiếm sự cân bằng giữa sá... (length: 517)
+[CONVERT] Voice ID: Ly
+[CONVERT] Saved conversion record: ID=50
+[CONVERT] Getting TTS instance...
+[CONVERT] TTS instance obtained successfully
+[CONVERT] Voice data obtained: Ly
+[CONVERT] Converting text to speech (length: 517 chars)...
+[CONVERT] Audio generated: samples=899520, duration=37.48s
+[CONVERT] Saving audio to: C:\Users\phu14\VOICE_AI\LUANVAN\web\audio_outputs\60da40c3-4caa-45e1-acf2-e4fb76a9d302.wav
+[CONVERT] Audio saved successfully
+[CONVERT] Audio file created: 60da40c3-4caa-45e1-acf2-e4fb76a9d302.wav
+[CONVERT] File size: 1799084 bytes (1.72 MB), duration: 37.48s (0.01 hours)
+[CONVERT] Updated conversion record: ID=50, duration=37.48s, size=1799084 bytes
+[REQUEST] GET /api/statistics
+[REQUEST] GET /api/audio/60da40c3-4caa-45e1-acf2-e4fb76a9d302.wav
+[REQUEST] GET /api/audio/60da40c3-4caa-45e1-acf2-e4fb76a9d302.wav
+[REQUEST] GET /api/audio/60da40c3-4caa-45e1-acf2-e4fb76a9d302.wav
+[REQUEST] PATCH /api/audio-library/50/rename
+[REQUEST] JSON data: {'display_name': 'test'}
+[REQUEST] GET /api/audio/60da40c3-4caa-45e1-acf2-e4fb76a9d302.wav
+[REQUEST] GET /api/user/characters
+[REQUEST] GET /api/voices
+[REQUEST] GET /api/audio-library
+[REQUEST] GET /api/audio/60da40c3-4caa-45e1-acf2-e4fb76a9d302.wav
+[REQUEST] GET /api/audio/533a9607-f870-4ec1-b5fb-f69b16e94810.wav
+[REQUEST] GET /api/audio/533a9607-f870-4ec1-b5fb-f69b16e94810.wav
+[REQUEST] GET /api/audio/3410ad36-6387-4ccd-9052-0a9b3c7cc2df.wav
+[REQUEST] GET /api/audio/3410ad36-6387-4ccd-9052-0a9b3c7cc2df.wav
+[REQUEST] GET /api/user/characters
+[REQUEST] GET /api/user/characters
+[REQUEST] POST /api/custom-voice/upload
+[REQUEST] GET /api/user/characters
+[REQUEST] GET /api/custom-voice/3/progress
+[REQUEST] GET /api/user/characters
+[REQUEST] POST /api/custom-voice/3/test
+[REQUEST] JSON data: {'test_text': 'Xin chào, đây là giọng custom của tôi. Tôi có thể đọc bất kỳ văn bản nào bạn muốn.'}
+[REQUEST] GET /api/audio/1340a8fc-4b87-4008-87e0-ed14ea9ec4ac_test.wav
+[REQUEST] GET /api/audio/1340a8fc-4b87-4008-87e0-ed14ea9ec4ac_test.wav
+[REQUEST] POST /api/custom-voice/3/test
+[REQUEST] JSON data: {'test_text': 'Xin chào, đây là giọng custom của tôi. Tôi có thể đọc bất kỳ văn bản nào bạn muốn.'}
+[REQUEST] GET /api/audio/4ff5ed5a-32d6-428a-9fa6-92ad105ffa13_test.wav
+[REQUEST] POST /api/custom-voice/3/test
+[REQUEST] JSON data: {'test_text': 'Xin chào, đây là giọng custom của tôi. Tôi có thể đọc bất kỳ văn bản nào bạn muốn.'}
+[REQUEST] GET /api/audio/4637a2d1-be17-4555-bd6b-ca5fb7f0a8a6_test.wav
+[REQUEST] GET /api/user/characters
+[REQUEST] GET /api/voices
+[REQUEST] GET /api/voice-conversion/check
+[REQUEST] GET /api/custom-voices/list
+[REQUEST] GET /api/user/settings
+[REQUEST] GET /api/statistics
+[REQUEST] GET /api/audio/formats
+[REQUEST] GET /api/emotional-tts/status
+[REQUEST] GET /api/omnivoice/status
+[REQUEST] POST /api/convert
+[REQUEST] JSON data: {'text': 'Tôi là một người luôn tìm kiếm sự cân bằng giữa sáng tạo và kỷ luật. Với niềm đam mê học hỏi không ngừng, tôi không ngại bước ra khỏi vùng an toàn để khám phá những góc nhìn mới và nâng cao giá trị bản thân. Trong công việc, tôi coi trọng sự chỉn chu, tinh thần trách nhiệm và khả năng kết nối linh hoạt với mọi người. Khi rảnh rỗi, tôi thích đọc sách, trải nghiệm các không gian mới để tái tạo năng lượng. Mục tiêu lớn nhất của tôi là mang lại những giá trị tích cực cho cộng đồng thông qua từng dự án mình tham gia.', 'voice_id': 'custom_3', 'enable_text_normalization': True}
+[CONVERT V2] Using custom voice: Demo1
+[CONVERT V2] Base voice from DB: Ly, Pitch: 0, Speed: 1.0
+[CONVERT V2] TTS voice ID: Ly
+[CONVERT TN] Normalized (517 -> 517 chars)
+[CONVERT] Converting text: Tôi là một người luôn tìm kiếm sự cân bằng giữa sá... (length: 517)
+[CONVERT] Voice ID: Ly
+[CONVERT] Saved conversion record: ID=51
+[CONVERT] Getting TTS instance...
+[CONVERT] TTS instance obtained successfully
+[CONVERT] Voice data obtained: Ly
+[CONVERT] Converting text to speech (length: 517 chars)...
+[CONVERT] Audio generated: samples=929760, duration=38.74s
+[CONVERT] Saving audio to: C:\Users\phu14\VOICE_AI\LUANVAN\web\audio_outputs\b0e9787a-7f5a-4852-aff1-1abce7eab8af.wav
+[CONVERT] Audio saved successfully
+[CONVERT] Audio file created: b0e9787a-7f5a-4852-aff1-1abce7eab8af.wav
+[CONVERT] File size: 1859564 bytes (1.77 MB), duration: 38.74s (0.01 hours)
+[CONVERT] Updated conversion record: ID=51, duration=38.74s, size=1859564 bytes
+[CONVERT V2] Logged custom voice usage: ID=3
+[REQUEST] GET /api/audio/b0e9787a-7f5a-4852-aff1-1abce7eab8af.wav
+[REQUEST] GET /api/statistics
+[REQUEST] GET /api/audio/b0e9787a-7f5a-4852-aff1-1abce7eab8af.wav
+[REQUEST] PATCH /api/audio-library/51/rename
+[REQUEST] JSON data: {'display_name': 'test22'}
+[REQUEST] GET /api/audio/b0e9787a-7f5a-4852-aff1-1abce7eab8af.wav
+[REQUEST] GET /api/user/characters
+[REQUEST] GET /api/user/characters
+[REQUEST] GET /api/history
+[REQUEST] GET /api/user/characters
+[REQUEST] GET /api/subscription/status
+[REQUEST] GET /api/packages
+[REQUEST] GET /api/user/payments
+[REQUEST] GET /api/packages
+[REQUEST] GET /api/user/characters
+[REQUEST] GET /api/user/payments
+[REQUEST] GET /api/user/account-deletion-status
+[REQUEST] GET /api/user/settings
+[REQUEST] GET /api/user/subscription/status
+[REQUEST] GET /api/user/usage-chart
+[REQUEST] GET /api/user/characters
+[REQUEST] GET /api/admin/conversions/recent
+[REQUEST] GET /api/statistics
+[REQUEST] GET /api/statistics/time-based
+[REQUEST] GET /api/statistics/top-rankings
+[REQUEST] GET /api/admin/payments
+[REQUEST] GET /api/admin/account-deletions
+[REQUEST] GET /api/admin/conversions/recent
+[REQUEST] GET /api/admin/account-deletions/grace-period
+[REQUEST] GET /api/admin/account-deletions
+[REQUEST] GET /api/user/characters
+[REQUEST] GET /api/voices
+[REQUEST] GET /api/voice-conversion/check
+[REQUEST] GET /api/custom-voices/list
+[REQUEST] GET /api/user/settings
+[REQUEST] GET /api/statistics
+[REQUEST] GET /api/audio/formats
+[REQUEST] GET /api/omnivoice/status
+[REQUEST] GET /api/emotional-tts/status
+[REQUEST] GET /api/packages
+[REQUEST] GET /api/user/characters
+[REQUEST] GET /api/voices
+[REQUEST] GET /api/voice-conversion/check
+[REQUEST] GET /api/custom-voices/list
+[REQUEST] GET /api/user/settings
+[REQUEST] GET /api/statistics
+[REQUEST] GET /api/audio/formats
+[REQUEST] GET /api/omnivoice/status
+[REQUEST] GET /api/emotional-tts/status
+[REQUEST] POST /api/convert
+[REQUEST] JSON data: {'text': 'Tôi là một người luôn tìm kiếm sự cân bằng giữa sáng tạo và kỷ luật. Với niềm đam mê học hỏi không ngừng, tôi không ngại bước ra khỏi vùng an toàn để khám phá những góc nhìn mới và nâng cao giá trị bản thân. Trong công việc, tôi coi trọng sự chỉn chu, tinh thần trách nhiệm và khả năng kết nối linh hoạt với mọi người. Khi rảnh rỗi, tôi thích đọc sách, trải nghiệm các không gian mới để tái tạo năng lượng. Mục tiêu lớn nhất của tôi là mang lại những giá trị tích cực cho cộng đồng thông qua từng dự án mình tham gia.', 'voice_id': 'Ly', 'enable_text_normalization': True}
+[CONVERT TN] Normalized (517 -> 517 chars)
+[CONVERT] Converting text: Tôi là một người luôn tìm kiếm sự cân bằng giữa sá... (length: 517)
+[CONVERT] Voice ID: Ly
+[CONVERT] Saved conversion record: ID=52
+[CONVERT] Getting TTS instance...
+[CONVERT] TTS instance obtained successfully
+[CONVERT] Voice data obtained: Ly
+[CONVERT] Converting text to speech (length: 517 chars)...
+[CONVERT] Audio generated: samples=893280, duration=37.22s
+[CONVERT] Saving audio to: C:\Users\phu14\VOICE_AI\LUANVAN\web\audio_outputs\abc40436-9e28-4311-b69c-1a882ecc6ef7.wav
+[CONVERT] Audio saved successfully
+[CONVERT] Audio file created: abc40436-9e28-4311-b69c-1a882ecc6ef7.wav
+[CONVERT] File size: 1786604 bytes (1.70 MB), duration: 37.22s (0.01 hours)
+[CONVERT] Updated conversion record: ID=52, duration=37.22s, size=1786604 bytes
+[REQUEST] GET /api/audio/abc40436-9e28-4311-b69c-1a882ecc6ef7.wav
+[REQUEST] GET /api/statistics
+[REQUEST] GET /api/audio/abc40436-9e28-4311-b69c-1a882ecc6ef7.wav
+[REQUEST] PATCH /api/audio-library/52/rename
+[REQUEST] JSON data: {'display_name': 'demo1'}
+[REQUEST] GET /api/audio/abc40436-9e28-4311-b69c-1a882ecc6ef7.wav
+[REQUEST] GET /api/user/characters
+[REQUEST] GET /api/voices
+[REQUEST] GET /api/audio-library
+[REQUEST] GET /api/audio/abc40436-9e28-4311-b69c-1a882ecc6ef7.wav
+[REQUEST] GET /api/audio/abc40436-9e28-4311-b69c-1a882ecc6ef7.wav
+[REQUEST] GET /api/audio/533a9607-f870-4ec1-b5fb-f69b16e94810.wav
+[REQUEST] GET /api/audio/77696177-83d6-4b96-895a-46b6d02a46c3.wav
+[REQUEST] GET /api/audio/77696177-83d6-4b96-895a-46b6d02a46c3.wav
+[REQUEST] GET /api/user/characters
+[REQUEST] GET /api/user/characters
+[REQUEST] POST /api/custom-voice/upload
+[REQUEST] GET /api/user/characters
+[REQUEST] POST /api/custom-voice/4/test
+[REQUEST] JSON data: {'test_text': 'Xin chào, đây là giọng custom của tôi. Tôi có thể đọc bất kỳ văn bản nào bạn muốn.'}
+[REQUEST] GET /api/audio/58407773-0f8d-4c60-a290-97d73339bb3b_test.wav
+[REQUEST] GET /api/user/characters
+[REQUEST] GET /api/voice-conversion/check
+[REQUEST] GET /api/voices
+[REQUEST] GET /api/custom-voices/list
+[REQUEST] GET /api/user/settings
+[REQUEST] GET /api/statistics
+[REQUEST] GET /api/audio/formats
+[REQUEST] GET /api/emotional-tts/status
+[REQUEST] GET /api/omnivoice/status
+[REQUEST] POST /api/convert
+[REQUEST] JSON data: {'text': 'Tôi là một người luôn tìm kiếm sự cân bằng giữa sáng tạo và kỷ luật. Với niềm đam mê học hỏi không ngừng, tôi không ngại bước ra khỏi vùng an toàn để khám phá những góc nhìn mới và nâng cao giá trị bản thân. Trong công việc, tôi coi trọng sự chỉn chu, tinh thần trách nhiệm và khả năng kết nối linh hoạt với mọi người. Khi rảnh rỗi, tôi thích đọc sách, trải nghiệm các không gian mới để tái tạo năng lượng. Mục tiêu lớn nhất của tôi là mang lại những giá trị tích cực cho cộng đồng thông qua từng dự án mình tham gia.', 'voice_id': 'custom_4', 'enable_text_normalization': True}
+[CONVERT V2] Using custom voice: Demo2
+[CONVERT V2] Base voice from DB: Ly, Pitch: 0, Speed: 1.0
+[CONVERT V2] TTS voice ID: Ly
+[CONVERT TN] Normalized (517 -> 517 chars)
+[CONVERT] Converting text: Tôi là một người luôn tìm kiếm sự cân bằng giữa sá... (length: 517)
+[CONVERT] Voice ID: Ly
+[CONVERT] Saved conversion record: ID=53
+[CONVERT] Getting TTS instance...
+[CONVERT] TTS instance obtained successfully
+[CONVERT] Voice data obtained: Ly
+[CONVERT] Converting text to speech (length: 517 chars)...
+[CONVERT] Audio generated: samples=890400, duration=37.10s
+[CONVERT] Saving audio to: C:\Users\phu14\VOICE_AI\LUANVAN\web\audio_outputs\01a0e4e5-cad4-47ca-8ee6-854e9a330299.wav
+[CONVERT] Audio saved successfully
+[CONVERT] Audio file created: 01a0e4e5-cad4-47ca-8ee6-854e9a330299.wav
+[CONVERT] File size: 1780844 bytes (1.70 MB), duration: 37.10s (0.01 hours)
+[CONVERT] Updated conversion record: ID=53, duration=37.10s, size=1780844 bytes
+[CONVERT V2] Logged custom voice usage: ID=4
+[REQUEST] GET /api/statistics
+[REQUEST] GET /api/audio/01a0e4e5-cad4-47ca-8ee6-854e9a330299.wav
+[REQUEST] GET /api/audio/01a0e4e5-cad4-47ca-8ee6-854e9a330299.wav
+[REQUEST] GET /api/audio/01a0e4e5-cad4-47ca-8ee6-854e9a330299.wav
+[REQUEST] PATCH /api/audio-library/53/rename
+[REQUEST] JSON data: {'display_name': 'Demo2'}
+[REQUEST] GET /api/audio/01a0e4e5-cad4-47ca-8ee6-854e9a330299.wav/export
+[REQUEST] GET /api/user/characters
+[REQUEST] GET /api/audio-library
+[REQUEST] GET /api/voices
+[REQUEST] GET /api/user/characters
+[REQUEST] GET /api/voices
+[REQUEST] GET /api/voice-conversion/check
+[REQUEST] GET /api/custom-voices/list
+[REQUEST] GET /api/user/settings
+[REQUEST] GET /api/statistics
+[REQUEST] GET /api/audio/formats
+[REQUEST] GET /api/omnivoice/status
+[REQUEST] GET /api/emotional-tts/status

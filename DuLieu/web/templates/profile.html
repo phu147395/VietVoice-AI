@@ -1,0 +1,1099 @@
+<!DOCTYPE html>
+<html lang="vi" data-theme="dark" class="vv-workspace">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/sidebar-layout.css') }}">
+<script src="{{ url_for('static', filename='js/sidebar-antiflash.js') }}"></script>
+<title data-i18n="prof.title">Hồ sơ cá nhân - VietVoice</title>
+
+{% include 'partials/vv_theme_head.html' %}
+
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+{% include 'partials/vv_tailwind_config.html' %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/profile-studio.css') }}?v=20260626c">
+
+<style>
+  html { scroll-behavior: smooth; color-scheme: dark; }
+  html, body { overflow-x: hidden; max-width: 100%; }
+  body { font-family: 'Manrope', sans-serif; background: #051424; color: #d4e4fa; }
+  .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; font-size: 20px; line-height: 1; display: inline-flex; align-items: center; }
+  ::-webkit-scrollbar { width: 8px; height: 8px; }
+  ::-webkit-scrollbar-track { background: rgba(255,255,255,0.04); }
+  ::-webkit-scrollbar-thumb { background: rgba(208,188,255,0.28); border-radius: 999px; }
+  ::-webkit-scrollbar-thumb:hover { background: rgba(208,188,255,0.42); }
+
+  .form-input {
+    width: 100% !important;
+    background: #0d1c2d !important;
+    background-color: #0d1c2d !important;
+    border: 1px solid rgba(73,68,84,0.6) !important;
+    border-radius: 10px !important;
+    padding: 10px 14px !important;
+    color: #d4e4fa !important;
+    font-size: 14px !important;
+    font-family: 'Manrope', sans-serif !important;
+    transition: border-color 0.2s;
+    color-scheme: dark;
+  }
+  .form-input:focus {
+    outline: none !important;
+    border-color: #d0bcff !important;
+    box-shadow: 0 0 0 2px rgba(208,188,255,0.15) !important;
+  }
+  .form-input:disabled {
+    opacity: 0.5 !important;
+    cursor: not-allowed !important;
+    background: #0d1c2d !important;
+    background-color: #0d1c2d !important;
+  }
+  /* Override browser autofill (Chrome/Edge/CocCoc) */
+  .form-input:-webkit-autofill,
+  .form-input:-webkit-autofill:hover,
+  .form-input:-webkit-autofill:focus,
+  .form-input:-webkit-autofill:active,
+  input:-webkit-autofill,
+  input:-webkit-autofill:hover,
+  input:-webkit-autofill:focus {
+    -webkit-box-shadow: 0 0 0 1000px #0d1c2d inset !important;
+    box-shadow: 0 0 0 1000px #0d1c2d inset !important;
+    -webkit-text-fill-color: #d4e4fa !important;
+    background-color: #0d1c2d !important;
+    caret-color: #d4e4fa !important;
+  }
+  /* Force all inputs dark */
+  input[type="text"], input[type="email"], input[type="password"] {
+    background: #0d1c2d !important;
+    background-color: #0d1c2d !important;
+    color: #d4e4fa !important;
+    color-scheme: dark;
+  }
+
+  .btn-primary {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 10px 22px; border-radius: 10px; font-size: 14px; font-weight: 700; cursor: pointer;
+    background: linear-gradient(135deg, #a078ff, #6d3bd7); color: #fff; border: none;
+    transition: opacity 0.2s, transform 0.1s;
+  }
+  .btn-primary:hover { opacity: 0.9; }
+  .btn-primary:active { transform: scale(0.98); }
+  .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
+
+  .btn-secondary {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 10px 18px; border-radius: 10px; font-size: 14px; font-weight: 600; cursor: pointer;
+    background: rgba(18,33,49,0.8); color: #d4e4fa;
+    border: 1px solid rgba(73,68,84,0.6);
+    transition: background 0.2s, border-color 0.2s;
+  }
+  .btn-secondary:hover { background: rgba(28,43,60,0.9); border-color: rgba(208,188,255,0.35); }
+  .btn-secondary:disabled { opacity: 0.5; cursor: not-allowed; }
+
+  .prof-toggle-input {
+    width: 18px; height: 18px; accent-color: #a078ff; cursor: pointer;
+  }
+  .usage-chart-panel {
+    background: rgba(10, 20, 32, 0.55);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 12px;
+    padding: 12px 10px 8px;
+  }
+  .usage-chart {
+    position: relative;
+    width: 100%;
+  }
+  .usage-line-svg {
+    display: block;
+    width: 100%;
+    height: 108px;
+    overflow: visible;
+  }
+  .usage-line-grid line {
+    stroke: rgba(148, 163, 184, 0.1);
+    stroke-width: 1;
+    stroke-dasharray: 4 4;
+  }
+  .usage-line-area {
+    fill: url(#usageAreaGrad);
+    opacity: 0.85;
+  }
+  .usage-line-stroke {
+    fill: none;
+    stroke: url(#usageLineGrad);
+    stroke-width: 2.5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .usage-line-dot {
+    fill: #0a1520;
+    stroke: #a78bfa;
+    stroke-width: 2;
+    cursor: pointer;
+    transition: r 0.15s ease, stroke 0.15s ease;
+  }
+  .usage-line-dot.is-today {
+    stroke: #2fd9f4;
+    fill: #2fd9f4;
+  }
+  .usage-line-dot.is-active,
+  .usage-line-dot:hover {
+    r: 5;
+    stroke-width: 2.5;
+  }
+  .usage-line-dot.is-today.is-active,
+  .usage-line-dot.is-today:hover {
+    fill: #67e8f9;
+    stroke: #2fd9f4;
+  }
+  .usage-line-labels {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 6px;
+    padding: 0 2px;
+  }
+  .usage-line-label {
+    flex: 1;
+    text-align: center;
+    font-size: 10px;
+    font-weight: 600;
+    color: #64748b;
+    line-height: 1;
+    min-width: 0;
+  }
+  .usage-line-label.is-today {
+    color: #2fd9f4;
+  }
+  .usage-line-tooltip {
+    position: absolute;
+    left: 0;
+    top: 0;
+    transform: translate(-50%, calc(-100% - 8px));
+    padding: 4px 8px;
+    border-radius: 8px;
+    background: rgba(12, 22, 36, 0.96);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    font-size: 11px;
+    font-weight: 600;
+    color: #e2e8f0;
+    white-space: nowrap;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.15s ease;
+    z-index: 3;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+  }
+  .usage-line-tooltip.is-visible {
+    opacity: 1;
+  }
+  .usage-line-tooltip-date {
+    display: block;
+    font-size: 9px;
+    font-weight: 500;
+    color: #94a3b8;
+    margin-bottom: 1px;
+  }
+
+  .avatar-upload-wrap {
+    position: relative;
+    width: 4rem;
+    height: 4rem;
+    flex-shrink: 0;
+  }
+  .avatar-upload-wrap .avatar-img,
+  .avatar-upload-wrap .avatar-fallback {
+    width: 100%;
+    height: 100%;
+    border-radius: 1rem;
+    object-fit: cover;
+  }
+  .avatar-upload-wrap .avatar-fallback {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #a078ff, #6d3bd7);
+    color: #3c0091;
+    font-size: 1.5rem;
+    font-weight: 900;
+  }
+  .avatar-upload-overlay {
+    position: absolute;
+    inset: 0;
+    border-radius: 1rem;
+    background: rgba(0, 0, 0, 0.55);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.2s;
+    cursor: pointer;
+    color: #fff;
+  }
+  .avatar-upload-wrap:hover .avatar-upload-overlay,
+  .avatar-upload-wrap:focus-within .avatar-upload-overlay {
+    opacity: 1;
+  }
+  .avatar-upload-hint {
+    font-size: 11px;
+    color: #958ea0;
+    margin-top: 6px;
+  }
+
+  .btn-danger {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 10px 22px; border-radius: 10px; font-size: 14px; font-weight: 700; cursor: pointer;
+    background: rgba(147,0,10,0.3); color: #ffb4ab; border: 1px solid rgba(255,180,171,0.3);
+    transition: background 0.2s;
+  }
+  .btn-danger:hover { background: rgba(147,0,10,0.5); }
+
+  .toast {
+    position: fixed; bottom: 24px; right: 24px; z-index: 9999;
+    display: flex; align-items: center; gap: 10px;
+    padding: 12px 20px; border-radius: 12px; font-size: 14px; font-weight: 600;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+    transform: translateY(80px); opacity: 0; transition: all 0.3s ease;
+    pointer-events: none;
+  }
+  .toast.show { transform: translateY(0); opacity: 1; }
+  .toast.success { background: rgba(0,159,180,0.2); border: 1px solid rgba(47,217,244,0.4); color: #2fd9f4; }
+  .toast.error   { background: rgba(147,0,10,0.3);  border: 1px solid rgba(255,180,171,0.4); color: #ffb4ab; }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .spin { animation: spin 0.8s linear infinite; }
+</style>
+</head>
+
+<body class="min-h-screen flex flex-col bg-background text-on-background pf-page">
+
+{% set mob_nav_active = 'profile' %}
+{% set mobile_header_title = 'Hồ sơ' %}
+{% include 'partials/_workspace_mobile_header.html' %}
+{% include 'partials/mobile_nav_drawer.html' %}
+
+<!-- ═══ LAYOUT ═══ -->
+<div class="vv-app-shell">
+
+  <!-- Sidebar -->
+  {% include 'partials/_workspace_sidebar.html' %}
+
+  <!-- ═══ MAIN CONTENT ═══ -->
+    <main id="content" data-spa-page="profile" class="vv-has-mobile-header flex-1 min-w-0 px-3 md:px-5 pb-[76px] md:pb-8 w-full md:py-5">
+    {% include 'partials/content/profile.html' %}
+  </main>
+</div>
+
+{% include 'partials/mobile_bottom_nav.html' %}
+
+<!-- Toast -->
+<div id="toast" class="toast">
+  <span class="material-symbols-outlined" style="font-size:18px" id="toastIcon">check_circle</span>
+  <span id="toastMsg"></span>
+</div>
+
+<!-- ═══ FOOTER ═══ -->
+{% include '_footer.html' %}
+
+<!-- Modal: Yêu cầu xóa tài khoản -->
+<div id="deleteAccountModal" class="fixed inset-0 z-[200] hidden items-center justify-center p-4" style="background:rgba(0,0,0,0.65);backdrop-filter:blur(4px)">
+  <div class="bg-surface-container border border-outline-variant/40 rounded-2xl w-full max-w-md shadow-2xl p-6" role="dialog" aria-modal="true">
+    <h3 class="text-lg font-bold text-on-surface mb-3" data-i18n="prof.delete.modal.title">Xác nhận yêu cầu xóa tài khoản</h3>
+    <p class="text-sm text-on-surface-variant mb-4" data-i18n="prof.delete.modal.confirm">
+      Bạn có chắc chắn muốn yêu cầu xóa tài khoản không? Sau khi admin xác nhận, tài khoản của bạn sẽ bị xóa hoặc vô hiệu hóa khỏi hệ thống.
+    </p>
+    <label class="block text-xs font-semibold text-on-surface-variant mb-1.5" data-i18n="prof.delete.reason.label">Lý do xóa tài khoản (không bắt buộc)</label>
+    <textarea id="deleteAccountReason" rows="3" class="form-input text-sm mb-5" placeholder="Tôi không còn nhu cầu sử dụng dịch vụ." data-i18n-placeholder="prof.delete.reason.ph"></textarea>
+    <div class="flex justify-end gap-3">
+      <button type="button" class="btn-secondary" onclick="closeDeleteAccountModal()" data-i18n="prof.delete.modal.cancel">Hủy</button>
+      <button type="button" id="btnConfirmDeleteRequest" class="btn-primary bg-red-600 hover:bg-red-700" onclick="submitDeleteAccountRequest()" data-i18n="prof.delete.modal.submit">Xác nhận yêu cầu xóa</button>
+    </div>
+  </div>
+</div>
+
+<script src="{{ url_for('static', filename='js/i18n.js') }}"></script>
+<script src="{{ url_for('static', filename='js/pagination.js') }}"></script>
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+<script src="{{ url_for('static', filename='js/theme.js') }}"></script>
+<script src="{{ url_for('static', filename='js/sidebar-collapse.js') }}"></script>
+<script>
+// ── Chars badge ──
+async function loadCharsRemaining() {
+  try {
+    const r = await fetch('/api/user/characters');
+    const d = await r.json();
+    if (d.success) {
+      const n = d.characters_remaining;
+      const fmt = n >= 1000000 ? (n/1000000).toFixed(1)+'M' : n >= 1000 ? (n/1000).toFixed(1)+'K' : n;
+      const el = document.getElementById('charsNavCount');
+      if (el) el.textContent = fmt + ' ký tự';
+    }
+  } catch(e) {}
+}
+loadCharsRemaining();
+
+// ── Mobile nav ──
+function toggleMobileNav() {
+  const drawer  = document.getElementById('mobileNavDrawer');
+  const overlay = document.getElementById('mobileNavOverlay');
+  const icon    = document.getElementById('mobileMenuIcon');
+  const isOpen  = !drawer.classList.contains('hidden');
+  if (isOpen) { drawer.classList.add('hidden'); overlay.classList.add('hidden'); icon.textContent = 'menu'; }
+  else { drawer.classList.remove('hidden'); overlay.classList.remove('hidden'); icon.textContent = 'close'; }
+}
+function closeMobileNav() {
+  document.getElementById('mobileNavDrawer').classList.add('hidden');
+  document.getElementById('mobileNavOverlay').classList.add('hidden');
+  document.getElementById('mobileMenuIcon').textContent = 'menu';
+}
+window.addEventListener('resize', () => { if (window.innerWidth >= 768) closeMobileNav(); });
+
+// ── Toast ──
+function showToast(msg, type = 'success') {
+  const t = document.getElementById('toast');
+  const i = document.getElementById('toastIcon');
+  document.getElementById('toastMsg').textContent = msg;
+  t.className = 'toast ' + type;
+  i.textContent = type === 'success' ? 'check_circle' : 'error';
+  void t.offsetWidth;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3500);
+}
+
+// ── Toggle password visibility ──
+function togglePw(id) {
+  const el = document.getElementById(id);
+  el.type = el.type === 'password' ? 'text' : 'password';
+}
+
+// ── Avatar upload ──
+const MAX_AVATAR_BYTES = 2 * 1024 * 1024;
+const MAX_COVER_BYTES = 3 * 1024 * 1024;
+const ALLOWED_AVATAR_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
+
+function setAvatarPreview(url) {
+  const bust = url + (url.includes('?') ? '&' : '?') + 't=' + Date.now();
+  ['profileAvatarImg', 'profileAvatarImgCard'].forEach(id => {
+    const img = document.getElementById(id);
+    if (!img) return;
+    img.src = bust;
+    img.style.display = 'block';
+  });
+  ['profileAvatarFallback', 'profileAvatarFallbackCard'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.style.display = 'none';
+  });
+  const navImg = document.getElementById('navAvatarImg');
+  const navFallback = document.getElementById('navAvatarFallback');
+  if (navImg) {
+    navImg.src = bust;
+  } else if (navFallback) {
+    const img = document.createElement('img');
+    img.id = 'navAvatarImg';
+    img.src = bust;
+    img.alt = '';
+    img.className = 'w-8 h-8 rounded-full object-cover shrink-0';
+    navFallback.replaceWith(img);
+  }
+}
+
+async function uploadAvatar(file) {
+  if (!file) return;
+  if (!ALLOWED_AVATAR_TYPES.includes(file.type)) {
+    showToast(window.__ ? __('prof.avatar.err_type') : 'Chỉ chấp nhận JPG, PNG hoặc WEBP', 'error');
+    return;
+  }
+  if (file.size > MAX_AVATAR_BYTES) {
+    showToast(window.__ ? __('prof.avatar.err_size') : 'Ảnh tối đa 2MB', 'error');
+    return;
+  }
+
+  const fd = new FormData();
+  fd.append('avatar', file);
+
+  const labels = document.querySelectorAll('label[for="avatarInput"]');
+  labels.forEach(l => l.style.pointerEvents = 'none');
+
+  try {
+    showToast(window.__ ? __('prof.avatar.uploading') : 'Đang tải ảnh lên...', 'success');
+    const res = await fetch('/api/user/upload-avatar', { method: 'POST', body: fd });
+    const data = await res.json();
+    if (data.success && data.avatar_url) {
+      setAvatarPreview(data.avatar_url);
+      showToast(data.message || (window.__ ? __('prof.avatar.success') : 'Cập nhật ảnh đại diện thành công'), 'success');
+    } else {
+      showToast(data.message || (window.__ ? __('common.error') : 'Lỗi tải ảnh'), 'error');
+    }
+  } catch (e) {
+    showToast(window.__ ? __('common.error') : 'Lỗi kết nối', 'error');
+  } finally {
+    labels.forEach(l => l.style.pointerEvents = '');
+    const input = document.getElementById('avatarInput');
+    if (input) input.value = '';
+  }
+}
+
+document.getElementById('avatarInput')?.addEventListener('change', function () {
+  if (this.files && this.files[0]) uploadAvatar(this.files[0]);
+});
+
+function setCoverPreview(url) {
+  const banner = document.getElementById('profileCoverBanner');
+  const removeBtn = document.getElementById('btnRemoveCover');
+  if (!banner) return;
+  const bust = url + (url.includes('?') ? '&' : '?') + 't=' + Date.now();
+  banner.style.backgroundImage = `url('${bust}')`;
+  banner.classList.add('has-cover');
+  if (removeBtn) removeBtn.style.display = '';
+}
+
+async function uploadCover(file) {
+  if (!file) return;
+  if (!ALLOWED_AVATAR_TYPES.includes(file.type)) {
+    showToast(_profT('prof.cover.err_type', 'Chỉ chấp nhận JPG, PNG hoặc WEBP'), 'error');
+    return;
+  }
+  if (file.size > MAX_COVER_BYTES) {
+    showToast(_profT('prof.cover.err_size', 'Ảnh bìa tối đa 3MB'), 'error');
+    return;
+  }
+
+  const fd = new FormData();
+  fd.append('cover', file);
+  const label = document.querySelector('label[for="coverInput"]');
+  if (label) label.style.pointerEvents = 'none';
+
+  try {
+    showToast(_profT('prof.cover.uploading', 'Đang tải ảnh bìa...'), 'success');
+    const res = await fetch('/api/user/upload-cover', { method: 'POST', body: fd });
+    const data = await res.json();
+    if (data.success && data.cover_url) {
+      setCoverPreview(data.cover_url);
+      showToast(data.message || _profT('prof.cover.success', 'Cập nhật ảnh bìa thành công'), 'success');
+    } else {
+      showToast(data.message || _profT('common.error', 'Lỗi tải ảnh'), 'error');
+    }
+  } catch (e) {
+    showToast(_profT('err.network', 'Lỗi kết nối'), 'error');
+  } finally {
+    if (label) label.style.pointerEvents = '';
+    const input = document.getElementById('coverInput');
+    if (input) input.value = '';
+  }
+}
+
+async function removeCover() {
+  const removeBtn = document.getElementById('btnRemoveCover');
+  if (removeBtn) removeBtn.disabled = true;
+  try {
+    const res = await fetch('/api/user/remove-cover', { method: 'POST' });
+    const data = await res.json();
+    if (data.success) {
+      const banner = document.getElementById('profileCoverBanner');
+      if (banner) {
+        banner.style.backgroundImage = '';
+        banner.classList.remove('has-cover');
+      }
+      if (removeBtn) removeBtn.style.display = 'none';
+      showToast(data.message || _profT('prof.cover.removed', 'Đã xóa ảnh bìa'), 'success');
+    } else {
+      showToast(data.message || _profT('common.error', 'Lỗi'), 'error');
+    }
+  } catch (e) {
+    showToast(_profT('err.network', 'Lỗi kết nối'), 'error');
+  } finally {
+    if (removeBtn) removeBtn.disabled = false;
+  }
+}
+
+document.getElementById('coverInput')?.addEventListener('change', function () {
+  if (this.files && this.files[0]) uploadCover(this.files[0]);
+});
+
+// ── Update profile ──
+async function updateProfile() {
+  const btn  = document.getElementById('btnUpdateProfile');
+  const name = document.getElementById('inputFullName').value.trim();
+  if (!name) { showToast((window.__ && __('prof.field.fullname')) + ' ' || 'Tên không được để trống', 'error'); return; }
+  btn.disabled = true;
+  btn.innerHTML = '<span class="material-symbols-outlined spin" style="font-size:17px">sync</span> ' + (window.__ ? __('common.loading') : 'Đang lưu...');
+  try {
+    const res  = await fetch('/api/user/update-profile', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ full_name: name })
+    });
+    const data = await res.json();
+    if (data.success) { showToast(window.__ ? __('common.success') : 'Cập nhật thành công!', 'success'); }
+    else { showToast(data.message || (window.__ ? __('common.error') : 'Lỗi cập nhật'), 'error'); }
+  } catch(e) { showToast(window.__ ? __('common.error') : 'Lỗi kết nối', 'error'); }
+  finally {
+    btn.disabled = false;
+    btn.innerHTML = '<span class="material-symbols-outlined" style="font-size:17px">save</span> ' + (window.__ ? __('prof.btn.save') : 'Lưu thay đổi');
+  }
+}
+
+// ── Change password ──
+async function changePassword() {
+  const btn        = document.getElementById('btnChangePw');
+  const currentPw  = document.getElementById('inputCurrentPw').value;
+  const newPw      = document.getElementById('inputNewPw').value;
+  const confirmPw  = document.getElementById('inputConfirmPw').value;
+  if (!currentPw || !newPw || !confirmPw) { showToast('Vui lòng điền đầy đủ', 'error'); return; }
+  if (newPw !== confirmPw) { showToast('Mật khẩu xác nhận không khớp', 'error'); return; }
+  if (newPw.length < 6) { showToast('Mật khẩu phải có ít nhất 6 ký tự', 'error'); return; }
+  btn.disabled = true;
+  btn.innerHTML = '<span class="material-symbols-outlined spin" style="font-size:17px">sync</span> ' + (window.__ ? __('common.loading') : 'Đang xử lý...');
+  try {
+    const res  = await fetch('/api/user/change-password', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ current_password: currentPw, new_password: newPw, confirm_password: confirmPw })
+    });
+    const data = await res.json();
+    if (data.success) {
+      showToast(window.__ ? __('common.success') : 'Đổi mật khẩu thành công!', 'success');
+      document.getElementById('inputCurrentPw').value = '';
+      document.getElementById('inputNewPw').value = '';
+      document.getElementById('inputConfirmPw').value = '';
+    } else {
+      showToast(data.message || (window.__ ? __('common.error') : 'Lỗi đổi mật khẩu'), 'error');
+    }
+  } catch(e) { showToast(window.__ ? __('common.error') : 'Lỗi kết nối', 'error'); }
+  finally {
+    btn.disabled = false;
+    btn.innerHTML = '<span class="material-symbols-outlined" style="font-size:17px">lock_reset</span> ' + (window.__ ? __('prof.btn.change_pw') : 'Đổi mật khẩu');
+  }
+}
+
+// ── Transaction history ──
+let txPage = 1;
+const TX_PER_PAGE = 8;
+
+function renderTxRow(p) {
+  const isCompleted = p.payment_status === 'completed';
+  const statusBadge = isCompleted
+    ? `<span class="pf-badge pf-badge--paid">Đã TT</span>`
+    : p.payment_status === 'pending'
+      ? `<span class="pf-badge pf-badge--pending">Chờ</span>`
+      : `<span class="pf-badge pf-badge--fail">${p.payment_status}</span>`;
+  const invoiceBtn = isCompleted
+    ? `<a href="/invoice/${p.id}" class="pf-invoice-btn"><span class="material-symbols-outlined" style="font-size:13px">download</span>PDF</a>`
+    : `<span class="text-xs text-outline">—</span>`;
+  return `<tr>
+    <td class="font-medium text-on-surface">${p.package_name}</td>
+    <td class="font-mono text-xs text-on-surface-variant hidden sm:table-cell">${p.transaction_id || ('#'+p.id)}</td>
+    <td class="font-semibold" style="color:#d0bcff">${p.amount_vnd.toLocaleString('vi-VN')}đ</td>
+    <td class="text-xs text-on-surface-variant hidden md:table-cell">${p.completed_at || p.created_at}</td>
+    <td>${statusBadge}</td>
+    <td class="text-right">${invoiceBtn}</td>
+  </tr>`;
+}
+
+async function loadTransactions(page = txPage) {
+  txPage = page;
+  const loadingEl = document.getElementById('txLoading');
+  const emptyEl = document.getElementById('txEmpty');
+  const tableEl = document.getElementById('txTable');
+  const pagWrap = document.getElementById('txPaginationWrap');
+
+  if (loadingEl) loadingEl.style.display = 'flex';
+  if (emptyEl) emptyEl.style.display = 'none';
+  if (tableEl) tableEl.style.display = 'none';
+  if (pagWrap) pagWrap.style.display = 'none';
+
+  try {
+    const res = await fetch(`/api/user/payments?page=${page}&per_page=${TX_PER_PAGE}`);
+    const data = await res.json();
+    if (loadingEl) loadingEl.style.display = 'none';
+
+    if (!data.success || !data.payments.length) {
+      if (emptyEl) emptyEl.style.display = 'block';
+      VVPagination.render({
+        id: 'profileTx',
+        containerId: 'txPagination',
+        infoId: 'txPaginationInfo',
+        page: 1,
+        total: 0,
+        perPage: TX_PER_PAGE,
+      });
+      return;
+    }
+
+    if (tableEl) tableEl.style.display = 'block';
+    document.getElementById('txBody').innerHTML = data.payments.map(renderTxRow).join('');
+
+    if (pagWrap) pagWrap.style.display = 'flex';
+    VVPagination.render({
+      id: 'profileTx',
+      containerId: 'txPagination',
+      infoId: 'txPaginationInfo',
+      page: data.page,
+      total: data.total,
+      perPage: data.per_page,
+    });
+  } catch(e) {
+    if (loadingEl) loadingEl.style.display = 'none';
+    if (emptyEl) emptyEl.style.display = 'block';
+  }
+}
+
+VVPagination.register('profileTx', (p) => loadTransactions(p));
+
+function _profT(key, fallback) {
+  return (window.VVi18n && window.VVi18n.t) ? window.VVi18n.t(key) : (fallback || key);
+}
+
+function updateDeleteAccountUI(status) {
+  const pendingBanner = document.getElementById('deletePendingBanner');
+  const rejectedBanner = document.getElementById('deleteRejectedBanner');
+  const btn = document.getElementById('btnRequestDeleteAccount');
+  const pendingAt = document.getElementById('deletePendingAt');
+  const rejectedNote = document.getElementById('deleteRejectedNote');
+  if (!pendingBanner || !btn) return;
+
+  const ds = (status && status.delete_status) || '{{ user.delete_status or "none" }}';
+  pendingBanner.style.display = 'none';
+  rejectedBanner.style.display = 'none';
+  btn.style.display = '';
+
+  if (ds === 'pending') {
+    pendingBanner.style.display = 'block';
+    btn.style.display = 'none';
+    if (pendingAt && status && status.delete_requested_at) {
+      pendingAt.textContent = _profT('prof.delete.sent_at', 'Gửi lúc:') + ' ' + status.delete_requested_at;
+    }
+  } else if (ds === 'rejected') {
+    const note = (status && status.admin_delete_note) || '{{ user.admin_delete_note or "" }}';
+    if (note) {
+      rejectedBanner.style.display = 'block';
+      if (rejectedNote) rejectedNote.textContent = _profT('prof.delete.reject_note', 'Lý do:') + ' ' + note;
+    }
+  }
+}
+
+function openDeleteAccountModal() {
+  const modal = document.getElementById('deleteAccountModal');
+  if (!modal) return;
+  modal.classList.remove('hidden');
+  modal.classList.add('flex');
+  document.getElementById('deleteAccountReason').value = '';
+}
+
+function closeDeleteAccountModal() {
+  const modal = document.getElementById('deleteAccountModal');
+  if (!modal) return;
+  modal.classList.add('hidden');
+  modal.classList.remove('flex');
+}
+
+async function loadDeleteAccountStatus() {
+  try {
+    const r = await fetch('/api/user/account-deletion-status');
+    const d = await r.json();
+    if (d.success) updateDeleteAccountUI(d);
+  } catch (e) {
+    console.error('loadDeleteAccountStatus', e);
+  }
+}
+
+async function submitDeleteAccountRequest() {
+  const btn = document.getElementById('btnConfirmDeleteRequest');
+  const reason = (document.getElementById('deleteAccountReason')?.value || '').trim();
+  if (btn) btn.disabled = true;
+  try {
+    const r = await fetch('/api/user/request-account-deletion', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ delete_reason: reason }),
+    });
+    const d = await r.json();
+    if (d.success) {
+      closeDeleteAccountModal();
+      showToast(d.message || _profT('prof.delete.success', 'Yêu cầu đã được gửi'), 'success');
+      updateDeleteAccountUI({ delete_status: 'pending', delete_requested_at: new Date().toLocaleString('vi-VN') });
+    } else {
+      showToast(d.message || _profT('err.save_failed', 'Gửi yêu cầu thất bại'), 'error');
+    }
+  } catch (e) {
+    showToast(_profT('err.network', 'Lỗi kết nối'), 'error');
+  } finally {
+    if (btn) btn.disabled = false;
+  }
+}
+
+document.addEventListener('DOMContentLoaded', async () => {
+  loadTransactions(1);
+  updateDeleteAccountUI(null);
+  loadDeleteAccountStatus();
+  bindTtsSliders();
+  await loadUserSettings();
+  loadPlanUsage();
+});
+
+function fmtNum(n) {
+  const x = Number(n) || 0;
+  if (x >= 1000000) return (x / 1000000).toFixed(1) + 'M';
+  if (x >= 1000) return (x / 1000).toFixed(1) + 'K';
+  return x.toLocaleString('vi-VN');
+}
+
+function renderUsageChart(chartEl, series) {
+  if (!chartEl || !series || !series.length) return;
+
+  const W = 400;
+  const H = 88;
+  const padX = 16;
+  const padTop = 10;
+  const padBottom = 6;
+  const plotW = W - padX * 2;
+  const plotH = H - padTop - padBottom;
+  const bottom = padTop + plotH;
+
+  const values = series.map(d => Number(d.characters) || 0);
+  const maxVal = Math.max(...values);
+  const max = Math.max(1, maxVal);
+  const weekTotal = values.reduce((a, b) => a + b, 0);
+  const totalEl = document.getElementById('usageChartTotal');
+  if (totalEl) totalEl.textContent = fmtNum(weekTotal) + ' ký tự / 7 ngày';
+
+  const n = series.length;
+  const points = series.map((d, i) => {
+    const x = padX + (n === 1 ? plotW / 2 : (i / (n - 1)) * plotW);
+    const y = bottom - (values[i] / max) * plotH;
+    return { x, y, label: d.label, val: values[i], i, isToday: i === n - 1 };
+  });
+
+  const lineD = points.map((p, i) => `${i === 0 ? 'M' : 'L'}${p.x.toFixed(1)},${p.y.toFixed(1)}`).join(' ');
+  const areaD = `${lineD} L${points[n - 1].x.toFixed(1)},${bottom} L${points[0].x.toFixed(1)},${bottom} Z`;
+
+  const gridLines = [0.25, 0.5, 0.75].map(r => {
+    const gy = padTop + plotH * (1 - r);
+    return `<line x1="${padX}" y1="${gy.toFixed(1)}" x2="${W - padX}" y2="${gy.toFixed(1)}"/>`;
+  }).join('');
+
+  const dots = points.map(p => {
+    const cls = 'usage-line-dot' + (p.isToday ? ' is-today' : '');
+    return `<circle class="${cls}" cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="3.5" data-i="${p.i}"/>`;
+  }).join('');
+
+  const labels = series.map((d, i) => {
+    const cls = 'usage-line-label' + (i === n - 1 ? ' is-today' : '');
+    return `<span class="${cls}">${d.label}</span>`;
+  }).join('');
+
+  chartEl.innerHTML =
+    '<div class="usage-line-tooltip" id="usageLineTooltip">' +
+      '<span class="usage-line-tooltip-date"></span>' +
+      '<span class="usage-line-tooltip-val"></span>' +
+    '</div>' +
+    `<svg class="usage-line-svg" viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet" aria-hidden="true">` +
+      '<defs>' +
+        '<linearGradient id="usageAreaGrad" x1="0" y1="0" x2="0" y2="1">' +
+          '<stop offset="0%" stop-color="#a78bfa" stop-opacity="0.35"/>' +
+          '<stop offset="100%" stop-color="#a78bfa" stop-opacity="0"/>' +
+        '</linearGradient>' +
+        '<linearGradient id="usageLineGrad" x1="0" y1="0" x2="1" y2="0">' +
+          '<stop offset="0%" stop-color="#8b5cf6"/>' +
+          '<stop offset="100%" stop-color="#2fd9f4"/>' +
+        '</linearGradient>' +
+      '</defs>' +
+      `<g class="usage-line-grid">${gridLines}</g>` +
+      `<path class="usage-line-area" d="${areaD}"/>` +
+      `<path class="usage-line-stroke" d="${lineD}"/>` +
+      dots +
+    '</svg>' +
+    `<div class="usage-line-labels">${labels}</div>`;
+
+  const tooltip = chartEl.querySelector('#usageLineTooltip');
+  const dateEl = tooltip && tooltip.querySelector('.usage-line-tooltip-date');
+  const valEl = tooltip && tooltip.querySelector('.usage-line-tooltip-val');
+  const dotsEl = chartEl.querySelectorAll('.usage-line-dot');
+  const svgEl = chartEl.querySelector('.usage-line-svg');
+
+  function showTip(pt, clientX) {
+    if (!tooltip || !dateEl || !valEl) return;
+    dotsEl.forEach(d => d.classList.remove('is-active'));
+    const dot = chartEl.querySelector(`.usage-line-dot[data-i="${pt.i}"]`);
+    if (dot) dot.classList.add('is-active');
+    dateEl.textContent = pt.label;
+    valEl.textContent = pt.val.toLocaleString('vi-VN') + ' ký tự';
+    const rect = chartEl.getBoundingClientRect();
+    const xPct = pt.x / W;
+    tooltip.style.left = (xPct * 100) + '%';
+    tooltip.style.top = ((pt.y / H) * rect.height) + 'px';
+    tooltip.classList.add('is-visible');
+  }
+
+  function hideTip() {
+    if (tooltip) tooltip.classList.remove('is-visible');
+    dotsEl.forEach(d => d.classList.remove('is-active'));
+  }
+
+  dotsEl.forEach(dot => {
+    dot.addEventListener('mouseenter', () => {
+      const i = parseInt(dot.getAttribute('data-i'), 10);
+      showTip(points[i]);
+    });
+    dot.addEventListener('mouseleave', hideTip);
+  });
+
+  if (svgEl) {
+    svgEl.addEventListener('mousemove', (e) => {
+      const rect = svgEl.getBoundingClientRect();
+      const relX = ((e.clientX - rect.left) / rect.width) * W;
+      let nearest = points[0];
+      let minDist = Infinity;
+      points.forEach(p => {
+        const d = Math.abs(p.x - relX);
+        if (d < minDist) { minDist = d; nearest = p; }
+      });
+      showTip(nearest);
+    });
+    svgEl.addEventListener('mouseleave', hideTip);
+  }
+}
+
+async function loadPlanUsage() {
+  const loading = document.getElementById('planLoading');
+  const content = document.getElementById('planContent');
+  try {
+    const [subRes, chartRes] = await Promise.all([
+      fetch('/api/user/subscription/status'),
+      fetch('/api/user/usage-chart'),
+    ]);
+    const subData = await subRes.json();
+    const chartData = await chartRes.json();
+    if (loading) loading.style.display = 'none';
+    if (content) content.style.display = 'block';
+
+    if (subData.success && subData.subscription) {
+      const s = subData.subscription;
+      const limit = Number(s.characters_limit) || 0;
+      const used = Number(s.characters_used) || 0;
+      const remaining = Number(s.characters_remaining) || 0;
+      const pct = limit > 0 ? Math.min(100, Math.round((used / limit) * 100)) : 0;
+      const planName = (() => {
+        const pn = (s.package_name || '').trim();
+        if (pn && pn !== 'Free' && pn !== 'Chưa có gói') return pn;
+        if (limit > 100000) return 'Gói hiện tại';
+        return pn || 'Free';
+      })();
+
+      const elName = document.getElementById('planName');
+      const elExpiry = document.getElementById('planExpiry');
+      const elDays = document.getElementById('planDaysLeft');
+      const elRemain = document.getElementById('planRemaining');
+      const elUsed = document.getElementById('planUsedLabel');
+      const elPct = document.getElementById('planUsedPct');
+      const elBar = document.getElementById('planProgressBar');
+      const elHint = document.getElementById('planProgressHint');
+
+      if (elName) elName.textContent = planName;
+      if (elExpiry) elExpiry.textContent = s.end_date || '—';
+      if (elDays) elDays.textContent = s.days_remaining != null
+        ? (s.days_remaining + ' ngày còn lại')
+        : '';
+      if (elRemain) elRemain.textContent = fmtNum(remaining) + ' ký tự';
+      if (elUsed) elUsed.textContent = fmtNum(used) + ' / ' + fmtNum(limit);
+      if (elPct) elPct.textContent = pct + '%';
+      if (elBar) {
+        elBar.style.width = pct + '%';
+        elBar.classList.toggle('is-active', pct > 0);
+        const barWrap = elBar.closest('[role="progressbar"]');
+        if (barWrap) {
+          barWrap.setAttribute('aria-valuenow', String(pct));
+          barWrap.classList.toggle('has-usage', pct > 0);
+        }
+      }
+      if (elHint) {
+        if (pct > 0) {
+          elHint.textContent = fmtNum(used) + ' ký tự · ' + pct + '%';
+        } else {
+          elHint.textContent = _profT('prof.plan.empty_hint', 'Chưa sử dụng ký tự');
+        }
+      }
+    }
+
+    if (chartData.success && chartData.chart) {
+      const chart = document.getElementById('usageChart');
+      if (chart) renderUsageChart(chart, chartData.chart);
+    }
+  } catch (e) {
+    console.error('loadPlanUsage', e);
+    if (loading) loading.textContent = _profT('err.network', 'Lỗi tải dữ liệu');
+  }
+}
+
+function bindTtsSliders() {
+  const pitch = document.getElementById('ttsDefaultPitch');
+  const pitchVal = document.getElementById('ttsPitchVal');
+  const speed = document.getElementById('ttsDefaultSpeed');
+  const speedVal = document.getElementById('ttsSpeedVal');
+  if (pitch && pitchVal) {
+    pitch.addEventListener('input', () => {
+      const v = parseInt(pitch.value, 10);
+      pitchVal.textContent = v > 0 ? '+' + v : String(v);
+    });
+  }
+  if (speed && speedVal) {
+    speed.addEventListener('input', () => {
+      speedVal.textContent = parseFloat(speed.value).toFixed(1) + 'x';
+    });
+  }
+}
+
+async function loadUserSettings() {
+  try {
+    const r = await fetch('/api/user/settings');
+    const d = await r.json();
+    if (!d.success || !d.settings) return;
+    const s = d.settings;
+
+    const voiceSel = document.getElementById('ttsDefaultVoice');
+    if (voiceSel && s.default_voice_id) voiceSel.value = s.default_voice_id;
+    const emoSel = document.getElementById('ttsDefaultEmotionalVoice');
+    if (emoSel && s.default_emotional_voice_id) emoSel.value = s.default_emotional_voice_id;
+
+    const pitch = document.getElementById('ttsDefaultPitch');
+    const pitchVal = document.getElementById('ttsPitchVal');
+    if (pitch) {
+      pitch.value = s.default_pitch || 0;
+      if (pitchVal) pitchVal.textContent = (s.default_pitch > 0 ? '+' + s.default_pitch : String(s.default_pitch || 0));
+    }
+    const speed = document.getElementById('ttsDefaultSpeed');
+    const speedVal = document.getElementById('ttsSpeedVal');
+    if (speed) {
+      speed.value = s.default_speed || 1;
+      if (speedVal) speedVal.textContent = parseFloat(speed.value).toFixed(1) + 'x';
+    }
+    const fmt = document.getElementById('ttsExportFormat');
+    if (fmt && s.default_export_format) fmt.value = s.default_export_format;
+    const br = document.getElementById('ttsExportBitrate');
+    if (br && s.default_export_bitrate) br.value = String(s.default_export_bitrate);
+    const lang = document.getElementById('ttsDefaultLang');
+    if (lang && s.default_language) lang.value = s.default_language;
+
+    const nChars = document.getElementById('notifyCharsLow');
+    const nPay = document.getElementById('notifyPayment');
+    const nExp = document.getElementById('notifyPlanExpiry');
+    const nMark = document.getElementById('notifyMarketing');
+    if (nChars) nChars.checked = s.notify_chars_low;
+    if (nPay) nPay.checked = s.notify_payment;
+    if (nExp) nExp.checked = s.notify_plan_expiry;
+    if (nMark) nMark.checked = s.notify_marketing;
+  } catch (e) {
+    console.error('loadUserSettings', e);
+  }
+}
+
+function collectSettingsPayload() {
+  return {
+    default_voice_id: document.getElementById('ttsDefaultVoice')?.value || '',
+    default_emotional_voice_id: document.getElementById('ttsDefaultEmotionalVoice')?.value || '',
+    default_pitch: parseInt(document.getElementById('ttsDefaultPitch')?.value || '0', 10),
+    default_speed: parseFloat(document.getElementById('ttsDefaultSpeed')?.value || '1'),
+    default_export_format: document.getElementById('ttsExportFormat')?.value || 'wav',
+    default_export_bitrate: parseInt(document.getElementById('ttsExportBitrate')?.value || '192', 10),
+    default_language: document.getElementById('ttsDefaultLang')?.value || 'vi',
+    notify_chars_low: document.getElementById('notifyCharsLow')?.checked ?? true,
+    notify_payment: document.getElementById('notifyPayment')?.checked ?? true,
+    notify_plan_expiry: document.getElementById('notifyPlanExpiry')?.checked ?? true,
+    notify_marketing: document.getElementById('notifyMarketing')?.checked ?? false,
+  };
+}
+
+async function saveTtsSettings() {
+  const btn = document.getElementById('btnSaveTts');
+  if (btn) btn.disabled = true;
+  try {
+    const res = await fetch('/api/user/settings', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(collectSettingsPayload()),
+    });
+    const d = await res.json();
+    if (d.success) showToast(d.message || _profT('common.success', 'Lưu thành công'), 'success');
+    else showToast(d.message || _profT('err.save_failed', 'Lỗi lưu'), 'error');
+  } catch (e) {
+    showToast(_profT('err.network', 'Lỗi kết nối'), 'error');
+  } finally {
+    if (btn) btn.disabled = false;
+  }
+}
+
+async function saveNotificationSettings() {
+  const btn = document.getElementById('btnSaveNotify');
+  if (btn) btn.disabled = true;
+  try {
+    const res = await fetch('/api/user/settings', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(collectSettingsPayload()),
+    });
+    const d = await res.json();
+    if (d.success) showToast(d.message || _profT('common.success', 'Lưu thành công'), 'success');
+    else showToast(d.message || _profT('err.save_failed', 'Lỗi lưu'), 'error');
+  } catch (e) {
+    showToast(_profT('err.network', 'Lỗi kết nối'), 'error');
+  } finally {
+    if (btn) btn.disabled = false;
+  }
+}
+
+async function exportPersonalData(format) {
+  const fmt = format || 'pdf';
+  const btnPdf = document.getElementById('btnExportPdf');
+  const btnDocx = document.getElementById('btnExportDocx');
+  if (btnPdf) btnPdf.disabled = true;
+  if (btnDocx) btnDocx.disabled = true;
+  try {
+    const res = await fetch('/api/user/export-data?format=' + encodeURIComponent(fmt));
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      showToast(err.message || _profT('err.export_failed', 'Xuất dữ liệu thất bại'), 'error');
+      return;
+    }
+    let filename = fmt === 'docx' ? 'vietvoice_du_lieu_ca_nhan.docx' : 'vietvoice_du_lieu_ca_nhan.pdf';
+    const cd = res.headers.get('Content-Disposition') || '';
+    const m = cd.match(/filename="?([^";\n]+)"?/i);
+    if (m) filename = m[1];
+    const blob = await res.blob();
+    const mime = fmt === 'docx'
+      ? 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+      : 'application/pdf';
+    const fileBlob = blob.type ? blob : new Blob([blob], { type: mime });
+    const url = URL.createObjectURL(fileBlob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+    showToast(_profT('prof.export.success', 'Đã tải báo cáo dữ liệu'), 'success');
+  } catch (e) {
+    showToast(_profT('err.network', 'Lỗi kết nối'), 'error');
+  } finally {
+    if (btnPdf) btnPdf.disabled = false;
+    if (btnDocx) btnDocx.disabled = false;
+  }
+}
+
+// Force dark background on all inputs
+document.querySelectorAll('.form-input, input[type="text"], input[type="email"], input[type="password"]').forEach(function(el) {
+  el.style.setProperty('background', '#0d1c2d', 'important');
+  el.style.setProperty('background-color', '#0d1c2d', 'important');
+  el.style.setProperty('color', '#d4e4fa', 'important');
+});
+// Re-apply after a short delay (autofill kicks in slightly after load)
+setTimeout(function() {
+  document.querySelectorAll('.form-input, input[type="text"], input[type="email"], input[type="password"]').forEach(function(el) {
+    el.style.setProperty('background', '#0d1c2d', 'important');
+    el.style.setProperty('background-color', '#0d1c2d', 'important');
+    el.style.setProperty('color', '#d4e4fa', 'important');
+  });
+}, 500);
+</script>
+</body>
+</html>

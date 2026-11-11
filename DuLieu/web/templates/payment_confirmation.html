@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html class="dark" lang="vi">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>VietVoice AI - Thanh toán</title>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/payment-confirm.css') }}">
+</head>
+<body class="pc-page">
+
+<div class="pc-bg" aria-hidden="true"></div>
+
+<div class="pc-wrap">
+  <div class="pc-topbar">
+    <a href="/pricing" class="pc-back">
+      <span class="material-symbols-outlined">arrow_back</span>
+      Quay lại
+    </a>
+    <a href="/" class="pc-brand">
+      <span class="material-symbols-outlined">graphic_eq</span>
+      VietVoice AI
+    </a>
+    <div class="pc-timer" id="sessionTimer" title="Thời gian phiên thanh toán">
+      <span class="material-symbols-outlined">schedule</span>
+      <span id="timerDisplay">15:00</span>
+    </div>
+  </div>
+
+  <!-- Progress: Chọn gói → Thanh toán → Hoàn tất -->
+  <ol class="pc-steps">
+    <li class="pc-step is-done">
+      <span class="pc-step__dot"><span class="material-symbols-outlined" style="font-size:14px;font-variation-settings:'FILL' 1">check</span></span>
+      <span class="pc-step__label">Chọn gói</span>
+    </li>
+    <span class="pc-step__line is-done"></span>
+    <li class="pc-step is-active">
+      <span class="pc-step__dot">2</span>
+      <span class="pc-step__label">Thanh toán</span>
+    </li>
+    <span class="pc-step__line"></span>
+    <li class="pc-step" id="stepDone">
+      <span class="pc-step__dot">3</span>
+      <span class="pc-step__label">Hoàn tất</span>
+    </li>
+  </ol>
+
+  <div class="pc-checkout">
+    <!-- LEFT: Order summary (Stripe) -->
+    <aside class="pc-order">
+      <p class="pc-order__eyebrow">Đơn hàng của bạn</p>
+      <h1 class="pc-order__plan" id="pkgName">{{ payment.package_name }}</h1>
+      <span class="pc-order__duration">{{ payment.duration_days }} ngày sử dụng</span>
+
+      {% set chars_fmt = "{:,.0f}".format(payment.characters_limit).replace(",", ".") %}
+      {% set amount_fmt = "{:,}".format(payment.amount_vnd).replace(",", ".") %}
+      {% set per_day = (payment.amount_vnd // payment.duration_days) if payment.duration_days else payment.amount_vnd %}
+      {% set per_day_fmt = "{:,}".format(per_day).replace(",", ".") %}
+
+      <div class="pc-order__hero">
+        <div class="pc-order__hero-price">
+          <span class="pc-order__hero-amount">{{ amount_fmt }}đ</span>
+          <span class="pc-order__hero-period">/ {{ payment.duration_days }} ngày</span>
+        </div>
+        <div class="pc-order__hero-meta">
+          <span><span class="material-symbols-outlined">schedule</span> ~{{ per_day_fmt }}đ/ngày</span>
+          <span><span class="material-symbols-outlined">text_fields</span> {{ chars_fmt }} ký tự</span>
+        </div>
+      </div>
+
+      <div class="pc-order__block">
+        <p class="pc-order__block-title">Chi tiết đơn hàng</p>
+        <dl class="pc-order__lines">
+          <div class="pc-order__line">
+            <dt>Gói dịch vụ</dt>
+            <dd>{{ payment.package_name }}</dd>
+          </div>
+          <div class="pc-order__line">
+            <dt>Thời hạn</dt>
+            <dd>{{ payment.duration_days }} ngày</dd>
+          </div>
+          <div class="pc-order__line">
+            <dt>Hạn mức ký tự</dt>
+            <dd>{{ chars_fmt }}</dd>
+          </div>
+          {% if payment.created_at %}
+          <div class="pc-order__line">
+            <dt>Thời gian tạo</dt>
+            <dd>{{ payment.created_at.strftime('%d/%m/%Y %H:%M') }}</dd>
+          </div>
+          {% endif %}
+          <div class="pc-order__line">
+            <dt>Phí dịch vụ</dt>
+            <dd>{{ amount_fmt }}đ</dd>
+          </div>
+          <div class="pc-order__line pc-order__line--muted">
+            <dt>Thuế / phí khác</dt>
+            <dd>0đ</dd>
+          </div>
+        </dl>
+      </div>
+
+      <div class="pc-order__block">
+        <p class="pc-order__block-title">Quyền lợi kích hoạt</p>
+        <ul class="pc-order__features">
+          <li><span class="material-symbols-outlined">check_circle</span> {{ chars_fmt }} ký tự</li>
+          <li><span class="material-symbols-outlined">check_circle</span> Tất cả giọng đọc tiếng Việt</li>
+          <li><span class="material-symbols-outlined">check_circle</span> Emotional TTS</li>
+          <li><span class="material-symbols-outlined">check_circle</span> Thư viện âm thanh</li>
+          <li><span class="material-symbols-outlined">check_circle</span> Clone giọng cá nhân</li>
+        </ul>
+      </div>
+
+      <div class="pc-order__block pc-order__guide">
+        <p class="pc-order__block-title">Thanh toán trong 3 bước</p>
+        <ol class="pc-order__steps-mini">
+          <li>
+            <span class="pc-order__step-num">1</span>
+            <span>Quét QR hoặc chuyển khoản ngân hàng</span>
+          </li>
+          <li>
+            <span class="pc-order__step-num">2</span>
+            <span>Nhập <strong>đúng nội dung</strong> chuyển khoản</span>
+          </li>
+          <li>
+            <span class="pc-order__step-num">3</span>
+            <span>Chờ xác nhận tự động (~30 giây)</span>
+          </li>
+        </ol>
+      </div>
+
+      <div class="pc-order__footer">
+        <div class="pc-order__divider"></div>
+        <div class="pc-order__total">
+          <span class="pc-order__total-label">Tổng thanh toán</span>
+          <span class="pc-order__total-amount">{{ amount_fmt }}đ</span>
+        </div>
+        <p class="pc-order__ref">Mã GD: {{ payment.transaction_id }}</p>
+        <div class="pc-order__secure">
+          <span class="material-symbols-outlined">verified_user</span>
+          Giao dịch được mã hóa · Hỗ trợ 24/7
+        </div>
+      </div>
+    </aside>
+
+    <!-- RIGHT: Payment -->
+    <div class="pc-payment">
+      <div class="pc-payment__head">
+        <div>
+          <h2 class="pc-payment__title">Hoàn tất thanh toán</h2>
+          <p class="pc-payment__sub">Chọn phương thức bên dưới</p>
+        </div>
+        <div class="pc-amount-mobile">{{ "{:,}".format(payment.amount_vnd).replace(",", ".") }}đ</div>
+      </div>
+
+      <div class="pc-methods" role="tablist">
+        <button type="button" class="pc-method-tab is-active" data-method="qr" role="tab" aria-selected="true">
+          <span class="material-symbols-outlined">qr_code_scanner</span>
+          Quét QR
+        </button>
+        <button type="button" class="pc-method-tab" data-method="transfer" role="tab" aria-selected="false">
+          <span class="material-symbols-outlined">account_balance</span>
+          Chuyển khoản
+        </button>
+      </div>
+
+      <!-- Tab: QR -->
+      <div id="panelQr" class="pc-method-panel is-active">
+        <div class="pc-qr-zone">
+          <div class="pc-qr-scanner-ring">
+            <img id="qrImage"
+                 src="{{ payment.qr_code }}"
+                 alt="VietQR"
+                 onerror="this.src='https://api.qrserver.com/v1/create-qr-code/?size=220x220&data={{ payment.transaction_id }}'"/>
+          </div>
+          <div class="pc-qr-apps">
+            <span class="pc-qr-app">VietQR</span>
+            <span class="pc-qr-app">MB Bank</span>
+            <span class="pc-qr-app">MoMo</span>
+            <span class="pc-qr-app">ZaloPay</span>
+          </div>
+          <p class="pc-qr-instruction">Mở app ngân hàng → <strong>Quét mã QR</strong> → Xác nhận thanh toán</p>
+        </div>
+      </div>
+
+      <!-- Tab: Transfer -->
+      <div id="panelTransfer" class="pc-method-panel">
+        <div class="pc-transfer-grid">
+          <div class="pc-field">
+            <span class="pc-field__label">Ngân hàng</span>
+            <span class="pc-field__value">{{ payment.bank_name }}</span>
+          </div>
+          <div class="pc-field">
+            <span class="pc-field__label">Chủ tài khoản</span>
+            <span class="pc-field__value">{{ payment.account_name }}</span>
+          </div>
+          <div class="pc-field pc-field--copy" onclick="copyText(PAYMENT_DATA.account, this)">
+            <span class="pc-field__label">Số tài khoản</span>
+            <span class="pc-field__value pc-field__value--teal">
+              {{ payment.account_number }}
+              <span class="material-symbols-outlined copy-icon">content_copy</span>
+            </span>
+          </div>
+          <div class="pc-field">
+            <span class="pc-field__label">Số tiền</span>
+            <span class="pc-field__value pc-field__value--purple">{{ "{:,}".format(payment.amount_vnd).replace(",", ".") }}đ</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Nội dung CK — always visible (VNPay style) -->
+      <div class="pc-content-box">
+        <div class="pc-content-box__head">
+          <span class="material-symbols-outlined">warning</span>
+          Nhập đúng nội dung chuyển khoản
+        </div>
+        <div class="pc-content-box__code" onclick="copyText(PAYMENT_DATA.content, this)">
+          <code id="transferContent">{{ payment.transaction_id }}</code>
+          <span class="material-symbols-outlined copy-icon">content_copy</span>
+        </div>
+        <p class="pc-content-box__hint">Sai nội dung có thể chậm xác nhận · Nhấn để sao chép</p>
+      </div>
+
+      <button type="button" class="pc-copy-all" onclick="copyAllDetails()">
+        <span class="material-symbols-outlined">content_copy</span>
+        Sao chép toàn bộ thông tin CK
+      </button>
+
+      <!-- Status -->
+      <div id="verifySection" class="pc-status">
+        <div id="verifyWaiting">
+          <div class="pc-status__row">
+            <div class="pc-spinner"></div>
+            <div class="pc-status__text">
+              <strong>Đang chờ xác nhận<span class="pc-dots"><span></span><span></span><span></span></span></strong>
+              <span>Hệ thống kiểm tra mỗi 5 giây · Gói kích hoạt ngay khi nhận tiền</span>
+            </div>
+            <button type="button" id="verifyBtn" class="pc-status-btn" onclick="manualCheck()">
+              <span class="material-symbols-outlined">refresh</span>
+              Kiểm tra
+            </button>
+          </div>
+        </div>
+        <div id="verifySuccess" class="pc-status__success hidden">
+          <div class="pc-status__success-icon">
+            <span class="material-symbols-outlined">check_circle</span>
+          </div>
+          <div>
+            <p class="pc-status__success-title">Thanh toán thành công!</p>
+            <p id="verifySuccessMsg" class="pc-status__success-msg"></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="pc-actions">
+        <a href="/pricing" class="pc-btn pc-btn--ghost">
+          <span class="material-symbols-outlined">arrow_back</span>
+          Bảng giá
+        </a>
+        <a id="downloadInvoiceBtn" href="/invoice/{{ payment.payment_id }}" class="pc-btn pc-btn--invoice hidden">
+          <span class="material-symbols-outlined">download</span>
+          Hóa đơn
+        </a>
+        <button type="button" id="goWorkspace" class="pc-btn pc-btn--primary hidden" onclick="window.location.href='/'">
+          <span class="material-symbols-outlined">rocket_launch</span>
+          Bắt đầu sử dụng
+        </button>
+      </div>
+
+      <div class="pc-trust">
+        <span class="pc-trust-item"><span class="material-symbols-outlined">lock</span> Bảo mật SSL</span>
+        <span class="pc-trust-item"><span class="material-symbols-outlined">verified</span> VietQR · SePay</span>
+        <span class="pc-trust-item"><span class="material-symbols-outlined">bolt</span> Tự động xác nhận</span>
+      </div>
+    </div>
+  </div>
+
+  <p class="pc-footer">
+    Cần hỗ trợ? <a href="/contact">{{ support_email_addr() }}</a>
+  </p>
+</div>
+
+<div id="copyToast" class="pc-toast">Đã sao chép!</div>
+
+<script>
+const PAYMENT_ID = {{ payment.payment_id }};
+const PAYMENT_DATA = {
+  bank: {{ payment.bank_name|tojson }},
+  accountName: {{ payment.account_name|tojson }},
+  account: {{ payment.account_number|tojson }},
+  amount: {{ payment.amount_vnd|tojson }},
+  content: {{ payment.transaction_id|tojson }},
+  package: {{ payment.package_name|tojson }},
+};
+const POLL_INTERVAL = 5000;
+const SESSION_SECONDS = 15 * 60;
+let pollTimer = null;
+let timerInterval = null;
+let isPaid = false;
+let secondsLeft = SESSION_SECONDS;
+
+localStorage.removeItem('vv_pending_payment');
+
+/* Method tabs */
+document.querySelectorAll('.pc-method-tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    const method = tab.dataset.method;
+    document.querySelectorAll('.pc-method-tab').forEach(t => {
+      t.classList.toggle('is-active', t === tab);
+      t.setAttribute('aria-selected', t === tab ? 'true' : 'false');
+    });
+    document.getElementById('panelQr').classList.toggle('is-active', method === 'qr');
+    document.getElementById('panelTransfer').classList.toggle('is-active', method === 'transfer');
+  });
+});
+
+/* Session timer */
+function formatTime(s) {
+  const m = Math.floor(s / 60);
+  const sec = s % 60;
+  return `${m}:${sec.toString().padStart(2, '0')}`;
+}
+
+function startTimer() {
+  const el = document.getElementById('timerDisplay');
+  el.textContent = formatTime(secondsLeft);
+  timerInterval = setInterval(() => {
+    if (isPaid) { clearInterval(timerInterval); return; }
+    secondsLeft--;
+    el.textContent = formatTime(Math.max(0, secondsLeft));
+    if (secondsLeft <= 0) clearInterval(timerInterval);
+  }, 1000);
+}
+
+/* Copy helpers */
+function showToast(msg) {
+  const t = document.getElementById('copyToast');
+  t.textContent = msg || 'Đã sao chép!';
+  t.classList.add('is-visible');
+  setTimeout(() => t.classList.remove('is-visible'), 2000);
+}
+
+function copyText(text, el) {
+  navigator.clipboard.writeText(text).then(() => {
+    const icon = el?.querySelector('.copy-icon');
+    if (icon) {
+      const orig = icon.textContent;
+      icon.textContent = 'check';
+      icon.style.color = '#6ee7b7';
+      setTimeout(() => { icon.textContent = orig; icon.style.color = ''; }, 1500);
+    }
+    showToast();
+  });
+}
+
+function copyAllDetails() {
+  const d = PAYMENT_DATA;
+  const text = [
+    `Ngân hàng: ${d.bank}`,
+    `Chủ TK: ${d.accountName}`,
+    `STK: ${d.account}`,
+    `Số tiền: ${Number(d.amount).toLocaleString('vi-VN')}đ`,
+    `Nội dung: ${d.content}`,
+    `Gói: ${d.package}`,
+    '',
+    'Vui lòng chuyển khoản đúng số tiền và nội dung.',
+  ].join('\n');
+  navigator.clipboard.writeText(text).then(() => showToast('Đã sao chép thông tin CK!'));
+}
+
+/* Polling */
+async function poll() {
+  if (isPaid) return;
+  try {
+    const res = await fetch(`/api/payment/status/${PAYMENT_ID}`);
+    const data = await res.json();
+    const status = data?.payment?.status || data?.status;
+    if (status === 'completed') {
+      onPaymentSuccess({
+        ...data,
+        status: 'completed',
+        package_info: data?.payment?.package_info,
+        characters_remaining: data?.user_characters?.characters_remaining,
+      });
+    }
+  } catch (e) {
+    console.warn('[Poll]', e);
+  }
+}
+
+function startPolling() {
+  poll();
+  pollTimer = setInterval(poll, POLL_INTERVAL);
+}
+
+function stopPolling() {
+  if (pollTimer) { clearInterval(pollTimer); pollTimer = null; }
+}
+
+async function manualCheck() {
+  const btn = document.getElementById('verifyBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="pc-spinner" style="width:14px;height:14px;border-width:2px"></span>';
+  await poll();
+  setTimeout(() => {
+    if (!isPaid && btn) {
+      btn.disabled = false;
+      btn.innerHTML = '<span class="material-symbols-outlined">refresh</span> Kiểm tra';
+    }
+  }, 2500);
+}
+
+function onPaymentSuccess(data) {
+  if (isPaid) return;
+  isPaid = true;
+  stopPolling();
+  if (timerInterval) clearInterval(timerInterval);
+  localStorage.removeItem('vv_pending_payment');
+
+  document.getElementById('verifyWaiting').classList.add('hidden');
+  document.getElementById('verifySuccess').classList.remove('hidden');
+  document.getElementById('verifySection').classList.add('is-success');
+
+  document.getElementById('stepDone').classList.add('is-done');
+  document.getElementById('stepDone').classList.remove('is-active');
+  document.getElementById('stepDone').querySelector('.pc-step__dot').innerHTML =
+    '<span class="material-symbols-outlined" style="font-size:14px;font-variation-settings:\'FILL\' 1">check</span>';
+
+  let msg = '';
+  if (data.package_info) {
+    msg += `+${Number(data.package_info.characters_limit).toLocaleString('vi-VN')} ký tự đã được cộng.`;
+  }
+  if (data.characters_remaining != null) {
+    msg += ` Còn lại: ${Number(data.characters_remaining).toLocaleString('vi-VN')} ký tự.`;
+  }
+  document.getElementById('verifySuccessMsg').textContent = msg || 'Gói dịch vụ đã được kích hoạt!';
+
+  document.getElementById('goWorkspace').classList.remove('hidden');
+  document.getElementById('downloadInvoiceBtn').classList.remove('hidden');
+
+  const timerEl = document.getElementById('sessionTimer');
+  if (timerEl) {
+    timerEl.style.color = '#6ee7b7';
+    timerEl.style.borderColor = 'rgba(110,231,183,0.3)';
+    timerEl.style.background = 'rgba(110,231,183,0.1)';
+    document.getElementById('timerDisplay').textContent = 'Xong!';
+  }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  startPolling();
+  startTimer();
+});
+
+window.addEventListener('vv:paymentSuccess', (e) => onPaymentSuccess(e.detail || {}));
+</script>
+</body>
+</html>

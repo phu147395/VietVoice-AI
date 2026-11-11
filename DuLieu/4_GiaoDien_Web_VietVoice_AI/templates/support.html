@@ -1,0 +1,214 @@
+{% extends "base.html" %}
+{% block title %}Hỗ trợ & FAQ — VietVoice{% endblock %}
+
+{% block extra_css %}
+<style>
+    .support-hero {
+        text-align: center;
+        padding: 3rem 1.5rem 2rem;
+        max-width: 900px;
+        margin: 0 auto;
+    }
+    .support-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 5px 16px;
+        background: rgba(34,197,94,0.1);
+        border: 1px solid rgba(34,197,94,0.22);
+        border-radius: 9999px;
+        font-size: 0.72rem;
+        font-weight: 700;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: #86efac;
+        margin-bottom: 1.25rem;
+    }
+    .support-hero h1 {
+        font-size: 2.2rem;
+        font-weight: 800;
+        background: linear-gradient(135deg, #34d399, #60a5fa);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin: 0 0 0.75rem;
+    }
+    .support-hero p { color: #64748b; font-size: 0.9rem; margin: 0; }
+
+    .support-container {
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 0 1.5rem 4rem;
+    }
+
+    /* Contact cards */
+    .contact-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 16px;
+        margin-bottom: 2rem;
+    }
+    @media (max-width: 640px) { .contact-grid { grid-template-columns: 1fr; } }
+    @media (max-width: 900px) { .contact-grid { grid-template-columns: repeat(2, 1fr); } }
+
+    .contact-card {
+        background: rgba(255,255,255,0.03);
+        border: 1px solid rgba(255,255,255,0.07);
+        border-radius: 16px;
+        padding: 1.75rem 1.5rem;
+        text-align: center;
+        text-decoration: none;
+        transition: all 0.2s ease;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+    }
+    .contact-card:hover {
+        border-color: rgba(52,211,153,0.3);
+        background: rgba(52,211,153,0.05);
+        transform: translateY(-2px);
+        text-decoration: none;
+    }
+    .contact-card-icon { font-size: 2rem; }
+    .contact-card-title {
+        font-size: 0.9rem;
+        font-weight: 700;
+        color: #e2e8f0;
+    }
+    .contact-card-desc {
+        font-size: 0.78rem;
+        color: #64748b;
+        line-height: 1.5;
+    }
+    .contact-card-link {
+        font-size: 0.8rem;
+        color: #34d399 !important;
+        font-weight: 500;
+        display: block;
+        word-break: break-all;
+    }
+
+    /* FAQ */
+    .section-title {
+        font-size: 1.2rem;
+        font-weight: 700;
+        color: #e2e8f0;
+        margin: 2.5rem 0 1rem;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    .faq-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 2rem; }
+    .faq-item {
+        background: rgba(255,255,255,0.03);
+        border: 1px solid rgba(255,255,255,0.07);
+        border-radius: 12px;
+        overflow: hidden;
+    }
+    .faq-q {
+        padding: 16px 20px;
+        font-size: 0.875rem;
+        font-weight: 600;
+        color: #e2e8f0;
+        cursor: pointer;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 12px;
+        user-select: none;
+        transition: background 0.15s;
+    }
+    .faq-q:hover { background: rgba(255,255,255,0.03); }
+    .faq-q .faq-arrow {
+        flex-shrink: 0;
+        width: 20px; height: 20px;
+        display: flex; align-items: center; justify-content: center;
+        transition: transform 0.2s ease;
+        color: #64748b;
+    }
+    .faq-item.open .faq-arrow { transform: rotate(180deg); }
+    .faq-a {
+        display: none;
+        padding: 0 20px 16px;
+        font-size: 0.85rem;
+        color: #94a3b8;
+        line-height: 1.7;
+        border-top: 1px solid rgba(255,255,255,0.05);
+        padding-top: 14px;
+    }
+    .faq-item.open .faq-a { display: block; }
+    .faq-a a { color: #34d399; }
+
+    /* Guide steps */
+    .guide-card {
+        background: rgba(255,255,255,0.03);
+        border: 1px solid rgba(255,255,255,0.07);
+        border-radius: 16px;
+        padding: 2rem;
+        margin-bottom: 1.5rem;
+    }
+    .guide-card h3 {
+        font-size: 1rem;
+        font-weight: 700;
+        color: #e2e8f0;
+        margin: 0 0 1rem;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    .guide-steps {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+    .guide-step {
+        display: flex;
+        gap: 12px;
+        align-items: flex-start;
+    }
+    .guide-step-num {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 26px; height: 26px;
+        min-width: 26px;
+        background: linear-gradient(135deg, #34d399, #3b82f6);
+        border-radius: 50%;
+        font-size: 0.7rem;
+        font-weight: 800;
+        color: white;
+    }
+    .guide-step-text {
+        font-size: 0.85rem;
+        color: #94a3b8;
+        line-height: 1.65;
+        padding-top: 3px;
+    }
+    .guide-step-text strong { color: #e2e8f0; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="support-hero">
+    <div class="support-badge" data-i18n="legal.support.badge">❓ Hỗ trợ</div>
+    <h1 data-i18n="legal.support">Hỗ trợ & FAQ</h1>
+    <p data-i18n="legal.support.hero">Chúng tôi luôn sẵn sàng giúp bạn. Hãy chọn cách liên hệ phù hợp.</p>
+</div>
+
+<div class="support-container" id="support-dynamic-body">
+    {% include 'partials/support_dynamic_body.html' %}
+</div>
+{% include 'partials/support_i18n_embeds.html' %}
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function toggleFaq(el) {
+    const item = el.closest('.faq-item');
+    const isOpen = item.classList.contains('open');
+    document.querySelectorAll('.faq-item.open').forEach(i => i.classList.remove('open'));
+    if (!isOpen) item.classList.add('open');
+}
+</script>
+{% endblock %}

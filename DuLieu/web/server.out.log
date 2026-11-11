@@ -1,0 +1,38 @@
+[INFO] RVC voice conversion is available
+[WARNING] viXTTS Emotional TTS not available: No module named 'TTS'
+[INFO] OmniVoice TTS is available
+[INFO] Custom voice training is available
+============================================================
+[TTS] TTS Web Application dang khoi dong...
+[TTS] URL: http://localhost:5000
+[TTS] Port: 5000
+============================================================
+[MIGRATION] Kiểm tra và cập nhật cấu trúc database...
+[MIGRATION] ✓  Cột 'display_name' trong 'conversions' đã tồn tại
+[MIGRATION] ✓  Cột 'is_public' trong 'conversions' đã tồn tại
+[MIGRATION] ✓  Cột 'share_token' trong 'conversions' đã tồn tại
+[MIGRATION] ✓  Cột 'status' trong 'users' đã tồn tại
+[MIGRATION] ✓  Cột 'delete_requested' trong 'users' đã tồn tại
+[MIGRATION] ✓  Cột 'delete_requested_at' trong 'users' đã tồn tại
+[MIGRATION] ✓  Cột 'delete_reason' trong 'users' đã tồn tại
+[MIGRATION] ✓  Cột 'delete_status' trong 'users' đã tồn tại
+[MIGRATION] ✓  Cột 'deleted_at' trong 'users' đã tồn tại
+[MIGRATION] ✓  Cột 'admin_delete_note' trong 'users' đã tồn tại
+[MIGRATION] ✓  Cột 'deletion_effective_at' trong 'users' đã tồn tại
+[MIGRATION] ✓  Cột 'restore_requested' trong 'users' đã tồn tại
+[MIGRATION] ✓  Cột 'restore_requested_at' trong 'users' đã tồn tại
+[MIGRATION] ✓  Cột 'avatar_url' trong 'users' đã tồn tại
+[MIGRATION] ✓  Cột 'cover_url' trong 'users' đã tồn tại
+[MIGRATION] ✓  Đã kiểm tra grace period xóa tài khoản
+[WORKER] ✅ Background training worker started
+============================================================
+[TTS] 🎉 SERVER READY - SẴN SÀNG PHỤC VỤ!
+[TTS] URL: http://127.0.0.1:5000
+[TTS] Emotional TTS: ❌ Không khả dụng
+[TTS] OmniVoice TTS: ❌ Không khả dụng
+[EMAIL] SMTP: ❌ Chưa cấu hình (thêm SMTP_* vào .env.local để gửi email thật)
+[TTS] Nhấn Ctrl+C để dừng server
+============================================================
+
+ * Serving Flask app 'app'
+ * Debug mode: on

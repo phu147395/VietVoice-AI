@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="vi" data-theme="dark" class="vv-workspace">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/sidebar-layout.css') }}">
+<script src="{{ url_for('static', filename='js/sidebar-antiflash.js') }}"></script>
+<title>Lịch sử chuyển đổi - VietVoice</title>
+
+{% include 'partials/vv_theme_head.html' %}
+
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+
+<!-- Tailwind -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+{% include 'partials/vv_tailwind_config.html' %}
+
+<style>
+  html, body { overflow-x: hidden; max-width: 100%; }
+  body { font-family: 'Manrope', sans-serif; background: #051424; color: #d4e4fa; }
+
+  .material-symbols-outlined {
+    font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    font-size: 20px;
+    line-height: 1;
+    display: inline-flex;
+    align-items: center;
+  }
+
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: #0d1c2d; }
+  ::-webkit-scrollbar-thumb { background: #494454; border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: #6d3bd7; }
+
+  /* Table row actions hidden by default, shown on hover via JS class */
+  .row-actions { opacity: 0; transition: opacity 0.15s ease; }
+  tr:hover .row-actions { opacity: 1; }
+
+  /* Status badge styles */
+  .status-completed {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 3px 10px; border-radius: 9999px;
+    background: rgba(0,159,180,0.15);
+    border: 1px solid rgba(47,217,244,0.3);
+    font-size: 12px; font-weight: 500; color: #2fd9f4;
+  }
+  .status-pending, .status-processing {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 3px 10px; border-radius: 9999px;
+    background: rgba(160,120,255,0.15);
+    border: 1px solid rgba(208,188,255,0.3);
+    font-size: 12px; font-weight: 500; color: #d0bcff;
+  }
+  .status-failed {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 3px 10px; border-radius: 9999px;
+    background: rgba(147,0,10,0.2);
+    border: 1px solid rgba(255,180,171,0.3);
+    font-size: 12px; font-weight: 500; color: #ffb4ab;
+  }
+  .status-dot {
+    width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0;
+  }
+  .status-completed .status-dot { background: #2fd9f4; }
+  .status-pending .status-dot, .status-processing .status-dot { background: #d0bcff; animation: pulse 1.5s infinite; }
+  .status-failed .status-dot { background: #ffb4ab; }
+
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+  @keyframes spin  { to { transform: rotate(360deg); } }
+
+  /* Pagination active page */
+  .page-btn.active {
+    background: rgba(160,120,255,0.2);
+    border-color: rgba(208,188,255,0.4);
+    color: #d0bcff;
+  }
+
+  /* Mobile table: reduce padding + hide voice/time columns */
+  @media (max-width: 767px) {
+    #historyTableBody td,
+    #historyTableBody th { padding: 8px 8px; }
+    /* Hide time column on mobile */
+    #historyTableBody td:nth-child(5) { display: none; }
+    thead tr th:nth-child(5) { display: none; }
+    /* Compact status badge on mobile */
+    .status-completed, .status-pending, .status-processing, .status-failed {
+      padding: 2px 7px; font-size: 11px;
+    }
+  }
+  @media (max-width: 639px) {
+    /* Hide voice column on small mobile */
+    #historyTableBody td:nth-child(3) { display: none; }
+    thead tr th:nth-child(3) { display: none; }
+    /* Compact ID column and text column */
+    #historyTableBody td:nth-child(1) { width: 44px; padding: 8px 6px; }
+    #historyTableBody td:nth-child(2) { max-width: 110px; overflow: hidden; }
+    /* Actions column compact */
+    #historyTableBody td:nth-child(6) { padding: 8px 4px; }
+  }
+</style>
+</head>
+
+<body class="min-h-screen flex flex-col bg-background text-on-background">
+
+{% set mob_nav_active = 'history' %}
+{% set mobile_header_title = 'Lịch sử' %}
+{% include 'partials/_workspace_mobile_header.html' %}
+{% include 'partials/mobile_nav_drawer.html' %}
+
+<!-- ═══ LAYOUT: Sidebar + Main ═══ -->
+<div class="vv-app-shell">
+
+  <!-- Sidebar -->
+  {% include 'partials/_workspace_sidebar.html' %}
+
+  <!-- ═══ MAIN CONTENT ═══ -->
+    <main id="content" data-spa-page="history" class="vv-has-mobile-header flex-1 min-w-0 px-4 md:p-8 min-h-0 flex flex-col gap-4 md:gap-6 pb-[76px] md:pb-8 md:pt-8">
+    {% include 'partials/content/history.html' %}
+  </main>
+</div>
+
+<!-- ═══ FOOTER ═══ -->
+{% include '_footer.html' %}
+
+<!-- ═══ MOBILE BOTTOM NAV ═══ -->
+{% include 'partials/mobile_bottom_nav.html' %}
+
+<!-- ═══ SCRIPTS ═══ -->
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+<script src="{{ url_for('static', filename='js/theme.js') }}"></script>
+<script src="{{ url_for('static', filename='js/sidebar-collapse.js') }}"></script>
+
+<script>
+// ── Theme toggle ──────────────────────────────────────────
+// ── Characters remaining (nav badge) ─────────────────────────
+async function loadCharsRemaining() {
+  try {
+    const r = await fetch('/api/user/characters');
+    const d = await r.json();
+    if (d.success) {
+      const n = d.characters_remaining;
+      const fmt = n >= 1000000 ? (n/1000000).toFixed(1)+'M' : n >= 1000 ? (n/1000).toFixed(1)+'K' : n;
+      const el = document.getElementById('charsNavCount');
+      if (el) el.textContent = fmt + ' ký tự';
+    }
+  } catch(e) {}
+}
+loadCharsRemaining();
+
+
+function resetSearch() {
+  const input = document.getElementById('searchInput');
+  if (input) { input.value = ''; }
+  if (window.historyReset) window.historyReset();
+}
+function toggleMobileNav() {
+  const drawer = document.getElementById('mobileNavDrawer');
+  const overlay = document.getElementById('mobileNavOverlay');
+  const icon = document.getElementById('mobileMenuIcon');
+  const isOpen = !drawer.classList.contains('hidden');
+  if (isOpen) { drawer.classList.add('hidden'); overlay.classList.add('hidden'); icon.textContent = 'menu'; }
+  else { drawer.classList.remove('hidden'); overlay.classList.remove('hidden'); icon.textContent = 'close'; }
+}
+function closeMobileNav() {
+  document.getElementById('mobileNavDrawer').classList.add('hidden');
+  document.getElementById('mobileNavOverlay').classList.add('hidden');
+  document.getElementById('mobileMenuIcon').textContent = 'menu';
+}
+window.addEventListener('resize', () => { if (window.innerWidth >= 768) closeMobileNav(); });
+</script>
+<script src="{{ url_for('static', filename='js/i18n.js') }}"></script>
+<script src="{{ url_for('static', filename='js/history.js') }}"></script>
+</body>
+</html>

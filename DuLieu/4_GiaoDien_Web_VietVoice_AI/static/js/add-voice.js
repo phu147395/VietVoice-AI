@@ -1,0 +1,558 @@
+/**
+ * Add Voice Page - Upload and Train Custom Voice
+ */
+
+// i18n helper
+function _t(key, fallback) {
+    return (window.VVi18n && window.VVi18n.t) ? window.VVi18n.t(key) : (fallback || key);
+}
+
+let selectedFile = null;
+let currentVoiceId = null;
+
+// Initialize
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('[ADD VOICE] Page initialized');
+    
+    setupUploadArea();
+    setupForm();
+    setupAdjustmentSliders();
+    setupVoiceTypeToggle();
+});
+
+/**
+ * Toggle RVC / Zero-shot / viXTTS Clone: show/hide relevant sections
+ */
+function setupVoiceTypeToggle() {
+    const voiceTypeRvc = document.getElementById('voiceTypeRvc');
+    const voiceTypeZeroShot = document.getElementById('voiceTypeZeroShot');
+    const voiceTypeVixtts = document.getElementById('voiceTypeVixtts');
+    const voiceTypeOmnivoice = document.getElementById('voiceTypeOmnivoice');
+    const refTranscriptBlock = document.getElementById('refTranscriptBlock');
+    const baseVoiceSection = document.getElementById('baseVoiceSection');
+    const adjustmentsSection = document.getElementById('adjustmentsSection');
+    const vixttsCloneInfo = document.getElementById('vixttsCloneInfo');
+    const omnivoiceCloneInfo = document.getElementById('omnivoiceCloneInfo');
+    const trainingInfoText = document.getElementById('trainingInfoText');
+    const trainingInfoNote = document.getElementById('trainingInfoNote');
+    
+    function updateVisibility() {
+        const isZeroShot = voiceTypeZeroShot && voiceTypeZeroShot.checked;
+        const isVixtts = voiceTypeVixtts && voiceTypeVixtts.checked;
+        const isOmnivoice = voiceTypeOmnivoice && voiceTypeOmnivoice.checked;
+        const isRvc = voiceTypeRvc && voiceTypeRvc.checked;
+
+        if (refTranscriptBlock) refTranscriptBlock.style.display = (isZeroShot || isOmnivoice) ? 'block' : 'none';
+        if (vixttsCloneInfo) vixttsCloneInfo.style.display = isVixtts ? 'block' : 'none';
+        if (omnivoiceCloneInfo) omnivoiceCloneInfo.style.display = isOmnivoice ? 'block' : 'none';
+
+        // Base voice and adjustments only for RVC
+        if (baseVoiceSection) baseVoiceSection.style.display = isRvc ? 'block' : 'none';
+        if (adjustmentsSection) adjustmentsSection.style.display = isRvc ? 'block' : 'none';
+
+        const refInput = document.getElementById('refTranscript');
+        if (refInput) refInput.required = !!isZeroShot;
+
+        // Update upload specs hint based on mode
+        const uploadSpecs = document.getElementById('uploadSpecs');
+        if (uploadSpecs) {
+            if (isVixtts) {
+                uploadSpecs.innerHTML = _t('addv.upload.specs_vixtts',
+                    '<strong>Hỗ trợ:</strong> WAV, MP3, M4A<br><strong>Độ dài:</strong> 6 giây - 2 phút<br><strong>Chất lượng:</strong> Không noise, không echo');
+            } else if (isOmnivoice) {
+                uploadSpecs.innerHTML = '<strong>Hỗ trợ:</strong> WAV, MP3, M4A<br><strong>Độ dài:</strong> 3–30 giây (tối ưu 3–10 giây)<br><strong>Chất lượng:</strong> Không noise, không echo';
+            } else {
+                uploadSpecs.innerHTML = _t('addv.upload.specs_rvc',
+                    '<strong>Hỗ trợ:</strong> WAV, MP3, M4A<br><strong>Độ dài:</strong> 30 giây - 15 phút<br><strong>Chất lượng:</strong> Không noise, không echo');
+            }
+        }
+
+        // Update training info card text
+        if (trainingInfoText) {
+            if (isVixtts) {
+                trainingInfoText.innerHTML = _t('addv.training.vixtts',
+                    'Giọng <strong>viXTTS Clone</strong> được tạo ngay lập tức.');
+            } else if (isOmnivoice) {
+                trainingInfoText.innerHTML = 'Giọng <strong>OmniVoice Clone</strong> được tạo ngay lập tức.';
+            } else if (isZeroShot) {
+                trainingInfoText.innerHTML = _t('addv.training.zeroshot',
+                    'Giọng <strong>Zero-shot</strong> được tạo ngay lập tức.');
+            } else {
+                trainingInfoText.innerHTML = _t('addv.training.text',
+                    'Giọng custom sẽ được tạo <strong>ngay lập tức</strong> (< 1 giây) dựa trên giọng nền và các điều chỉnh của bạn.');
+            }
+        }
+        if (trainingInfoNote) {
+            if (isVixtts) {
+                trainingInfoNote.innerHTML = _t('addv.training.tip.vixtts',
+                    '💡 <strong>Tip:</strong> Dùng file audio rõ ràng, ít tạp âm, dài 10–60 giây để có kết quả clone tốt nhất.');
+            } else if (isOmnivoice) {
+                trainingInfoNote.innerHTML = '💡 <strong>Tip:</strong> Audio mẫu 3–10 giây, rõ ràng. Transcript tuỳ chọn — OmniVoice có thể tự phiên âm.';
+            } else if (isZeroShot) {
+                trainingInfoNote.innerHTML = _t('addv.training.tip.zeroshot',
+                    '💡 <strong>Tip:</strong> Transcript phải khớp chính xác với nội dung trong file audio mẫu.');
+            } else {
+                trainingInfoNote.innerHTML = _t('addv.training.tip',
+                    '💡 <strong>Tip:</strong> Bạn có thể tạo nhiều biến thể từ cùng một audio sample bằng cách thay đổi giọng nền và các thông số điều chỉnh.');
+            }
+        }
+    }
+    
+    if (voiceTypeRvc) voiceTypeRvc.addEventListener('change', updateVisibility);
+    if (voiceTypeZeroShot) voiceTypeZeroShot.addEventListener('change', updateVisibility);
+    if (voiceTypeVixtts) voiceTypeVixtts.addEventListener('change', updateVisibility);
+    if (voiceTypeOmnivoice) voiceTypeOmnivoice.addEventListener('change', updateVisibility);
+
+    // Re-render dynamic text when language switches
+    window.addEventListener('vv:langChanged', updateVisibility);
+    updateVisibility();
+}
+
+/**
+ * Setup upload area (drag & drop)
+ */
+function setupUploadArea() {
+    const uploadArea = document.getElementById('uploadArea');
+    const fileInput = document.getElementById('audioFile');
+    
+    if (!uploadArea || !fileInput) return;
+    
+    // Click to select file
+    uploadArea.addEventListener('click', () => {
+        fileInput.click();
+    });
+    
+    // File selected
+    fileInput.addEventListener('change', (e) => {
+        if (e.target.files.length > 0) {
+            handleFileSelect(e.target.files[0]);
+        }
+    });
+    
+    // Drag & drop
+    uploadArea.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        uploadArea.classList.add('drag-over');
+    });
+    
+    uploadArea.addEventListener('dragleave', () => {
+        uploadArea.classList.remove('drag-over');
+    });
+    
+    uploadArea.addEventListener('drop', (e) => {
+        e.preventDefault();
+        uploadArea.classList.remove('drag-over');
+        
+        if (e.dataTransfer.files.length > 0) {
+            handleFileSelect(e.dataTransfer.files[0]);
+        }
+    });
+}
+
+/**
+ * Handle file selection
+ */
+function handleFileSelect(file) {
+    console.log('[ADD VOICE] File selected:', file.name);
+    
+    // Validate file type
+    const validTypes = ['audio/wav', 'audio/mpeg', 'audio/mp3', 'audio/x-wav', 'audio/x-m4a', 'audio/mp4'];
+    const validExtensions = ['.wav', '.mp3', '.m4a'];
+    
+    const fileExtension = '.' + file.name.split('.').pop().toLowerCase();
+    
+    if (!validTypes.includes(file.type) && !validExtensions.includes(fileExtension)) {
+        showNotification('error', 'Định dạng file không hỗ trợ. Vui lòng chọn file WAV, MP3 hoặc M4A');
+        return;
+    }
+    
+    // Validate file size (max 100MB)
+    const maxSize = 100 * 1024 * 1024; // 100MB
+    if (file.size > maxSize) {
+        showNotification('error', 'File quá lớn. Tối đa 100MB');
+        return;
+    }
+    
+    // Store file
+    selectedFile = file;
+    
+    // Show file info
+    displayFileInfo(file);
+    
+    // Enable submit button
+    const submitBtn = document.getElementById('submitBtn');
+    if (submitBtn) {
+        submitBtn.disabled = false;
+    }
+}
+
+/**
+ * Display file information
+ */
+function displayFileInfo(file) {
+    const uploadArea = document.getElementById('uploadArea');
+    const fileInfo = document.getElementById('fileInfo');
+    const fileName = document.getElementById('fileName');
+    const fileSize = document.getElementById('fileSize');
+    const fileDuration = document.getElementById('fileDuration');
+    
+    if (!fileInfo) return;
+    
+    // Hide upload area, show file info
+    if (uploadArea) uploadArea.style.display = 'none';
+    fileInfo.style.display = 'flex';
+    
+    // Set file name
+    if (fileName) fileName.textContent = file.name;
+    
+    // Set file size
+    if (fileSize) {
+        const sizeMB = (file.size / (1024 * 1024)).toFixed(2);
+        fileSize.textContent = `📦 Kích thước: ${sizeMB} MB`;
+    }
+    
+    // Try to get duration using Audio element
+    if (fileDuration) {
+        const audio = new Audio();
+        audio.src = URL.createObjectURL(file);
+        
+        audio.addEventListener('loadedmetadata', () => {
+            const duration = audio.duration;
+            const minutes = Math.floor(duration / 60);
+            const seconds = Math.floor(duration % 60);
+            fileDuration.textContent = `⏱️ Độ dài: ${minutes}:${seconds.toString().padStart(2, '0')}`;
+            
+            // Check training mode
+            const trainingMode = duration <= 300 ? 'realtime (~30-60 giây)' : 'background (~2-3 giờ)';
+            fileDuration.innerHTML += `<br>🔧 Training: ${trainingMode}`;
+            
+            URL.revokeObjectURL(audio.src);
+        });
+    }
+}
+
+/**
+ * Remove selected file
+ */
+function removeFile() {
+    selectedFile = null;
+    
+    const uploadArea = document.getElementById('uploadArea');
+    const fileInfo = document.getElementById('fileInfo');
+    const fileInput = document.getElementById('audioFile');
+    const submitBtn = document.getElementById('submitBtn');
+    const qualityCheck = document.getElementById('qualityCheck');
+    
+    if (uploadArea) uploadArea.style.display = 'flex';
+    if (fileInfo) fileInfo.style.display = 'none';
+    if (fileInput) fileInput.value = '';
+    if (submitBtn) submitBtn.disabled = true;
+    if (qualityCheck) qualityCheck.style.display = 'none';
+}
+
+/**
+ * Setup adjustment sliders
+ */
+function setupAdjustmentSliders() {
+    // Pitch slider
+    const pitchSlider = document.getElementById('pitchAdjustment');
+    const pitchValue = document.getElementById('pitchValue');
+    
+    if (pitchSlider && pitchValue) {
+        pitchSlider.addEventListener('input', (e) => {
+            const value = parseInt(e.target.value);
+            pitchValue.textContent = value > 0 ? `+${value}` : value;
+        });
+    }
+    
+    // Speed slider
+    const speedSlider = document.getElementById('speedAdjustment');
+    const speedValue = document.getElementById('speedValue');
+    
+    if (speedSlider && speedValue) {
+        speedSlider.addEventListener('input', (e) => {
+            const value = parseFloat(e.target.value);
+            speedValue.textContent = `${value.toFixed(1)}x`;
+        });
+    }
+    
+    // Energy slider
+    const energySlider = document.getElementById('energyAdjustment');
+    const energyValue = document.getElementById('energyValue');
+    
+    if (energySlider && energyValue) {
+        energySlider.addEventListener('input', (e) => {
+            const value = parseFloat(e.target.value);
+            energyValue.textContent = `${value.toFixed(1)}x`;
+        });
+    }
+}
+
+/**
+ * Setup form submission
+ */
+function setupForm() {
+    const form = document.getElementById('addVoiceForm');
+    if (!form) return;
+    
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        await handleSubmit();
+    });
+}
+
+/**
+ * Handle form submission
+ */
+async function handleSubmit() {
+    if (!selectedFile) {
+        showNotification('error', 'Vui lòng chọn file audio');
+        return;
+    }
+    
+    const voiceName = document.getElementById('voiceName').value.trim();
+    if (!voiceName) {
+        showNotification('error', 'Vui lòng nhập tên giọng');
+        return;
+    }
+    
+    const voiceTypeZeroShot = document.getElementById('voiceTypeZeroShot');
+    const voiceTypeVixtts = document.getElementById('voiceTypeVixtts');
+    const voiceTypeOmnivoice = document.getElementById('voiceTypeOmnivoice');
+    const isZeroShot = voiceTypeZeroShot && voiceTypeZeroShot.checked;
+    const isVixtts = voiceTypeVixtts && voiceTypeVixtts.checked;
+    const isOmnivoice = voiceTypeOmnivoice && voiceTypeOmnivoice.checked;
+
+    const refTranscript = document.getElementById('refTranscript') ? document.getElementById('refTranscript').value.trim() : '';
+    if (isZeroShot && !refTranscript) {
+        showNotification('error', 'Zero-shot cần nhập transcript (nội dung nói trong file mẫu)');
+        return;
+    }
+    
+    const description = document.getElementById('voiceDescription').value.trim();
+    
+    // Determine voice_type string
+    let voiceTypeValue = 'rvc';
+    if (isZeroShot) voiceTypeValue = 'zero_shot';
+    else if (isVixtts) voiceTypeValue = 'vixtts_clone';
+    else if (isOmnivoice) voiceTypeValue = 'omnivoice_clone';
+
+    // Show progress
+    showTrainingProgress();
+    
+    try {
+        // Create FormData
+        const formData = new FormData();
+        formData.append('audio_file', selectedFile);
+        formData.append('voice_name', voiceName);
+        formData.append('description', description);
+        formData.append('voice_type', voiceTypeValue);
+        if (isZeroShot || isOmnivoice) formData.append('ref_transcript', refTranscript);
+        
+        // Add base voice and adjustments (RVC only)
+        const baseVoice = document.getElementById('baseVoice').value;
+        const pitchAdjustment = document.getElementById('pitchAdjustment').value;
+        const speedAdjustment = document.getElementById('speedAdjustment').value;
+        const energyAdjustment = document.getElementById('energyAdjustment').value;
+        
+        formData.append('base_voice_id', baseVoice);
+        formData.append('pitch_adjustment', pitchAdjustment);
+        formData.append('speed_adjustment', speedAdjustment);
+        formData.append('energy_adjustment', energyAdjustment);
+        
+        console.log('[ADD VOICE] Submitting with:', {
+            voice_name: voiceName,
+            voice_type: voiceTypeValue,
+            ref_transcript: isZeroShot ? refTranscript : '(none)',
+            base_voice_id: baseVoice,
+            pitch_adjustment: pitchAdjustment,
+            speed_adjustment: speedAdjustment,
+            energy_adjustment: energyAdjustment
+        });
+        
+        // Upload and start training (or instant modes: done immediately)
+        const response = await fetch('/api/custom-voice/upload', {
+            method: 'POST',
+            body: formData
+        });
+        
+        const data = await response.json();
+        
+        if (!response.ok) {
+            throw new Error(data.error || 'Upload failed');
+        }
+        
+        console.log('[ADD VOICE] Upload successful:', data);
+        
+        // Instant modes: no training needed
+        if (data.voice_type === 'zero_shot') {
+            showTrainingSuccess(data.message || 'Giọng Zero-shot đã sẵn sàng. Bạn có thể dùng ngay.');
+            return;
+        }
+        if (data.voice_type === 'vixtts_clone') {
+            showTrainingSuccess(data.message || 'Giọng viXTTS Clone đã sẵn sàng. Bạn có thể dùng ngay.');
+            return;
+        }
+        if (data.voice_type === 'omnivoice_clone') {
+            showTrainingSuccess(data.message || 'Giọng OmniVoice Clone đã sẵn sàng. Bạn có thể dùng ngay.');
+            return;
+        }
+        
+        // Store voice ID for progress tracking (RVC training)
+        currentVoiceId = data.custom_voice_id;
+        
+        // Update progress subtitle
+        updateProgressSubtitle(data);
+        
+        // Start polling progress
+        if (data.training_mode === 'realtime' || data.training_mode === 'instant') {
+            pollTrainingProgress(currentVoiceId);
+        } else {
+            showBackgroundInfo(data);
+        }
+        
+    } catch (error) {
+        console.error('[ADD VOICE] Error:', error);
+        showTrainingError(error.message);
+    }
+}
+
+/**
+ * Show training progress
+ */
+function showTrainingProgress() {
+    document.getElementById('addVoiceForm').style.display = 'none';
+    document.getElementById('trainingProgress').style.display = 'block';
+}
+
+/**
+ * Update progress subtitle
+ */
+function updateProgressSubtitle(data) {
+    const subtitle = document.getElementById('progressSubtitle');
+    if (!subtitle) return;
+    
+    if (data.training_mode === 'realtime') {
+        subtitle.textContent = 'Training realtime - Vui lòng đợi...';
+    } else {
+        subtitle.textContent = 'Đã thêm vào hàng đợi background';
+    }
+    
+    // Show quality info
+    const note = document.getElementById('progressNote');
+    if (note && data.quality_message) {
+        note.textContent = data.quality_message;
+    }
+}
+
+/**
+ * Poll training progress
+ */
+function pollTrainingProgress(voiceId) {
+    const interval = setInterval(async () => {
+        try {
+            const response = await fetch(`/api/custom-voice/${voiceId}/progress`);
+            const data = await response.json();
+            
+            if (!response.ok) {
+                throw new Error(data.error || 'Failed to get progress');
+            }
+            
+            // Update progress bar
+            const progressBar = document.getElementById('progressBar');
+            const progressText = document.getElementById('progressText');
+            
+            if (progressBar) {
+                progressBar.style.width = `${data.progress}%`;
+            }
+            if (progressText) {
+                progressText.textContent = `${data.progress}%`;
+            }
+            
+            // Check status
+            if (data.status === 'completed') {
+                clearInterval(interval);
+                showTrainingSuccess('Training hoàn tất! Giọng của bạn đã sẵn sàng.');
+            } else if (data.status === 'failed') {
+                clearInterval(interval);
+                showTrainingError(data.error || 'Training thất bại');
+            }
+            
+        } catch (error) {
+            console.error('[ADD VOICE] Error polling progress:', error);
+            clearInterval(interval);
+            showTrainingError('Lỗi kết nối');
+        }
+    }, 2000); // Poll every 2 seconds
+}
+
+/**
+ * Show background training info
+ */
+function showBackgroundInfo(data) {
+    const progressDiv = document.getElementById('trainingProgress');
+    const subtitle = document.getElementById('progressSubtitle');
+    const progressBar = document.getElementById('progressBar');
+    const note = document.getElementById('progressNote');
+    
+    if (subtitle) {
+        subtitle.textContent = '✅ Đã thêm vào hàng đợi training';
+    }
+    
+    if (progressBar) {
+        progressBar.style.width = '10%';
+        progressBar.innerHTML = '<span class="progress-text">Đang chờ...</span>';
+    }
+    
+    if (note) {
+        note.innerHTML = `
+            📬 Bạn sẽ nhận thông báo khi training hoàn tất.<br>
+            Ước tính: ~2-3 giờ (tùy thuộc vào hàng đợi)<br><br>
+            <a href="${window.location.origin}/my-voices" class="btn-link">Xem tất cả giọng của tôi →</a>
+        `;
+    }
+}
+
+/**
+ * Show training success
+ */
+function showTrainingSuccess(message) {
+    document.getElementById('trainingProgress').style.display = 'none';
+    const successDiv = document.getElementById('trainingSuccess');
+    const successMessage = document.getElementById('successMessage');
+    
+    if (successDiv) successDiv.style.display = 'block';
+    if (successMessage) successMessage.textContent = message;
+}
+
+/**
+ * Show training error
+ */
+function showTrainingError(message) {
+    document.getElementById('trainingProgress').style.display = 'none';
+    const errorDiv = document.getElementById('trainingError');
+    const errorMessage = document.getElementById('errorMessage');
+    
+    if (errorDiv) errorDiv.style.display = 'block';
+    if (errorMessage) errorMessage.textContent = message;
+}
+
+/**
+ * Show notification
+ */
+function showNotification(type, message) {
+    const notification = document.createElement('div');
+    notification.className = `notification notification-${type}`;
+    notification.innerHTML = `
+        <span class="notification-icon">${type === 'success' ? '✅' : type === 'error' ? '❌' : 'ℹ️'}</span>
+        <span class="notification-text">${message}</span>
+    `;
+    
+    document.body.appendChild(notification);
+    setTimeout(() => notification.classList.add('show'), 10);
+    
+    setTimeout(() => {
+        notification.classList.remove('show');
+        setTimeout(() => notification.remove(), 300);
+    }, 3000);
+}

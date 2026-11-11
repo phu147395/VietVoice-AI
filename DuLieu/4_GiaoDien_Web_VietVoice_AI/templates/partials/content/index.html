@@ -1,0 +1,543 @@
+{% macro ws_upload_toolbar() %}
+<div class="ws-input-toolbar">
+  <button type="button" class="ws-upload-btn" data-fu-trigger>
+    <span class="material-symbols-outlined">upload_file</span>
+    <span data-i18n="file.btn.upload">Tải file</span>
+  </button>
+  <span class="ws-upload-hint" data-i18n="file.drop.hint">TXT, PDF, DOCX — tối đa 10MB</span>
+</div>
+{% endmacro %}
+<!-- Hero -->
+  <section class="mb-6 md:mb-8 text-center">
+    <h1 class="text-3xl md:text-4xl lg:text-5xl font-extrabold text-on-background mb-2 md:mb-3 tracking-tight" data-i18n="ws.title">
+      Chuyển văn bản thành giọng nói
+    </h1>
+    <p class="text-sm md:text-base lg:text-lg text-secondary max-w-2xl mx-auto" data-i18n="ws.subtitle">
+      Công nghệ AI tiên tiến • Giọng Việt tự nhiên • Chất lượng cao • Cảm xúc phong phú
+    </p>
+  </section>
+
+  <!-- Bento Grid -->
+  <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 ws-workspace-grid">
+
+    <!-- ═══ LEFT COLUMN: Input ═══ -->
+    <div class="lg:col-span-8 flex flex-col ws-workspace-grid__input">
+
+      <!-- Input Card -->
+      <div class="ws-input-card bg-surface-container/80 backdrop-blur-md border border-primary/20 rounded-xl p-6 shadow-[0_4px_24px_rgba(208,188,255,0.06)] relative overflow-hidden">
+        <!-- Top accent bar -->
+        <div class="absolute top-0 left-0 w-full h-[3px] bg-gradient-to-r from-tertiary via-primary to-inverse-primary"></div>
+
+        <h2 class="text-xl font-bold text-on-surface mb-5" data-i18n="ws.input.title">Nội dung chuyển đổi</h2>
+
+        <!-- Tabs -->
+        <div class="ws-mode-tabs" role="tablist" aria-label="Chế độ chuyển đổi">
+          <div class="ws-mode-tabs__scroll">
+            <button type="button" class="ws-mode-tab tab-btn-new active" data-tab="text" data-i18n="ws.tab.text">
+              Nhập văn bản
+            </button>
+            <button type="button" class="ws-mode-tab tab-btn-new" data-tab="emotional">
+              <span data-i18n="ws.tab.emotional">Emotional TTS</span>
+              <span class="ws-mode-tab__badge ws-mode-tab__badge--new">Mới</span>
+            </button>
+            <button type="button" class="ws-mode-tab tab-btn-new" data-tab="omnivoice">
+              <span>OmniVoice</span>
+              <span class="ws-mode-tab__badge ws-mode-tab__badge--pro">600+</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Nội dung theo tab -->
+        <div class="ws-tab-panels mt-3" id="fileUploadRoot">
+
+        <input type="file" id="fileInput" accept=".txt,.pdf,.docx" class="hidden">
+
+        <!-- Trạng thái file đã tải (hiện trên mọi tab) -->
+        <div id="fuStatusStrip" class="fu-status-strip hidden">
+          <div class="fu-file-card fu-file-card--strip" id="fuFileCard">
+            <div class="fu-file-card__icon" id="fuFileIcon">
+              <span class="material-symbols-outlined">description</span>
+            </div>
+            <div class="fu-file-card__body">
+              <div class="fu-file-card__row">
+                <span class="fu-file-card__name" id="fuFileName">—</span>
+                <div class="fu-strip-actions">
+                  <button type="button" class="fu-btn fu-btn--ghost fu-btn--xs" id="fuChangeBtn" title="Đổi file">
+                    <span class="material-symbols-outlined" style="font-size:16px">folder_open</span>
+                  </button>
+                  <button type="button" class="fu-file-card__remove" id="fuRemoveBtn" title="Xóa file">
+                    <span class="material-symbols-outlined">close</span>
+                  </button>
+                </div>
+              </div>
+              <div class="fu-file-card__meta" id="fuFileMeta">—</div>
+              <div class="fu-progress hidden" id="fuProgress">
+                <div class="fu-progress__track">
+                  <div class="fu-progress__fill" id="fuProgressFill"></div>
+                </div>
+                <span class="fu-progress__label" id="fuProgressLabel" data-i18n="file.status.processing">Đang trích xuất văn bản…</span>
+                <span class="fu-progress__pct" id="fuProgressPct">0%</span>
+              </div>
+              <div class="fu-status fu-status--ready hidden" id="fuStatusReady">
+                <span class="material-symbols-outlined">check_circle</span>
+                <span id="fuStatusReadyText" data-i18n="file.success.extracted">Đã trích xuất văn bản</span>
+              </div>
+              <div class="fu-status fu-status--error hidden" id="fuStatusError">
+                <span class="material-symbols-outlined">error</span>
+                <span id="fuStatusErrorText"></span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab: Text Input -->
+        <div class="tab-content" id="textTab">
+          {{ ws_upload_toolbar() }}
+          <div class="relative mb-0 ws-text-drop-target">
+            <textarea id="textInput"
+              class="w-full h-52 md:h-60 bg-surface-container-lowest border border-white/5 rounded-xl p-4 text-sm text-on-surface focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary/30 resize-none placeholder-on-surface-variant/40 transition-all"
+              data-i18n-placeholder="ws.placeholder"
+              placeholder="Nhập hoặc dán văn bản của bạn vào đây...&#10;&#10;Ví dụ: Xin chào! Đây là hệ thống chuyển văn bản thành giọng nói bằng AI."></textarea>
+            <div id="wsLangWarning" class="hidden mt-2 text-xs text-amber-400/90 px-1" data-i18n="ws.lang_warning">
+              Hệ thống được tối ưu cho văn bản tiếng Việt. Kết quả với ngôn ngữ khác có thể không chính xác.
+            </div>
+            <div class="absolute bottom-3 right-3 text-xs text-on-surface-variant bg-surface-container-lowest px-2 py-0.5 rounded">
+              <span id="charCount">0</span> <span data-i18n="ws.chars">ký tự</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab: Emotional TTS -->
+        <div class="tab-content hidden" id="emotionalTab">
+          <!-- Emotional voice selector -->
+          <div class="mb-4">
+            <label class="block text-xs font-semibold text-on-surface-variant uppercase tracking-wide mb-2" data-i18n="em.voice.label">Giọng đọc (Emotional)</label>
+            <div class="ov-select-wrap ws-emotional-select-wrap">
+              <select id="emotionalVoiceSelect" class="ov-select ws-voice-select w-full appearance-none bg-surface-container-highest border border-white/10 rounded-lg py-2.5 px-4 text-sm text-on-surface focus:outline-none focus:ring-2 focus:ring-primary/50 pr-10">
+                <option value="">⭐ Mặc định (base_voice.wav)</option>
+              </select>
+              <span class="material-symbols-outlined ov-chevron">expand_more</span>
+            </div>
+          </div>
+          {{ ws_upload_toolbar() }}
+          <div class="relative mb-4 ws-text-drop-target">
+            <textarea id="emotionalTextInput"
+              class="w-full h-52 bg-surface-container-lowest border border-white/5 rounded-xl p-4 text-sm text-on-surface focus:outline-none focus:ring-2 focus:ring-tertiary/50 resize-none placeholder-on-surface-variant/40"
+              placeholder="Nhập văn bản ở đây..."
+              data-i18n-placeholder="ws.placeholder"></textarea>
+            <div class="absolute bottom-3 right-3 text-xs text-on-surface-variant bg-surface-container-lowest px-2 py-0.5 rounded">
+              <span id="emotionalCharCount">0</span> ký tự
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab: OmniVoice (multilingual TTS) — compact studio layout -->
+        <div class="tab-content hidden ov-studio" id="omnivoiceTab">
+
+          <div class="ov-toolbar">
+            <div class="ov-field ov-field--mode">
+              <label for="omnivoiceModeSelect">Chế độ</label>
+              <div class="ov-mode-row">
+                <div class="ov-select-wrap ov-mode-row__select">
+                  <select id="omnivoiceModeSelect" class="ov-select">
+                    <option value="auto">Auto Voice</option>
+                    <option value="clone">Voice Clone</option>
+                    <option value="design">Voice Design</option>
+                    <option value="emotional">Emotional</option>
+                  </select>
+                  <span class="material-symbols-outlined ov-chevron">expand_more</span>
+                </div>
+                <button type="button" id="omnivoiceHelpBtn" class="ov-help-btn" title="Trợ giúp" aria-label="Trợ giúp">?</button>
+              </div>
+            </div>
+
+            <div class="ov-field ov-field--voice hidden" id="omnivoiceCloneField">
+              <label for="omnivoiceVoiceSelect">Giọng</label>
+              <div class="ov-select-wrap">
+                <select id="omnivoiceVoiceSelect" class="ov-select">
+                  <option value="">— Chọn giọng clone —</option>
+                </select>
+                <span class="material-symbols-outlined ov-chevron">expand_more</span>
+              </div>
+            </div>
+
+            <div class="ov-field ov-field--voice hidden" id="omnivoiceEmotionalCloneField">
+              <label for="omnivoiceEmotionalVoiceSelect">Giọng (tuỳ chọn)</label>
+              <div class="ov-select-wrap">
+                <select id="omnivoiceEmotionalVoiceSelect" class="ov-select">
+                  <option value="">— Auto voice + cảm xúc —</option>
+                </select>
+                <span class="material-symbols-outlined ov-chevron">expand_more</span>
+              </div>
+            </div>
+
+            <div class="ov-field ov-field--design hidden" id="omnivoiceDesignField">
+              <label for="omnivoiceInstruct">Mô tả giọng (instruct)</label>
+              <input type="text" id="omnivoiceInstruct" class="ov-input"
+                placeholder="VD: female, low pitch, british accent">
+            </div>
+          </div>
+
+          <p class="ov-context">
+            <span class="material-symbols-outlined">language</span>
+            OmniVoice · 600+ ngôn ngữ · Vi / En / Zh
+          </p>
+
+          {{ ws_upload_toolbar() }}
+
+          <div class="ov-textarea-wrap ws-text-drop-target">
+            <textarea id="omnivoiceTextInput" class="ov-textarea"
+              placeholder="Nhập văn bản đa ngôn ngữ..."></textarea>
+          </div>
+
+          <div class="ov-textarea-footer">
+            <span><span id="omnivoiceCharCount">0</span> ký tự</span>
+            <span id="omnivoiceChunkHint" class="ov-chunk-hint hidden"></span>
+            <button type="button" id="omnivoiceInsertTagBtn" class="ov-tag-btn hidden">
+              <span class="material-symbols-outlined" style="font-size:14px">sell</span>
+              Chèn tag cảm xúc
+            </button>
+          </div>
+
+          <div id="omnivoiceHelpPopover" class="ov-popover hidden" role="dialog">
+            <p class="ov-popover__title">OmniVoice</p>
+            <div id="omnivoiceHelpContent"></div>
+          </div>
+
+          <div id="omnivoiceTagPopover" class="ov-popover hidden" role="dialog">
+            <p class="ov-popover__title">Chèn tag cảm xúc</p>
+            <p style="color:rgba(203,195,215,0.65);margin-bottom:4px">Click để chèn vào đầu dòng hiện tại:</p>
+            <div class="ov-tag-chips">
+              <button type="button" class="ov-tag-chip" data-tag="(vui vẻ)">(vui vẻ)</button>
+              <button type="button" class="ov-tag-chip" data-tag="(hào hứng)">(hào hứng)</button>
+              <button type="button" class="ov-tag-chip" data-tag="(bình tĩnh)">(bình tĩnh)</button>
+              <button type="button" class="ov-tag-chip" data-tag="(buồn)">(buồn)</button>
+              <button type="button" class="ov-tag-chip" data-tag="(excited)">(excited)</button>
+              <button type="button" class="ov-tag-chip" data-tag="(平静)">(平静)</button>
+            </div>
+          </div>
+        </div>
+
+        </div><!-- /ws-tab-panels -->
+
+        <!-- Voice Selection (text + file tabs) -->
+        <div id="voiceSelectionRow" class="ws-voice-row flex flex-row gap-2 mt-4 mb-0 items-end">
+          <div class="ws-voice-row__select flex-1 min-w-0">
+            <label class="block text-xs font-semibold text-on-surface-variant uppercase tracking-wide mb-2" data-i18n="ws.voice.label">Chọn giọng đọc</label>
+            <div class="relative">
+              <select id="voiceSelect" class="ws-voice-select w-full appearance-none bg-surface-container-highest border border-white/10 rounded-lg py-3 px-4 text-sm text-on-surface focus:outline-none focus:ring-2 focus:ring-primary/50 pr-10">
+                <option>Đang tải danh sách giọng...</option>
+              </select>
+              <span class="pointer-events-none absolute inset-y-0 right-3 flex items-center text-on-surface-variant material-symbols-outlined" style="font-size:18px">expand_more</span>
+            </div>
+          </div>
+          <button id="voiceGalleryBtn" class="ws-voice-row__preview shrink-0 h-[46px] px-3 rounded-lg border border-primary/40 text-primary text-xs sm:text-sm font-semibold hover:bg-primary/10 transition-colors flex items-center gap-1.5 whitespace-nowrap">
+            <span class="material-symbols-outlined" style="font-size:18px">library_music</span>
+            <span data-i18n="ws.voice.test">Nghe thử</span>
+          </button>
+        </div>
+
+        <!-- Convert — ngay dưới nội dung tab, trong card -->
+        <div id="wsTnBar" class="ws-tn-bar flex flex-wrap items-center justify-between gap-3 mt-4 pt-3 border-t border-white/5">
+          <label class="flex items-center gap-2 text-sm text-on-surface-variant cursor-pointer select-none">
+            <input type="checkbox" id="enableTextNormalization" checked
+              class="rounded border-white/20 bg-surface-container-highest text-primary focus:ring-primary/40">
+            <span>Chuẩn hóa văn bản (TN)</span>
+          </label>
+          <button type="button" id="tnPreviewBtn"
+            class="text-xs font-semibold text-primary hover:text-inverse-primary transition-colors flex items-center gap-1">
+            <span class="material-symbols-outlined" style="font-size:16px">visibility</span>
+            Xem text sau chuẩn hóa
+          </button>
+        </div>
+
+        <div id="wsConvertBar" class="ws-convert-bar mt-3 pt-0 border-t-0">
+          <button id="convertBtn"
+            class="w-full py-4 rounded-xl bg-gradient-to-r from-inverse-primary to-primary text-[#1a0060] font-bold text-lg hover:shadow-[0_0_28px_rgba(208,188,255,0.35)] transition-all duration-300 active:scale-[0.98] flex items-center justify-center gap-2">
+            <span class="material-symbols-outlined" style="font-size:22px;color:inherit">play_circle</span>
+            <span data-i18n="ws.btn.convert">Chuyển đổi ngay</span>
+          </button>
+
+          <button id="convertEmotionalBtn"
+            class="w-full py-4 rounded-xl bg-gradient-to-r from-tertiary to-inverse-primary text-surface-container-lowest font-bold text-lg hover:shadow-[0_0_28px_rgba(47,217,244,0.3)] transition-all duration-300 active:scale-[0.98] hidden flex items-center justify-center gap-2">
+            <span class="material-symbols-outlined" style="font-size:22px">sentiment_very_satisfied</span>
+            <span data-i18n="ws.btn.emotional">Chuyển đổi với cảm xúc</span>
+          </button>
+
+          <button id="convertOmnivoiceBtn"
+            class="w-full py-4 rounded-xl bg-gradient-to-r from-primary-container to-primary text-on-primary font-bold text-lg hover:shadow-[0_0_28px_rgba(208,188,255,0.35)] transition-all duration-300 active:scale-[0.98] hidden flex items-center justify-center gap-2">
+            <span class="material-symbols-outlined" style="font-size:22px">language</span>
+            <span>Chuyển đổi OmniVoice</span>
+          </button>
+        </div>
+      </div>
+
+    </div><!-- /left column — input card only -->
+
+    <!-- ═══ RIGHT COLUMN: Output + Info ═══ -->
+    <div class="lg:col-span-4 flex flex-col gap-6 ws-workspace-grid__aside">
+
+      <!-- Quick Stats -->
+      <div class="bg-gradient-to-br from-inverse-primary/20 to-primary/10 border border-primary/20 rounded-xl p-4 flex items-center justify-around">
+        <div class="text-center">
+          <div class="text-xs text-on-surface-variant mb-1 font-medium" data-i18n="ws.stats.count">Lần chuyển đổi</div>
+          <div class="text-2xl font-extrabold text-on-surface" id="totalConversions">0</div>
+        </div>
+        <div class="w-px h-10 bg-white/10"></div>
+        <div class="text-center">
+          <div class="text-xs text-on-surface-variant mb-1 font-medium" data-i18n="ws.stats.used">Ký tự đã dùng</div>
+          <div class="text-2xl font-extrabold text-on-surface" id="totalCharacters">0</div>
+        </div>
+        <div class="w-px h-10 bg-white/10"></div>
+        <div class="text-center">
+          <div class="text-xs text-on-surface-variant mb-1 font-medium" data-i18n="ws.stats.remain">Còn lại</div>
+          <div class="text-2xl font-extrabold text-tertiary" id="charsRemainingDisplay">...</div>
+        </div>
+      </div>
+
+      <!-- Results Card -->
+      <div class="bg-surface-container/80 backdrop-blur-md border border-white/5 rounded-xl p-5 flex-grow">
+        <h3 class="text-base font-bold text-on-surface mb-4 flex items-center gap-2">
+          <span class="material-symbols-outlined text-tertiary" style="font-size:20px">graphic_eq</span>
+          <span data-i18n="ws.result.title">Kết quả</span>
+        </h3>
+
+        <!-- Loading -->
+        <div id="loadingIndicator" class="hidden">
+          <div class="vv-audio-loader">
+            <div class="vv-audio-loader__visual">
+              <span class="vv-audio-loader__pulse"></span>
+              <span class="vv-audio-loader__pulse"></span>
+              <span class="vv-audio-loader__pulse"></span>
+              <div class="vv-audio-loader__core">
+                <span class="material-symbols-outlined">graphic_eq</span>
+              </div>
+              <div class="vv-audio-loader__bars" aria-hidden="true">
+                <span></span><span></span><span></span><span></span><span></span>
+              </div>
+            </div>
+            <p class="vv-audio-loader__title">
+              <span data-i18n="ws.result.processing">Đang xử lý âm thanh</span><span class="vv-audio-loader__ellipsis" aria-hidden="true">...</span>
+            </p>
+            <p class="vv-audio-loader__sub" data-i18n="ws.result.wait">Vui lòng đợi trong giây lát</p>
+            <div class="vv-audio-loader__progress">
+              <div class="vv-audio-loader__progress-meta">
+                <span data-i18n="ws.result.progress">Tiến trình</span>
+                <span class="vv-audio-loader__pct" id="audioProgressPct">0%</span>
+              </div>
+              <div class="vv-audio-loader__track" id="audioProgressTrack" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+                <div class="vv-audio-loader__track-fill" id="audioProgressFill"></div>
+              </div>
+            </div>
+            <div class="vv-audio-loader__chips" aria-hidden="true">
+              <span class="vv-audio-loader__chip" data-i18n="ws.result.step1">Phân tích văn bản</span>
+              <span class="vv-audio-loader__chip" data-i18n="ws.result.step2">Tổng hợp giọng nói</span>
+              <span class="vv-audio-loader__chip" data-i18n="ws.result.step3">Hoàn thiện audio</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Empty State -->
+        <div id="emptyState" class="flex flex-col items-center justify-center py-10 gap-2 border-2 border-dashed border-white/5 rounded-xl">
+          <span class="material-symbols-outlined text-5xl text-on-surface-variant opacity-30">audio_file</span>
+          <p class="text-sm font-medium text-on-surface-variant" data-i18n="ws.result.empty">Chưa có kết quả</p>
+          <p class="text-xs text-on-surface-variant opacity-60 text-center px-4" data-i18n="ws.result.hint">Nhập văn bản và nhấn "Chuyển đổi" để bắt đầu</p>
+        </div>
+
+        <!-- Audio Player -->
+        <div id="audioPlayer" class="hidden">
+          <div class="flex items-center gap-2 mb-3 px-3 py-2 rounded-lg bg-green-500/10 border border-green-500/20">
+            <span class="material-symbols-outlined text-green-400" style="font-size:16px">check_circle</span>
+            <span class="text-xs font-semibold text-green-400" data-i18n="ws.result.success">Chuyển đổi thành công!</span>
+          </div>
+          <audio id="audioElement" controls class="mb-3 w-full"></audio>
+
+          <!-- Đặt tên audio ngay tại đây -->
+          <div class="mb-3 p-3 rounded-xl bg-surface-container border border-outline-variant/30">
+            <p class="text-[11px] font-semibold text-on-surface-variant uppercase tracking-wide mb-2 flex items-center gap-1">
+              <span class="material-symbols-outlined" style="font-size:13px">label</span>
+              Đặt tên cho audio (tùy chọn)
+            </p>
+            <div class="flex gap-2">
+              <input id="wsNameInput" type="text" maxlength="200"
+                class="flex-1 bg-surface-container-lowest border border-outline-variant rounded-lg px-3 py-2 text-sm text-on-surface focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors placeholder-on-surface-variant/40"
+                placeholder="VD: Bài thuyết trình Q3, Đọc truyện..."/>
+              <button id="wsSaveNameBtn"
+                class="shrink-0 flex items-center gap-1.5 px-4 py-2 rounded-lg bg-primary/15 border border-primary/30 text-primary text-sm font-semibold hover:bg-primary/25 transition-colors">
+                <span class="material-symbols-outlined" style="font-size:15px">save</span>
+                <span>Lưu tên</span>
+              </button>
+            </div>
+            <p id="wsSaveStatus" class="text-xs mt-1.5 hidden"></p>
+          </div>
+
+          <div class="mb-3 p-3 rounded-xl bg-surface-container border border-outline-variant/30">
+            <div class="grid grid-cols-2 gap-3 mb-2">
+              <div>
+                <label class="block text-[11px] font-semibold text-on-surface-variant uppercase tracking-wide mb-1" data-i18n="export.format">Định dạng xuất</label>
+                <select id="exportFormat" class="w-full bg-surface-container-lowest border border-outline-variant rounded-lg px-3 py-2 text-sm text-on-surface focus:outline-none focus:border-primary">
+                  <option value="wav" data-i18n="export.format.wav">WAV (nguyên bản)</option>
+                  <option value="mp3" data-i18n="export.format.mp3">MP3</option>
+                  <option value="ogg" data-i18n="export.format.ogg">OGG Vorbis</option>
+                </select>
+              </div>
+              <div id="exportBitrateWrap">
+                <label class="block text-[11px] font-semibold text-on-surface-variant uppercase tracking-wide mb-1" data-i18n="export.bitrate">Bitrate</label>
+                <select id="exportBitrate" class="w-full bg-surface-container-lowest border border-outline-variant rounded-lg px-3 py-2 text-sm text-on-surface focus:outline-none focus:border-primary">
+                  <option value="128">128 kbps</option>
+                  <option value="192" selected>192 kbps</option>
+                  <option value="256">256 kbps</option>
+                  <option value="320">320 kbps</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div class="flex gap-2">
+            <button type="button" id="downloadBtn" class="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg bg-primary/10 border border-primary/30 text-primary text-sm font-semibold hover:bg-primary/20 transition-colors">
+              <span class="material-symbols-outlined" style="font-size:16px">download</span>
+              <span data-i18n="export.download">Tải xuống</span>
+            </button>
+            <a href="/audio_library" title="Xem thư viện"
+               class="flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg bg-tertiary/10 border border-tertiary/20 text-tertiary hover:bg-tertiary/20 transition-colors no-underline">
+              <span class="material-symbols-outlined" style="font-size:16px">library_music</span>
+            </a>
+            <button onclick="document.getElementById('audioElement').currentTime=0;document.getElementById('audioElement').play();" class="flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-on-surface-variant text-sm font-medium hover:bg-white/10 transition-colors">
+              <span class="material-symbols-outlined" style="font-size:16px">replay</span>
+            </button>
+          </div>
+
+          <!-- Voice Adjustment Accordion -->
+          <div id="voiceAdjustmentPanel" class="hidden mt-4">
+            <!-- Toggle button -->
+            <button id="rvcAccordionToggle" onclick="toggleRvcAccordion()"
+              class="w-full flex items-center justify-between px-3 py-2.5 rounded-xl transition-all"
+              style="background:rgba(160,120,255,0.07);border:1px solid rgba(160,120,255,0.15)">
+              <span class="flex items-center gap-2 text-xs font-semibold text-primary">
+                <span class="material-symbols-outlined" style="font-size:16px">tune</span>
+                <span data-i18n="rvc.title">Điều chỉnh giọng nói</span>
+              </span>
+              <span class="flex items-center gap-2">
+                <!-- quick presets -->
+                <span class="btn-preset text-[10px] px-2 py-0.5 rounded-full border border-white/10 text-on-surface-variant hover:text-primary transition-colors" data-preset="male-to-female" onclick="event.stopPropagation()" data-i18n="rvc.male2female">♂→♀</span>
+                <span class="btn-preset text-[10px] px-2 py-0.5 rounded-full border border-white/10 text-on-surface-variant hover:text-primary transition-colors" data-preset="female-to-male" onclick="event.stopPropagation()" data-i18n="rvc.female2male">♀→♂</span>
+                <span class="btn-preset text-[10px] px-2 py-0.5 rounded-full border border-white/10 text-on-surface-variant hover:text-primary transition-colors" data-preset="reset" onclick="event.stopPropagation()">↺</span>
+                <span class="material-symbols-outlined text-on-surface-variant transition-transform duration-200" id="rvcChevron" style="font-size:18px">expand_more</span>
+              </span>
+            </button>
+
+            <!-- Accordion body -->
+            <div id="rvcAccordionBody" class="hidden mt-2 rounded-xl overflow-hidden" style="background:rgba(10,20,34,0.6);border:1px solid rgba(255,255,255,0.06)">
+              <div class="p-4 space-y-3">
+
+                <!-- Pitch -->
+                <div>
+                  <div class="flex justify-between items-center mb-1.5">
+                    <span class="text-[11px] font-semibold text-on-surface-variant flex items-center gap-1">
+                      <span class="material-symbols-outlined" style="font-size:13px;color:#a78bfa">piano</span>
+                      <span data-i18n="rvc.pitch">Cao độ (Pitch)</span>
+                    </span>
+                    <span class="text-[11px] font-bold px-2 py-0.5 rounded-full" id="pitchValue"
+                      style="background:rgba(160,120,255,0.15);color:#d0bcff;min-width:32px;text-align:center">0</span>
+                  </div>
+                  <input type="range" id="pitchSlider" min="-12" max="12" value="0" step="1" class="w-full">
+                  <div class="flex justify-between mt-0.5">
+                    <span class="text-[10px] text-on-surface-variant/60" data-i18n="rvc.low">↓ Thấp</span>
+                    <span class="text-[10px] text-on-surface-variant/60" data-i18n="rvc.high">Cao ↑</span>
+                  </div>
+                </div>
+
+                <!-- Index Rate -->
+                <div>
+                  <div class="flex justify-between items-center mb-1.5">
+                    <span class="text-[11px] font-semibold text-on-surface-variant flex items-center gap-1">
+                      <span class="material-symbols-outlined" style="font-size:13px;color:#2fd9f4">water_drop</span>
+                      <span data-i18n="rvc.blend">Pha trộn (Index)</span>
+                    </span>
+                    <span class="text-[11px] font-bold px-2 py-0.5 rounded-full" id="indexValue"
+                      style="background:rgba(47,217,244,0.12);color:#2fd9f4;min-width:32px;text-align:center">0.75</span>
+                  </div>
+                  <input type="range" id="indexSlider" min="0" max="1" value="0.75" step="0.05" class="w-full">
+                </div>
+
+                <!-- Protect -->
+                <div>
+                  <div class="flex justify-between items-center mb-1.5">
+                    <span class="text-[11px] font-semibold text-on-surface-variant flex items-center gap-1">
+                      <span class="material-symbols-outlined" style="font-size:13px;color:#a78bfa">shield</span>
+                      <span data-i18n="rvc.protect">Bảo vệ phụ âm</span>
+                    </span>
+                    <span class="text-[11px] font-bold px-2 py-0.5 rounded-full" id="protectValue"
+                      style="background:rgba(160,120,255,0.15);color:#d0bcff;min-width:32px;text-align:center">0.33</span>
+                  </div>
+                  <input type="range" id="protectSlider" min="0" max="0.5" value="0.33" step="0.01" class="w-full">
+                </div>
+
+                <!-- Quick presets row -->
+                <div class="flex gap-2 pt-1">
+                  <button class="btn-preset flex-1 py-1.5 rounded-lg text-[11px] font-semibold border border-white/8 text-on-surface-variant hover:border-primary/40 hover:text-primary hover:bg-primary/5 transition-all" data-preset="higher" data-i18n="rvc.higher">↑ Cao hơn</button>
+                  <button class="btn-preset flex-1 py-1.5 rounded-lg text-[11px] font-semibold border border-white/8 text-on-surface-variant hover:border-primary/40 hover:text-primary hover:bg-primary/5 transition-all" data-preset="lower" data-i18n="rvc.lower">↓ Thấp hơn</button>
+                </div>
+
+                <!-- Apply button -->
+                <button id="applyVoiceEffectBtn" class="w-full py-2 rounded-xl text-sm font-bold flex items-center justify-center gap-2 transition-all hover:opacity-90"
+                  style="background:linear-gradient(135deg,#7c3aed,#2fd9f4);color:#fff;box-shadow:0 3px 16px rgba(124,58,237,0.3)">
+                  <span class="material-symbols-outlined" style="font-size:16px">auto_fix_high</span>
+                  <span data-i18n="rvc.apply">Áp dụng hiệu ứng</span>
+                </button>
+
+                <!-- Status -->
+                <div id="effectProcessing" class="hidden items-center justify-center gap-2 py-2 rounded-lg text-xs text-on-surface-variant" style="background:rgba(255,255,255,0.04)">
+                  <div class="vv-spinner" style="width:13px;height:13px;border-width:2px"></div>
+                  <span data-i18n="rvc.applying">Đang xử lý...</span>
+                </div>
+                <div id="effectSuccess" class="hidden py-2 px-3 rounded-lg text-xs flex items-center gap-2" style="background:rgba(34,197,94,0.1);border:1px solid rgba(34,197,94,0.2);color:#4ade80">
+                  <span class="material-symbols-outlined" style="font-size:14px">check_circle</span>
+                  <span data-i18n="rvc.success">Đã áp dụng thành công!</span>
+                </div>
+                <div id="effectError" class="hidden py-2 px-3 rounded-lg text-xs flex items-center gap-2" style="background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.2);color:#f87171">
+                  <span class="material-symbols-outlined" style="font-size:14px">error</span>
+                  <span></span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Error -->
+        <div id="errorMessage" class="hidden p-3 rounded-lg bg-error/10 border border-error/20 text-error text-sm"></div>
+      </div>
+
+      <!-- Tips Card -->
+      <div class="rounded-2xl overflow-hidden" style="background:rgba(12,22,36,0.7)">
+        <div class="px-5 pt-4 pb-3 flex items-center gap-2">
+          <span class="material-symbols-outlined text-tertiary" style="font-size:18px">lightbulb</span>
+          <span class="text-sm font-bold text-on-surface" data-i18n="tip.title">Mẹo sử dụng</span>
+        </div>
+        <ul class="px-5 py-4 space-y-3">
+          <li class="flex items-start gap-2.5 text-xs text-on-surface-variant">
+            <span class="w-1.5 h-1.5 rounded-full bg-tertiary mt-1.5 shrink-0"></span>
+            <span data-i18n="tip.1">Dùng dấu chấm, phẩy để giọng đọc ngắt nghỉ tự nhiên hơn.</span>
+          </li>
+          <li class="flex items-start gap-2.5 text-xs text-on-surface-variant">
+            <span class="w-1.5 h-1.5 rounded-full bg-tertiary mt-1.5 shrink-0"></span>
+            <span data-i18n="tip.2">Tách đoạn văn dài thành nhiều phần nhỏ hơn 2000 ký tự.</span>
+          </li>
+          <li class="flex items-start gap-2.5 text-xs text-on-surface-variant">
+            <span class="w-1.5 h-1.5 rounded-full bg-tertiary mt-1.5 shrink-0"></span>
+            <span data-i18n="tip.3">Thử các giọng đọc khác nhau để tìm phong cách phù hợp.</span>
+          </li>
+          <li class="flex items-start gap-2.5 text-xs text-on-surface-variant">
+            <span class="w-1.5 h-1.5 rounded-full bg-primary mt-1.5 shrink-0"></span>
+            <span data-i18n="tip.4">Dùng Emotional TTS để AI tự điều chỉnh cảm xúc theo văn bản.</span>
+          </li>
+          <li class="flex items-start gap-2.5 text-xs text-on-surface-variant">
+            <span class="w-1.5 h-1.5 rounded-full bg-primary mt-1.5 shrink-0"></span>
+            <span data-i18n="tip.5">Điều chỉnh Pitch sau chuyển đổi để thay đổi cao độ giọng.</span>
+          </li>
+        </ul>
+      </div>
+
+    </div><!-- /right column -->
+  </div><!-- /grid -->

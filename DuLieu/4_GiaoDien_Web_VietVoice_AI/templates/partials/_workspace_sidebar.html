@@ -1,0 +1,82 @@
+{%- set _sa = sidebar_active | default(request.endpoint) | default('') -%}
+{%- macro nav_link(page, href, icon, label_key, label_vi) -%}
+  <a class="flex items-center gap-3 px-4 py-2.5 rounded-lg no-underline text-sm font-medium transition-all
+    {%- if _sa == page %} bg-primary/10 text-primary border-l-4 border-primary font-semibold
+    {%- else %} text-slate-400 hover:bg-white/5 hover:text-white border-l-4 border-transparent{% endif %}"
+    href="{{ href }}">
+    <span class="material-symbols-outlined" style="font-size:18px">{{ icon }}</span>
+    <span class="sb-label" data-i18n="{{ label_key }}">{{ label_vi }}</span>
+  </a>
+{%- endmacro -%}
+
+<aside id="mainSidebar" class="vv-sidebar hidden md:flex flex-col bg-[#051424] overflow-hidden shrink-0" style="width:240px">
+
+  <!-- Brand header + collapse toggle -->
+  <div id="sidebarBrand" class="flex items-center gap-2 px-3 pt-4 pb-3">
+    <!-- Logo icon (luôn hiện) -->
+    <a id="sidebarLogoIcon" href="{{ url_for('index') }}" class="shrink-0 no-underline" title="VietVoice AI">
+      <div class="w-9 h-9 rounded-lg bg-gradient-to-br from-primary/30 to-tertiary/20 flex items-center justify-center">
+        <span class="material-symbols-outlined text-tertiary" style="font-size:22px">graphic_eq</span>
+      </div>
+    </a>
+    <!-- Logo text (ẩn khi collapsed) -->
+    <a id="sidebarLogoText" href="{{ url_for('index') }}" class="sb-logo-text flex-1 overflow-hidden no-underline min-w-0" title="VietVoice AI">
+      <span class="text-base font-extrabold tracking-tight whitespace-nowrap bg-gradient-to-r from-[#38bdf8] to-[#818cf8] bg-clip-text text-transparent">VietVoice AI</span>
+    </a>
+    <!-- Collapse toggle -->
+    <button id="sidebarCollapseBtn"
+      class="sb-collapse-btn shrink-0 flex items-center justify-center w-8 h-8 rounded-lg text-slate-400 hover:text-slate-100 hover:bg-white/10 active:bg-white/15 transition-all"
+      title="Thu/Mở sidebar" aria-label="Thu/Mở sidebar">
+      <span class="material-symbols-outlined" style="font-size:20px">left_panel_close</span>
+    </button>
+  </div>
+
+  <!-- Nav items -->
+  <nav class="flex flex-col gap-1 px-3 flex-1 overflow-y-auto">
+    {{ nav_link('index',         url_for('index'),         'add_circle',        'side.create_audio',  'Tạo Audio mới') }}
+    {{ nav_link('audio_library', url_for('audio_library'), 'library_music',     'side.audio_library', 'Thư viện Audio') }}
+    {{ nav_link('my_voices',     url_for('my_voices'),     'record_voice_over', 'side.my_voices',     'Giọng của tôi') }}
+    {{ nav_link('history',       url_for('history'),       'history',           'side.history',       'Lịch sử chuyển đổi') }}
+    {{ nav_link('pricing',       url_for('pricing'),       'bolt',              'side.pricing',       'Bảng giá') }}
+    {{ nav_link('profile',       url_for('profile'),       'manage_accounts',   'side.profile',       'Hồ sơ') }}
+    {{ nav_link('contact',       url_for('contact'),       'contact_support',   'side.contact',       'Liên hệ') }}
+    {% if session.user_role == 'admin' %}
+    {{ nav_link('admin',         url_for('admin'),         'admin_panel_settings', 'side.admin',      'Admin') }}
+    {% endif %}
+  </nav>
+
+  <!-- Upgrade CTA -->
+  <div class="px-3 pb-3 sb-upgrade">
+    <a href="{{ url_for('pricing') }}"
+      class="flex items-center justify-center gap-2 w-full py-2.5 rounded-xl border border-primary/30 text-primary text-sm font-semibold hover:bg-primary/10 transition-colors no-underline">
+      <span class="material-symbols-outlined" style="font-size:16px">upgrade</span>
+      <span class="sb-label" data-i18n="side.upgrade">Nâng cấp gói</span>
+    </a>
+  </div>
+
+  <!-- User info -->
+  <div class="px-2 pb-3 sb-user-row">
+    <div class="flex items-center gap-2 px-2 py-2 rounded-xl bg-white/5">
+      <a href="{{ url_for('profile') }}" class="shrink-0 no-underline" title="Hồ sơ cá nhân">
+        {% if session.avatar_url %}
+        <img src="{{ session.avatar_url }}" alt="" class="w-8 h-8 rounded-full object-cover shrink-0"/>
+        {% else %}
+        <div class="w-8 h-8 rounded-full bg-gradient-to-br from-primary-container to-inverse-primary flex items-center justify-center text-sm font-bold text-on-primary shrink-0">
+          {{ (session.full_name or session.username or 'U')[0] | upper }}
+        </div>
+        {% endif %}
+      </a>
+      <div class="sb-label flex-1 overflow-hidden min-w-0">
+        <div class="text-xs font-semibold text-white truncate leading-tight">{{ session.full_name or session.username }}</div>
+        <div class="text-[10px] text-on-surface-variant truncate">{{ session.user_email or (session.username ~ '@vietvoice.ai') }}</div>
+      </div>
+      <a href="{{ url_for('logout') }}"
+        class="sb-label shrink-0 flex items-center justify-center w-7 h-7 rounded-lg text-slate-400 hover:bg-red-500/20 hover:text-red-400 transition-all no-underline"
+        title="Đăng xuất">
+        <span class="material-symbols-outlined" style="font-size:16px">logout</span>
+      </a>
+    </div>
+  </div>
+
+</aside>
+

@@ -1,0 +1,38 @@
+{% set _admin_url = url_for('admin') %}
+
+<a class="admin-nav-link{% if nav_active == 'dashboard' %} active{% endif %}" href="{{ _admin_url }}#dashboard" data-admin-view="dashboard">
+  <span class="material-symbols-outlined">dashboard</span>
+  <span data-i18n="admin.nav.dashboard">Bảng điều khiển</span>
+</a>
+<a class="admin-nav-link{% if nav_active == 'lifecycle' %} active{% endif %}" href="{{ _admin_url }}#lifecycle" data-admin-view="lifecycle">
+  <span class="material-symbols-outlined">person_off</span>
+  <span data-i18n="admin.nav.lifecycle">Vòng đời tài khoản</span>
+</a>
+<a class="admin-nav-link{% if nav_active == 'users' %} active{% endif %}" href="{{ _admin_url }}#users" data-admin-view="users">
+  <span class="material-symbols-outlined">group</span>
+  <span data-i18n="admin.nav.users">Quản lý người dùng</span>
+</a>
+<a class="admin-nav-link{% if nav_active == 'conversions' %} active{% endif %}" href="{{ _admin_url }}#conversions" data-admin-view="conversions">
+  <span class="material-symbols-outlined">history</span>
+  <span data-i18n="admin.nav.conversions">Chuyển đổi</span>
+</a>
+<a class="admin-nav-link{% if nav_active == 'voices' %} active{% endif %}" href="{{ _admin_url }}#voices" data-admin-view="voices">
+  <span class="material-symbols-outlined">record_voice_over</span>
+  <span data-i18n="admin.nav.voices">Quản lý giọng đọc</span>
+</a>
+<a class="admin-nav-link{% if nav_active == 'payments' %} active{% endif %}" href="{{ _admin_url }}#payments" data-admin-view="payments">
+  <span class="material-symbols-outlined">payments</span>
+  <span data-i18n="admin.nav.payments">Quản lý thanh toán</span>
+</a>
+<a class="admin-nav-link{% if nav_active == 'landing' %} active{% endif %}" href="{{ url_for('admin_landing') }}">
+  <span class="material-symbols-outlined">palette</span>
+  <span data-i18n="admin.nav.landing">Landing Page</span>
+</a>
+<a class="admin-nav-link{% if nav_active == 'settings' %} active{% endif %}" href="{{ url_for('admin_settings') }}">
+  <span class="material-symbols-outlined">tune</span>
+  <span data-i18n="admin.nav.settings">Cấu hình Site</span>
+</a>
+<a class="admin-nav-link{% if nav_active == 'policies' %} active{% endif %}" href="{{ url_for('admin_policies') }}">
+  <span class="material-symbols-outlined">gavel</span>
+  <span data-i18n="admin.nav.policies">Cấu hình chính sách</span>
+</a>

@@ -1,0 +1,85 @@
+<!-- Page Header -->
+    <header class="mb-4 md:mb-6">
+      <h1 class="text-2xl md:text-3xl font-extrabold text-on-surface mb-1 tracking-tight" data-i18n="lib.title">Thư viện Audio</h1>
+      <p class="text-xs md:text-sm text-on-surface-variant" data-i18n="lib.subtitle">Quản lý và tìm kiếm các tệp âm thanh đã tạo</p>
+    </header>
+
+    <!-- Compact filter toolbar -->
+    <section class="al-toolbar glass-panel rounded-xl mb-4">
+      <div class="al-toolbar__row">
+        <div class="al-search">
+          <span class="material-symbols-outlined al-search__icon">search</span>
+          <input id="searchInput" type="search"
+            class="al-search__input"
+            placeholder="Tìm kiếm..." data-i18n-placeholder="lib.search"/>
+        </div>
+        <div class="al-toolbar__controls">
+          <select id="voiceFilter" class="al-select" title="Giọng đọc">
+            <option value="" data-i18n="lib.filter.all_voices">Tất cả giọng</option>
+          </select>
+          <select id="sortBy" class="al-select al-select--sort" title="Sắp xếp">
+            <option value="newest" data-i18n="lib.sort.newest">Mới nhất</option>
+            <option value="oldest" data-i18n="lib.sort.oldest">Cũ nhất</option>
+            <option value="duration" data-i18n="lib.sort.duration">Thời lượng</option>
+            <option value="size" data-i18n="lib.sort.size">Kích thước</option>
+          </select>
+          <button type="button" id="alDateToggle" class="al-icon-btn" aria-expanded="false" aria-controls="alDatePanel" title="Lọc theo ngày">
+            <span class="material-symbols-outlined">date_range</span>
+          </button>
+          <button type="button" id="resetBtn" class="al-icon-btn" title="Đặt lại" data-i18n-title="common.reset">
+            <span class="material-symbols-outlined">restart_alt</span>
+          </button>
+        </div>
+      </div>
+
+      <div id="alDatePanel" class="al-toolbar__dates hidden">
+        <label class="al-date-field">
+          <span data-i18n="lib.filter.from">Từ</span>
+          <input id="dateFrom" type="date"/>
+        </label>
+        <span class="al-date-sep">—</span>
+        <label class="al-date-field">
+          <span data-i18n="lib.filter.to">Đến</span>
+          <input id="dateTo" type="date"/>
+        </label>
+      </div>
+
+      <div class="al-toolbar__footer">
+        <div class="al-view-toggle">
+          <button class="view-btn-modern active flex items-center gap-1 px-2.5 py-1 rounded-md text-xs font-semibold transition-all" data-view="grid">
+            <span class="material-symbols-outlined" style="font-size:15px">grid_view</span>
+            <span class="hidden sm:inline" data-i18n="lib.view.grid">Lưới</span>
+          </button>
+          <button class="view-btn-modern flex items-center gap-1 px-2.5 py-1 rounded-md text-xs font-semibold transition-all" data-view="list">
+            <span class="material-symbols-outlined" style="font-size:15px">view_list</span>
+            <span class="hidden sm:inline" data-i18n="lib.view.list">Danh sách</span>
+          </button>
+        </div>
+        <div id="audioCount" class="al-count-badge">
+          <span class="material-symbols-outlined">folder</span>
+          <span>Tổng: <strong>0</strong></span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Audio Container (populated by JS) -->
+    <div id="audioContainer" class="audio-grid-modern gap-5 mb-8">
+      <!-- Loading state -->
+      <div style="grid-column:1/-1" class="flex flex-col items-center justify-center py-16 gap-3 text-on-surface-variant">
+        <div style="width:32px;height:32px;border:3px solid rgba(208,188,255,0.15);border-top-color:#d0bcff;border-radius:50%;animation:spin 0.8s linear infinite"></div>
+        <p class="text-sm" data-i18n="lib.loading">Đang tải thư viện...</p>
+      </div>
+    </div>
+
+    <!-- Pagination -->
+    <div id="pagination" class="flex items-center justify-center gap-4 mt-4" style="display:none!important">
+      <button id="prevBtn" disabled
+        class="flex items-center gap-1 px-4 py-2 rounded-lg bg-surface-container border border-outline-variant text-on-surface-variant hover:text-on-surface hover:bg-surface-variant transition-colors text-sm font-semibold disabled:opacity-40 disabled:cursor-not-allowed">
+        <span class="material-symbols-outlined" style="font-size:18px">chevron_left</span> <span data-i18n="common.prev">Trước</span>
+      </button>
+      <span id="pageInfo" class="text-sm font-semibold text-on-surface px-4 py-2 bg-surface-container rounded-lg border border-outline-variant">Trang 1 / 1</span>
+      <button id="nextBtn" disabled
+        class="flex items-center gap-1 px-4 py-2 rounded-lg bg-surface-container border border-outline-variant text-on-surface hover:bg-surface-variant transition-colors text-sm font-semibold disabled:opacity-40 disabled:cursor-not-allowed">
+        <span data-i18n="common.next">Sau</span> <span class="material-symbols-outlined" style="font-size:18px">chevron_right</span>
+      </button>
+    </div>

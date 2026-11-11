@@ -1,0 +1,55 @@
+{
+    "version": "2.5.0",
+    "prompt_templates": [
+        {
+            "id": "emotion_tag_neutral",
+            "tag": "(bình tĩnh)",
+            "mapped_emotion": "neutral",
+            "vixtts_params": {
+                "temperature": 0.30,
+                "speed": 1.0
+            },
+            "omnivoice_instruct": "Nói với giọng đọc bình thản, rõ ràng, tự nhiên."
+        },
+        {
+            "id": "emotion_tag_cheerful",
+            "tag": "(vui vẻ)",
+            "mapped_emotion": "cheerful",
+            "vixtts_params": {
+                "temperature": 0.35,
+                "speed": 1.0
+            },
+            "omnivoice_instruct": "Nói với giọng vui tươi, hào hứng, năng lượng cao."
+        },
+        {
+            "id": "emotion_tag_excited",
+            "tag": "(hào hứng)",
+            "mapped_emotion": "excited",
+            "vixtts_params": {
+                "temperature": 0.40,
+                "speed": 1.0
+            },
+            "omnivoice_instruct": "Nói với giọng cực kỳ phấn khởi, truyền cảm hứng."
+        },
+        {
+            "id": "emotion_tag_calm",
+            "tag": "(nhẹ nhàng)",
+            "mapped_emotion": "calm",
+            "vixtts_params": {
+                "temperature": 0.25,
+                "speed": 1.0
+            },
+            "omnivoice_instruct": "Nói với giọng trầm ấm, chậm rãi, thư thái."
+        },
+        {
+            "id": "emotion_tag_sad",
+            "tag": "(buồn)",
+            "mapped_emotion": "sad",
+            "vixtts_params": {
+                "temperature": 0.28,
+                "speed": 1.0
+            },
+            "omnivoice_instruct": "Nói với giọng u buồn, sầu lắng, chậm rãi."
+        }
+    ]
+}

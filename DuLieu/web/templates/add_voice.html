@@ -1,0 +1,590 @@
+﻿<!DOCTYPE html>
+<html lang="vi" data-theme="dark" class="vv-workspace">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Thêm giọng mới - VietVoice</title>
+
+{% include 'partials/vv_theme_head.html' %}
+
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+
+<!-- Tailwind -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script>
+tailwind.config = {
+  darkMode: "class",
+  theme: {
+    extend: {
+      colors: {
+        "surface-container":        "#122131",
+        "surface-container-high":   "#1c2b3c",
+        "surface-container-highest":"#273647",
+        "surface":      "#051424",
+        "on-surface":        "#d4e4fa",
+        "on-surface-variant":"#cbc3d7",
+        "background":        "#051424",
+        "primary":           "#d0bcff",
+        "primary-container": "#a078ff",
+        "on-primary":        "#3c0091",
+        "inverse-primary":   "#6d3bd7",
+        "tertiary":          "#2fd9f4",
+        "outline":           "#958ea0",
+        "outline-variant":   "#494454",
+      },
+    },
+  },
+}
+</script>
+
+<style>
+  html, body { overflow-x: hidden; max-width: 100%; }
+  body { font-family: 'Manrope', sans-serif; background: #051424; color: #d4e4fa; margin: 0; padding: 0; }
+  .material-symbols-outlined {
+    font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    font-size: 20px; line-height: 1; display: inline-flex; align-items: center;
+  }
+  /* Upload area drag-over state */
+  .upload-area-modern.drag-over { border-color: #d0bcff !important; background: rgba(208,188,255,0.05) !important; }
+  /* Range input */
+  input[type=range] { accent-color: #d0bcff; }
+  /* Select styling — override Tailwind Forms plugin */
+  select,
+  select.form-select {
+    background-color: #1c2b3c !important;
+    background-image: none !important;
+    color: #d4e4fa !important;
+    border: 1px solid #494454 !important;
+    border-radius: 8px !important;
+    padding: 10px 14px !important;
+    width: 100% !important;
+    outline: none !important;
+    font-size: 14px !important;
+    box-shadow: none !important;
+    -webkit-appearance: none !important;
+    appearance: none !important;
+  }
+  select:focus, select.form-select:focus {
+    border-color: #d0bcff !important;
+    box-shadow: 0 0 0 2px rgba(208,188,255,0.15) !important;
+  }
+  select option,
+  select optgroup {
+    background-color: #1c2b3c !important;
+    color: #d4e4fa !important;
+  }
+  select optgroup {
+    font-weight: 700;
+    color: #a08aff !important;
+  }
+  /* Textarea / Input — override Tailwind Forms plugin */
+  .form-input-dark,
+  input.form-input-dark,
+  textarea.form-input-dark {
+    background: #1c2b3c !important;
+    background-color: #1c2b3c !important;
+    color: #d4e4fa !important;
+    border: 1px solid #494454 !important;
+    border-radius: 8px !important;
+    padding: 10px 14px !important;
+    width: 100% !important;
+    outline: none !important;
+    font-size: 14px !important;
+    transition: border-color 0.15s !important;
+    font-family: inherit !important;
+    box-shadow: none !important;
+  }
+  .form-input-dark:focus,
+  input.form-input-dark:focus,
+  textarea.form-input-dark:focus {
+    border-color: #d0bcff !important;
+    box-shadow: 0 0 0 2px rgba(208,188,255,0.15) !important;
+  }
+  .form-input-dark::placeholder {
+    color: #7a8a9e !important;
+    opacity: 1 !important;
+  }
+  /* Progress bar */
+  .progress-bar-track { background: #1c2b3c; border-radius: 9999px; height: 10px; overflow: hidden; }
+  .progress-bar-fill { height: 100%; background: linear-gradient(90deg, #a078ff, #d0bcff); border-radius: 9999px; transition: width 0.4s ease; }
+
+  /* Language toggle button */
+  .vv-lang-toggle {
+    display: inline-flex; align-items: center; gap: 2px;
+    padding: 4px 10px; border-radius: 9999px;
+    border: 1px solid rgba(208,188,255,0.25);
+    background: rgba(208,188,255,0.06);
+    cursor: pointer; font-size: 12px; font-weight: 700;
+    letter-spacing: 0.04em; transition: background 0.2s;
+  }
+  .vv-lang-toggle:hover { background: rgba(208,188,255,0.18); border-color: #a78bfa; }
+  .lang-active   { color: #c4b5fd; font-weight: 800; }
+  .lang-inactive { color: #475569; font-weight: 600; }
+  .lang-sep      { color: rgba(148,163,184,0.3); font-weight: 300; font-size: 0.65rem; margin: 0 1px; }
+  @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+</style>
+</head>
+
+<body class="min-h-screen bg-background text-on-surface">
+
+<!-- ═══ TOP NAVBAR ═══ -->
+<nav class="fixed top-0 w-full z-50 border-b border-white/10 bg-[#07111f]/85 backdrop-blur-xl shadow-[0_8px_32px_rgba(0,0,0,0.4)]">
+  <div class="flex justify-between items-center px-3 md:px-6 h-16 max-w-[1360px] mx-auto">
+    <a href="{{ url_for('index') }}" class="text-xl font-black tracking-tighter text-white uppercase flex items-center gap-2 no-underline hover:opacity-80 transition-opacity">
+      <span class="material-symbols-outlined text-primary" style="font-size:24px">graphic_eq</span>
+      VietVoice
+    </a>
+    <div class="hidden md:flex items-center space-x-1">
+      <a href="{{ url_for('index') }}" class="text-slate-400 hover:text-white hover:bg-white/5 transition-all duration-200 px-3 py-2 rounded text-sm font-medium no-underline">Workspace</a>
+      <a href="{{ url_for('my_voices') }}" class="text-primary border-b-2 border-primary pb-0.5 px-3 py-2 text-sm font-semibold no-underline">Voices</a>
+      <a href="{{ url_for('audio_library') }}" class="text-slate-400 hover:text-white hover:bg-white/5 transition-all duration-200 px-3 py-2 rounded text-sm font-medium no-underline">Library</a>
+      <a href="{{ url_for('history') }}" class="text-slate-400 hover:text-white hover:bg-white/5 transition-all duration-200 px-3 py-2 rounded text-sm font-medium no-underline">History</a>
+      <a href="{{ url_for('pricing') }}" class="text-slate-400 hover:text-white hover:bg-white/5 transition-all duration-200 px-3 py-2 rounded text-sm font-medium no-underline">Pricing</a>
+      {% if session.user_role == 'admin' %}
+      <a href="{{ url_for('admin') }}" class="text-tertiary hover:text-white hover:bg-white/5 transition-all duration-200 px-3 py-2 rounded text-sm font-medium no-underline">Admin</a>
+      {% endif %}
+    </div>
+    <div class="flex items-center gap-1.5 md:gap-3">
+      <a href="{{ url_for('pricing') }}" class="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-xs font-semibold text-primary hover:bg-primary/20 transition-colors no-underline" id="charsNavBadge" title="Ký tự còn lại">
+        <span class="material-symbols-outlined" style="font-size:14px">bolt</span>
+        <span id="charsNavCount">...</span>
+      </a>
+      <button id="themeToggleBtn" class="text-slate-400 hover:text-white hover:bg-white/5 p-2 rounded-full transition-all" title="Đổi giao diện">
+        <span class="material-symbols-outlined" id="themeIcon">dark_mode</span>
+      </button>
+      <button class="vv-lang-toggle" onclick="VVi18n.toggle()" aria-label="Switch language">
+        <span class="lang-vi lang-active">VI</span><span class="lang-sep">|</span><span class="lang-en lang-inactive">EN</span>
+      </button>
+      <a href="{{ url_for('contact') }}" class="hidden sm:flex text-slate-400 hover:text-white hover:bg-white/5 p-2 rounded-full transition-all" title="Liên hệ">
+        <span class="material-symbols-outlined">help_outline</span>
+      </a>
+      <div class="flex items-center gap-1.5 pl-2 border-l border-white/10">
+        {% include 'partials/_nav_avatar.html' %}
+        <div class="hidden sm:flex flex-col">
+          <span class="text-xs font-semibold text-on-surface leading-none">{{ session.full_name or session.username }}</span>
+          <span class="text-[10px] text-on-surface-variant">{{ session.user_role or 'user' }}</span>
+        </div>
+        <a href="{{ url_for('logout') }}" class="flex items-center gap-1 text-xs px-2 py-1 rounded-md bg-red-500/10 text-red-400 border border-red-500/20 hover:bg-red-500 hover:text-white transition-all no-underline font-medium ml-1">
+          <span class="material-symbols-outlined" style="font-size:15px">logout</span>
+          <span class="hidden sm:inline">Logout</span>
+        </a>
+      </div>
+      <button id="mobileMenuBtn" class="md:hidden text-slate-400 hover:text-white hover:bg-white/5 p-2 rounded-full transition-all ml-1" onclick="toggleMobileNav()">
+        <span class="material-symbols-outlined" id="mobileMenuIcon">menu</span>
+      </button>
+    </div>
+  </div>
+</nav>
+
+{% set mob_nav_active = 'my_voices' %}
+{% include 'partials/mobile_nav_drawer.html' %}
+
+<!-- ═══ MAIN CONTENT ═══ -->
+<main class="pt-20 md:pt-24 pb-16 px-4 md:px-6 overflow-hidden">
+  <div class="max-w-[860px] mx-auto">
+
+    <!-- Page Header -->
+    <div class="mb-6 md:mb-8">
+      <a href="{{ url_for('my_voices') }}" class="inline-flex items-center gap-2 px-3 py-2 rounded-lg bg-white/5 text-on-surface-variant hover:bg-white/10 hover:text-white transition-all text-sm font-medium no-underline mb-4">
+        <span class="material-symbols-outlined" style="font-size:18px">arrow_back</span>
+        <span data-i18n="common.back">Quay lại</span>
+      </a>
+      <h1 class="text-2xl md:text-3xl font-extrabold text-on-surface flex items-center gap-3 mb-2">
+        <span class="material-symbols-outlined text-primary" style="font-size:28px;font-variation-settings:'FILL' 1">mic</span>
+        <span data-i18n="addv.title">Thêm giọng mới</span>
+      </h1>
+      <p class="text-sm md:text-base text-on-surface-variant" data-i18n="addv.subtitle">Upload audio sample hoặc chọn giọng nền để tạo giọng nói tùy chỉnh</p>
+    </div>
+
+    <!-- Form Card -->
+    <div class="rounded-2xl bg-surface-container p-4 md:p-8 mb-6" style="border:1px solid rgba(255,255,255,0.06)">
+      <form id="addVoiceForm" enctype="multipart/form-data">
+
+        <!-- ── Step 1: Upload Audio ── -->
+        <div class="mb-8 pb-8" style="border-bottom:1px solid rgba(255,255,255,0.06)">
+          <h2 class="text-lg font-bold text-on-surface flex items-center gap-3 mb-2">
+            <span class="w-8 h-8 rounded-full bg-gradient-to-br from-primary-container to-inverse-primary flex items-center justify-center text-sm font-bold text-on-primary flex-shrink-0">1</span>
+            <span data-i18n="addv.step1.title">Upload Audio Sample</span> <span class="text-sm font-normal text-on-surface-variant" data-i18n="addv.step1.optional">(Tuỳ chọn)</span>
+          </h2>
+          <p class="text-sm text-on-surface-variant mb-4 ml-11" data-i18n="addv.step1.desc">Upload file audio chứa giọng nói của bạn nếu muốn train voice riêng. Hoặc bỏ qua bước này và dùng giọng nền có sẵn.</p>
+
+          <!-- Upload area -->
+          <div id="uploadArea" class="upload-area-modern sm:ml-11 border-2 border-dashed rounded-xl p-6 md:p-10 text-center cursor-pointer transition-all" style="border-color:rgba(208,188,255,0.25);background:rgba(208,188,255,0.03)">
+            <input type="file" id="audioFile" name="audio_file" accept="audio/*,.wav,.mp3,.m4a" style="display:none">
+            <div class="upload-content-modern">
+              <div class="text-5xl mb-3">📁</div>
+              <p class="text-base font-semibold text-on-surface mb-1" data-i18n="addv.upload.label">Kéo thả file hoặc click để chọn</p>
+              <p id="uploadSpecs" class="text-xs text-on-surface-variant leading-relaxed">
+                <strong class="text-on-surface" data-i18n="addv.upload.support">Hỗ trợ:</strong> WAV, MP3, M4A &nbsp;·&nbsp;
+                <strong class="text-on-surface" data-i18n="addv.upload.length">Độ dài:</strong> 6 giây - 2 phút (tối ưu 10–60 giây) &nbsp;·&nbsp;
+                <strong class="text-on-surface" data-i18n="addv.upload.quality">Chất lượng:</strong> <span data-i18n="addv.upload.quality_val">Không noise, không echo</span>
+              </p>
+            </div>
+          </div>
+
+          <!-- File info (hidden by default) -->
+          <div id="fileInfo" class="ml-11 mt-3 flex items-center gap-4 p-4 rounded-xl" style="display:none;background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.2)">
+            <div class="text-3xl">🎵</div>
+            <div class="flex-1 min-w-0">
+              <p id="fileName" class="font-semibold text-on-surface text-sm"></p>
+              <p id="fileSize" class="text-xs text-on-surface-variant"></p>
+              <p id="fileDuration" class="text-xs text-on-surface-variant"></p>
+            </div>
+            <button type="button" onclick="removeFile()" class="w-8 h-8 rounded-full flex items-center justify-center text-on-surface-variant hover:bg-red-500/20 hover:text-red-400 transition-all text-sm">✕</button>
+          </div>
+
+          <!-- Quality check (hidden by default) -->
+          <div id="qualityCheck" class="ml-11 mt-3 p-4 rounded-xl" style="display:none;background:rgba(208,188,255,0.06)">
+            <p class="text-sm font-semibold text-on-surface mb-2">📊 Đánh giá chất lượng audio:</p>
+            <div class="flex items-center gap-4">
+              <span id="qualityScore" class="text-3xl font-extrabold text-primary"></span>
+              <p id="qualityMessage" class="text-sm text-on-surface-variant"></p>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── Step 2: Voice Mode ── -->
+        <div class="mb-8 pb-8" style="border-bottom:1px solid rgba(255,255,255,0.06)">
+          <h2 class="text-lg font-bold text-on-surface flex items-center gap-3 mb-2">
+            <span class="w-8 h-8 rounded-full bg-gradient-to-br from-primary-container to-inverse-primary flex items-center justify-center text-sm font-bold text-on-primary flex-shrink-0">2</span>
+            <span data-i18n="addv.step2.title">Chế độ tạo giọng</span>
+          </h2>
+          <p class="text-sm text-on-surface-variant mb-4 ml-11" data-i18n-html="addv.step2.desc">
+            <strong class="text-on-surface">RVC:</strong> Train model từ audio (mất vài phút).
+            <strong class="text-on-surface">Zero-shot:</strong> Clone giọng ngay từ mẫu (cần nhập transcript).
+            <strong class="text-on-surface">viXTTS Clone:</strong> AI clone giọng bằng model viXTTS, không cần transcript.
+            <strong class="text-on-surface">OmniVoice Clone:</strong> Clone giọng đa ngôn ngữ (600+ ngôn ngữ), transcript tuỳ chọn.
+          </p>
+
+          <div class="ml-11 flex flex-wrap gap-4 mb-4">
+            <label class="flex items-center gap-2 cursor-pointer px-4 py-2.5 rounded-lg transition-all" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08)">
+              <input type="radio" name="voice_type" value="rvc" id="voiceTypeRvc" checked class="accent-primary">
+              <span class="text-sm font-medium text-on-surface">RVC (training)</span>
+            </label>
+            <label class="flex items-center gap-2 cursor-pointer px-4 py-2.5 rounded-lg transition-all" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08)">
+              <input type="radio" name="voice_type" value="zero_shot" id="voiceTypeZeroShot" class="accent-primary">
+              <span class="text-sm font-medium text-on-surface" data-i18n="addv.zeroshot.label">Zero-shot (clone từ mẫu)</span>
+            </label>
+            <label class="flex items-center gap-2 cursor-pointer px-4 py-2.5 rounded-lg transition-all" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08)">
+              <input type="radio" name="voice_type" value="vixtts_clone" id="voiceTypeVixtts" class="accent-primary">
+              <span class="text-sm font-medium text-on-surface">🤖 viXTTS Clone</span>
+            </label>
+            <label class="flex items-center gap-2 cursor-pointer px-4 py-2.5 rounded-lg transition-all" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08)">
+              <input type="radio" name="voice_type" value="omnivoice_clone" id="voiceTypeOmnivoice" class="accent-primary">
+              <span class="text-sm font-medium text-on-surface">🌍 OmniVoice Clone</span>
+            </label>
+          </div>
+
+          <!-- Transcript block (shown for zero-shot) -->
+          <div id="refTranscriptBlock" class="ml-11" style="display:none">
+            <div class="flex items-center justify-between mb-1.5">
+              <label for="refTranscript" class="block text-sm font-semibold text-on-surface">
+                <span data-i18n="addv.transcript.label">Transcript</span> <span class="text-red-400">*</span>
+              </label>
+              <button type="button" id="btnAutoTranscribe"
+                class="flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-semibold transition-all"
+                style="background:rgba(208,188,255,0.12);color:#d0bcff;border:1px solid rgba(208,188,255,0.25)"
+                onmouseover="this.style.background='rgba(208,188,255,0.22)'"
+                onmouseout="this.style.background='rgba(208,188,255,0.12)'"
+                title="Tự động nhận dạng nội dung file audio mẫu">
+                <span id="autoTranscribeIcon" class="material-symbols-outlined" style="font-size:14px">mic</span>
+                <span id="autoTranscribeLabel" data-i18n="addv.transcript.auto_btn">Phiên âm tự động</span>
+              </button>
+            </div>
+            <textarea id="refTranscript" name="ref_transcript" rows="4" data-i18n-placeholder="addv.transcript.placeholder" placeholder="Nhập chính xác nội dung mà người nói đọc trong file audio mẫu..." class="form-input-dark resize-none"></textarea>
+            <div id="autoTranscribeStatus" class="hidden mt-1.5 text-xs rounded-lg px-3 py-2"></div>
+            <p class="text-xs text-on-surface-variant mt-1.5" data-i18n="addv.transcript.hint">Zero-shot cần transcript khớp với audio để clone giọng chính xác. Hoặc dùng <strong>Phiên âm tự động</strong> nếu bạn không biết nội dung audio.</p>
+          </div>
+
+          <!-- viXTTS info (shown for vixtts_clone) -->
+          <div id="vixttsCloneInfo" class="ml-11 rounded-xl p-4" style="display:none;background:rgba(208,188,255,0.06);border-left:3px solid #d0bcff">
+            <h4 class="text-sm font-bold text-on-surface mb-1" data-i18n="addv.vixtts.title">🤖 viXTTS Clone — AI clone giọng</h4>
+            <p class="text-sm text-on-surface-variant mb-2" data-i18n-html="addv.vixtts.desc">Model <strong class="text-on-surface">viXTTS</strong> sẽ học đặc trưng giọng nói từ file audio mẫu và tổng hợp giọng mới không cần transcript.</p>
+            <p class="text-xs text-primary" data-i18n-html="addv.vixtts.tip">💡 <strong>Tip:</strong> Dùng file audio rõ ràng, ít tạp âm, dài 10–60 giây để có kết quả tốt nhất.</p>
+          </div>
+
+          <!-- OmniVoice info (shown for omnivoice_clone) -->
+          <div id="omnivoiceCloneInfo" class="ml-11 rounded-xl p-4" style="display:none;background:rgba(208,188,255,0.06);border-left:3px solid #a078ff">
+            <h4 class="text-sm font-bold text-on-surface mb-1">🌍 OmniVoice Clone — đa ngôn ngữ</h4>
+            <p class="text-sm text-on-surface-variant mb-2">Model <strong class="text-on-surface">OmniVoice</strong> clone giọng từ audio mẫu 3–10 giây, hỗ trợ 600+ ngôn ngữ. Transcript tuỳ chọn (Whisper tự phiên âm nếu bỏ trống).</p>
+            <p class="text-xs text-primary">💡 <strong>Tip:</strong> Audio mẫu nên cùng ngôn ngữ với văn bản đích để phát âm chuẩn nhất.</p>
+          </div>
+        </div>
+
+        <!-- ── Step 3: Base Voice ── -->
+        <div id="baseVoiceSection" class="mb-8 pb-8" style="border-bottom:1px solid rgba(255,255,255,0.06)">
+          <h2 class="text-lg font-bold text-on-surface flex items-center gap-3 mb-2">
+            <span class="w-8 h-8 rounded-full bg-gradient-to-br from-primary-container to-inverse-primary flex items-center justify-center text-sm font-bold text-on-primary flex-shrink-0">3</span>
+            <span data-i18n="addv.step3.title">Chọn giọng nền</span>
+          </h2>
+          <p class="text-sm text-on-surface-variant mb-4 ml-11" data-i18n="addv.step3.desc">Chọn giọng hệ thống làm nền, sau đó điều chỉnh để tạo giọng riêng của bạn.</p>
+          <div class="ml-11">
+            <label for="baseVoice" class="block text-sm font-semibold text-on-surface mb-1.5">
+              <span data-i18n="addv.base.label">Giọng nền</span> <span class="text-red-400">*</span>
+            </label>
+            <select id="baseVoice" name="base_voice_id" required>
+              <optgroup label="Nam miền Bắc">
+                <option value="binh">Bình - Nam miền Bắc</option>
+                <option value="tuyen">Tuyên - Nam miền Bắc</option>
+              </optgroup>
+              <optgroup label="Nam miền Nam">
+                <option value="vinh">Vinh - Nam miền Nam</option>
+              </optgroup>
+              <optgroup label="Nữ miền Bắc">
+                <option value="ly" selected>Ly - Nữ miền Bắc (Mặc định)</option>
+                <option value="ngoc">Ngọc - Nữ miền Bắc</option>
+              </optgroup>
+              <optgroup label="Nữ miền Nam">
+                <option value="doan">Đoan - Nữ miền Nam</option>
+              </optgroup>
+            </select>
+            <p class="text-xs text-on-surface-variant mt-1.5" data-i18n="addv.base.tip">💡 Giọng custom sẽ dựa trên giọng nền này</p>
+          </div>
+        </div>
+
+        <!-- ── Step 4: Adjustments ── -->
+        <div id="adjustmentsSection" class="mb-8 pb-8" style="border-bottom:1px solid rgba(255,255,255,0.06)">
+          <h2 class="text-lg font-bold text-on-surface flex items-center gap-3 mb-2">
+            <span class="w-8 h-8 rounded-full bg-gradient-to-br from-primary-container to-inverse-primary flex items-center justify-center text-sm font-bold text-on-primary flex-shrink-0">4</span>
+            <span data-i18n="addv.step4.title">Điều chỉnh giọng</span>
+          </h2>
+          <p class="text-sm text-on-surface-variant mb-5 ml-11" data-i18n="addv.step4.desc">Tinh chỉnh giọng nói theo ý muốn (có thể để mặc định).</p>
+
+          <div class="ml-11 space-y-5">
+            <!-- Pitch -->
+            <div>
+              <div class="flex justify-between items-center mb-2">
+                <label for="pitchAdjustment" class="text-sm font-semibold text-on-surface" data-i18n="addv.pitch.label">Cao độ (Pitch)</label>
+                <span id="pitchValue" class="text-sm font-bold text-primary">0</span>
+              </div>
+              <input type="range" id="pitchAdjustment" name="pitch_adjustment" min="-12" max="12" value="0" step="1" class="w-full h-2 rounded-full appearance-none cursor-pointer" style="accent-color:#d0bcff">
+              <p class="text-xs text-on-surface-variant mt-1" data-i18n="addv.pitch.hint">-12 (thấp hơn) ← 0 (bình thường) → +12 (cao hơn)</p>
+            </div>
+            <!-- Speed -->
+            <div>
+              <div class="flex justify-between items-center mb-2">
+                <label for="speedAdjustment" class="text-sm font-semibold text-on-surface" data-i18n="addv.speed.label">Tốc độ (Speed)</label>
+                <span id="speedValue" class="text-sm font-bold text-primary">1.0x</span>
+              </div>
+              <input type="range" id="speedAdjustment" name="speed_adjustment" min="0.5" max="2.0" value="1.0" step="0.1" class="w-full h-2 rounded-full appearance-none cursor-pointer" style="accent-color:#d0bcff">
+              <p class="text-xs text-on-surface-variant mt-1" data-i18n="addv.speed.hint">0.5x (chậm) ← 1.0x (bình thường) → 2.0x (nhanh)</p>
+            </div>
+            <!-- Energy -->
+            <div>
+              <div class="flex justify-between items-center mb-2">
+                <label for="energyAdjustment" class="text-sm font-semibold text-on-surface" data-i18n="addv.energy.label">Năng lượng (Energy)</label>
+                <span id="energyValue" class="text-sm font-bold text-primary">1.0x</span>
+              </div>
+              <input type="range" id="energyAdjustment" name="energy_adjustment" min="0.5" max="1.5" value="1.0" step="0.1" class="w-full h-2 rounded-full appearance-none cursor-pointer" style="accent-color:#d0bcff">
+              <p class="text-xs text-on-surface-variant mt-1" data-i18n="addv.energy.hint">0.5x (nhẹ nhàng) ← 1.0x (bình thường) → 1.5x (mạnh mẽ)</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── Step 5: Voice Details ── -->
+        <div class="mb-8 pb-8" style="border-bottom:1px solid rgba(255,255,255,0.06)">
+          <h2 class="text-lg font-bold text-on-surface flex items-center gap-3 mb-5">
+            <span class="w-8 h-8 rounded-full bg-gradient-to-br from-primary-container to-inverse-primary flex items-center justify-center text-sm font-bold text-on-primary flex-shrink-0">5</span>
+            <span data-i18n="addv.step5.title">Thông tin giọng nói</span>
+          </h2>
+          <div class="ml-11 space-y-4">
+            <div>
+              <label for="voiceName" class="block text-sm font-semibold text-on-surface mb-1.5">
+                <span data-i18n="addv.name.label">Tên giọng</span> <span class="text-red-400">*</span>
+              </label>
+              <input type="text" id="voiceName" name="voice_name" data-i18n-placeholder="addv.name.placeholder" placeholder="VD: Giọng của tôi, Giọng đọc sách, ..." required maxlength="255" class="form-input-dark">
+              <p class="text-xs text-on-surface-variant mt-1.5" data-i18n="addv.name.hint">Đặt tên dễ nhớ để phân biệt các giọng</p>
+            </div>
+            <div>
+              <label for="voiceDescription" class="block text-sm font-semibold text-on-surface mb-1.5" data-i18n="addv.desc.label">Mô tả (tuỳ chọn)</label>
+              <textarea id="voiceDescription" name="description" rows="3" data-i18n-placeholder="addv.desc.placeholder" placeholder="VD: Giọng ấm áp, phù hợp đọc truyện..." maxlength="500" class="form-input-dark resize-none"></textarea>
+              <p class="text-xs text-on-surface-variant mt-1.5" data-i18n="addv.desc.hint">Mô tả đặc điểm hoặc mục đích sử dụng giọng này</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Training Info -->
+        <div id="trainingInfoCard" class="mb-6 p-4 rounded-xl" style="background:rgba(208,188,255,0.06);border-left:3px solid #d0bcff">
+          <h4 class="text-sm font-bold text-on-surface mb-1" data-i18n="addv.training.title">⚡ Thời gian tạo giọng</h4>
+          <p id="trainingInfoText" class="text-sm text-on-surface-variant mb-2" data-i18n-html="addv.training.text">Giọng custom sẽ được tạo <strong class="text-on-surface">ngay lập tức</strong> (&lt; 1 giây) dựa trên giọng nền và các điều chỉnh của bạn.</p>
+          <p id="trainingInfoNote" class="text-xs text-primary" data-i18n-html="addv.training.tip">💡 <strong>Tip:</strong> Bạn có thể tạo nhiều biến thể từ cùng một audio sample bằng cách thay đổi giọng nền và các thông số điều chỉnh.</p>
+        </div>
+
+        <!-- Submit -->
+        <div class="flex justify-end gap-3 pt-2">
+          <a href="{{ url_for('my_voices') }}" class="px-6 py-2.5 rounded-xl text-on-surface-variant hover:bg-white/5 hover:text-on-surface transition-all text-sm font-medium no-underline" data-i18n="addv.btn.cancel">
+            Huỷ
+          </a>
+          <button type="submit" id="submitBtn" class="flex items-center gap-2 px-6 py-2.5 rounded-xl bg-gradient-to-r from-primary-container to-inverse-primary text-on-primary text-sm font-semibold hover:shadow-[0_0_16px_rgba(160,120,255,0.4)] transition-all">
+            <span class="material-symbols-outlined" style="font-size:18px">auto_awesome</span>
+            <span data-i18n="addv.btn.submit">Tạo giọng ngay</span>
+          </button>
+        </div>
+      </form>
+
+      <!-- Progress -->
+      <div id="trainingProgress" class="text-center py-10" style="display:none">
+        <h3 class="text-xl font-bold text-on-surface mb-2" data-i18n="addv.progress.title">⚙️ Đang tạo giọng nói...</h3>
+        <p id="progressSubtitle" class="text-sm text-on-surface-variant mb-6" data-i18n="addv.progress.subtitle">Đang xử lý...</p>
+        <div class="progress-bar-track max-w-md mx-auto mb-3">
+          <div class="progress-bar-fill" id="progressBar" style="width:0%"></div>
+        </div>
+        <p id="progressText" class="text-sm font-bold text-primary mb-2">0%</p>
+        <p id="progressNote" class="text-xs text-on-surface-variant"></p>
+      </div>
+
+      <!-- Success -->
+      <div id="trainingSuccess" class="text-center py-12" style="display:none">
+        <div class="text-6xl mb-4">✅</div>
+        <h3 class="text-2xl font-extrabold text-on-surface mb-3" data-i18n="addv.success.title">Tạo giọng thành công!</h3>
+        <p id="successMessage" class="text-on-surface-variant mb-6"></p>
+        <div class="flex justify-center gap-3">
+          <a href="{{ url_for('my_voices') }}" class="px-6 py-2.5 rounded-xl bg-gradient-to-r from-primary-container to-inverse-primary text-on-primary text-sm font-semibold hover:shadow-[0_0_16px_rgba(160,120,255,0.4)] transition-all no-underline" data-i18n="addv.success.btn.view">
+            Xem giọng của tôi
+          </a>
+          <button type="button" onclick="location.reload()" class="px-6 py-2.5 rounded-xl text-primary border border-primary/30 hover:bg-primary/10 transition-all text-sm font-semibold" data-i18n="addv.success.btn.new">
+            Tạo giọng mới
+          </button>
+        </div>
+      </div>
+
+      <!-- Error -->
+      <div id="trainingError" class="text-center py-12" style="display:none">
+        <div class="text-6xl mb-4">❌</div>
+        <h3 class="text-2xl font-extrabold text-on-surface mb-3" data-i18n="addv.error.title">Tạo giọng thất bại</h3>
+        <p id="errorMessage" class="text-red-400 mb-6"></p>
+        <button type="button" onclick="location.reload()" class="px-6 py-2.5 rounded-xl bg-gradient-to-r from-primary-container to-inverse-primary text-on-primary text-sm font-semibold hover:shadow-[0_0_16px_rgba(160,120,255,0.4)] transition-all" data-i18n="addv.error.btn.retry">
+          Thử lại
+        </button>
+      </div>
+    </div>
+
+    <!-- Tips Card -->
+    <div class="rounded-2xl p-6" style="background:rgba(18,33,49,0.6);border:1px solid rgba(255,255,255,0.06)">
+      <h3 class="text-base font-bold text-on-surface mb-4 flex items-center gap-2">
+        <span class="material-symbols-outlined text-primary" style="font-size:20px">tips_and_updates</span>
+        <span data-i18n="addv.tips.title">Tips để có giọng AI chất lượng cao</span>
+      </h3>
+      <div class="space-y-3">
+        <div class="flex items-start gap-3 pb-3" style="border-bottom:1px solid rgba(255,255,255,0.05)">
+          <span class="text-xl flex-shrink-0">🎤</span>
+          <div><p class="text-sm text-on-surface font-semibold mb-0.5" data-i18n="addv.tip1.title">Mic chất lượng</p><p class="text-xs text-on-surface-variant" data-i18n="addv.tip1.desc">Dùng mic tốt, cách miệng ~15cm</p></div>
+        </div>
+        <div class="flex items-start gap-3 pb-3" style="border-bottom:1px solid rgba(255,255,255,0.05)">
+          <span class="text-xl flex-shrink-0">🔇</span>
+          <div><p class="text-sm text-on-surface font-semibold mb-0.5" data-i18n="addv.tip2.title">Môi trường yên tĩnh</p><p class="text-xs text-on-surface-variant" data-i18n="addv.tip2.desc">Thu trong phòng kín, không tiếng ồn</p></div>
+        </div>
+        <div class="flex items-start gap-3 pb-3" style="border-bottom:1px solid rgba(255,255,255,0.05)">
+          <span class="text-xl flex-shrink-0">📝</span>
+          <div><p class="text-sm text-on-surface font-semibold mb-0.5" data-i18n="addv.tip3.title">Đa dạng nội dung</p><p class="text-xs text-on-surface-variant" data-i18n="addv.tip3.desc">Đọc nhiều loại câu (hỏi, khẳng định, cảm xúc)</p></div>
+        </div>
+        <div class="flex items-start gap-3 pb-3" style="border-bottom:1px solid rgba(255,255,255,0.05)">
+          <span class="text-xl flex-shrink-0">🗣️</span>
+          <div><p class="text-sm text-on-surface font-semibold mb-0.5" data-i18n="addv.tip4.title">Giọng tự nhiên</p><p class="text-xs text-on-surface-variant" data-i18n="addv.tip4.desc">Đọc rõ ràng, tự nhiên, không cố làm giọng</p></div>
+        </div>
+        <div class="flex items-start gap-3">
+          <span class="text-xl flex-shrink-0">⏱️</span>
+          <div><p class="text-sm text-on-surface font-semibold mb-0.5" data-i18n="addv.tip5.title">Độ dài phù hợp</p><p class="text-xs text-on-surface-variant" data-i18n="addv.tip5.desc">5-10 phút là tối ưu (đủ data, không quá lâu)</p></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<script src="{{ url_for('static', filename='js/add-voice.js') }}"></script>
+
+<script>
+// ── Auto-transcribe ───────────────────────────────────────────
+(function setupAutoTranscribe() {
+  const btn = document.getElementById('btnAutoTranscribe');
+  if (!btn) return;
+
+  btn.addEventListener('click', async () => {
+    // Find the uploaded audio file
+    const audioInput = document.getElementById('audioFile');
+    const statusEl = document.getElementById('autoTranscribeStatus');
+    const icon = document.getElementById('autoTranscribeIcon');
+    const labelEl = document.getElementById('autoTranscribeLabel');
+    const textarea = document.getElementById('refTranscript');
+
+    if (!audioInput || !audioInput.files || audioInput.files.length === 0) {
+      statusEl.className = 'mt-1.5 text-xs rounded-lg px-3 py-2';
+      statusEl.style.cssText = 'background:rgba(239,68,68,0.12);color:#f87171;border:1px solid rgba(239,68,68,0.25)';
+      statusEl.textContent = '⚠ Vui lòng tải file audio mẫu lên trước khi phiên âm tự động.';
+      return;
+    }
+
+    // Loading state
+    btn.disabled = true;
+    icon.textContent = 'sync';
+    icon.style.animation = 'spin 1s linear infinite';
+    labelEl.textContent = 'Đang nhận dạng...';
+    statusEl.className = 'mt-1.5 text-xs rounded-lg px-3 py-2';
+    statusEl.style.cssText = 'background:rgba(208,188,255,0.08);color:#d0bcff;border:1px solid rgba(208,188,255,0.2)';
+    statusEl.textContent = '🎙 Đang phiên âm file audio, vui lòng chờ...';
+
+    try {
+      const formData = new FormData();
+      formData.append('audio', audioInput.files[0]);
+      const resp = await fetch('/api/transcribe-audio', { method: 'POST', body: formData });
+      const data = await resp.json();
+
+      if (data.success) {
+        textarea.value = data.transcript;
+        statusEl.style.cssText = 'background:rgba(74,222,128,0.1);color:#4ade80;border:1px solid rgba(74,222,128,0.25)';
+        statusEl.textContent = `✓ Phiên âm thành công (${data.duration}s, ngôn ngữ: ${data.language}). Kiểm tra lại nội dung trước khi lưu.`;
+      } else {
+        statusEl.style.cssText = 'background:rgba(239,68,68,0.12);color:#f87171;border:1px solid rgba(239,68,68,0.25)';
+        statusEl.textContent = '✗ ' + (data.error || 'Lỗi phiên âm không xác định.');
+      }
+    } catch (e) {
+      statusEl.style.cssText = 'background:rgba(239,68,68,0.12);color:#f87171;border:1px solid rgba(239,68,68,0.25)';
+      statusEl.textContent = '✗ Không thể kết nối tới máy chủ phiên âm.';
+    } finally {
+      btn.disabled = false;
+      icon.textContent = 'mic';
+      icon.style.animation = '';
+      labelEl.textContent = 'Phiên âm tự động';
+    }
+  });
+})();
+
+// ── Characters remaining ──────────────────────────────────────
+async function loadCharsRemaining() {
+  try {
+    const r = await fetch('/api/user/characters');
+    const d = await r.json();
+    if (d.success) {
+      const n = d.characters_remaining;
+      const fmt = n >= 1000000 ? (n/1000000).toFixed(1)+'M' : n >= 1000 ? (n/1000).toFixed(1)+'K' : n;
+      const el = document.getElementById('charsNavCount');
+      if (el) el.textContent = fmt + ' ký tự';
+    }
+  } catch(e) {}
+}
+loadCharsRemaining();
+
+// ── Theme toggle ──────────────────────────────────────────────
+
+function toggleMobileNav() {
+  const drawer = document.getElementById('mobileNavDrawer');
+  const overlay = document.getElementById('mobileNavOverlay');
+  const icon = document.getElementById('mobileMenuIcon');
+  const isOpen = !drawer.classList.contains('hidden');
+  if (isOpen) { drawer.classList.add('hidden'); overlay.classList.add('hidden'); icon.textContent = 'menu'; }
+  else { drawer.classList.remove('hidden'); overlay.classList.remove('hidden'); icon.textContent = 'close'; }
+}
+function closeMobileNav() {
+  document.getElementById('mobileNavDrawer').classList.add('hidden');
+  document.getElementById('mobileNavOverlay').classList.add('hidden');
+  document.getElementById('mobileMenuIcon').textContent = 'menu';
+}
+window.addEventListener('resize', () => { if (window.innerWidth >= 768) closeMobileNav(); });
+</script>
+
+<script src="{{ url_for('static', filename='js/i18n.js') }}"></script>
+</body>
+</html>
